@@ -1,5 +1,10 @@
 package main.java.com.excilys.cdb.model;
 
+/**
+ * Classe représentant une compagnie de manière simple, sans détails.
+ * @author vogel
+ *
+ */
 public class Company {
 	
 	private long id;

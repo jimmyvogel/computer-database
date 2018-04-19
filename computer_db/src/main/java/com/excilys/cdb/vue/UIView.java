@@ -1,5 +1,10 @@
 package main.java.com.excilys.cdb.vue;
 
+/**
+ * Classe représentant la vue dans un CLI.
+ * @author vogel
+ *
+ */
 public class UIView {
 
 	private String affichage;

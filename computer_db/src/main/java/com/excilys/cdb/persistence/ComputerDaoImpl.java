@@ -11,6 +11,12 @@ import java.util.List;
 
 import main.java.com.excilys.cdb.model.Computer;
 
+/**
+ *  Classe d'implémentation d'une IComputerDao contenant les requêtes possibles sur
+ * la table des computer de la base de donnée.
+ * @author vogel
+ *
+ */
 public class ComputerDaoImpl implements IComputerDao{
 
 	private DaoFactory factory;
@@ -32,6 +38,10 @@ public class ComputerDaoImpl implements IComputerDao{
 	private static final String SQL_COUNT_COMPUTER = 
 			"SELECT COUNT(`id`) AS `total` FROM `computer`";
 	
+	/**
+	 * Constructor avec la dao en paramètre pour accéder à d'autres daos si nécessaire.
+	 * @param factory an object of type DaoFactory
+	 */
 	public ComputerDaoImpl(DaoFactory factory) {
 		super();
 		this.factory = factory;

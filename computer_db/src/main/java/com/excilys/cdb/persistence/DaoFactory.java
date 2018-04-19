@@ -7,16 +7,28 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class DaoFactory {
+/**
+ * Factory pour la création des daos gérant les requêtes sur la base de donnée.
+ * @author vogel
+ *
+ */
+public class DaoFactory{
 
+	//Les properties en dur pour l'instant //TODO
 	private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db-test";
 	private static final String USERNAME = "admincdb";
 	private static final String PASSWORD = "qwerty1234";
 	private static final String MAX_POOL = "250"; // set your own limit
 	
+	//Variables pour récupérer les id max à l'initialisation pour gérer
+	//l'auto-incrémentation en manuelle.
 	private static boolean sequenceInitialized=false;
 	public static long sequenceComputer;
 	public static long sequenceCompany;
+	
+	//NOT DONE BECAUSE ALL TABLE MUST THEN IMPLEMENTS THE SAME METHODS.
+	//Enum pour la généricité de la méthode factory.
+	//public static enum DaoType { COMPUTER, COMPANY };
 	
 	/**
 	 * Constructor daofactory
@@ -29,6 +41,11 @@ public class DaoFactory {
 		}
 	}
 	
+	/**
+	 * Méthode privée à la classe permettant de savoir le dernier id utilisé dans
+	 * la table computer de la bdd.
+	 * @return a result in long type.
+	 */
 	private long maxIdComputer() {
 		long max = 0;
 		try {
@@ -49,6 +66,11 @@ public class DaoFactory {
 		return max;
 	}
 	
+	/**
+	 * Méthode privée à la classe permettant de savoir le dernier id utilisé dans
+	 * la table company de la bdd.
+	 * @return a result in long type.
+	 */
 	private long maxIdCompany() {
 		long max = 0;
 		try {
@@ -91,12 +113,31 @@ public class DaoFactory {
 		return connection;
 	}
 	
-	public CompanyDaoImpl getCompanyDao() {
+
+	/**
+	 * Factory pour dao company
+	 * @return un company dao
+	 */
+	public ICompanyDao getCompanyDao() {
 		return new CompanyDaoImpl(this);
 	}
 	
-	public ComputerDaoImpl getComputerDao() {
+	/**
+	 * Factory pour dao computer
+	 * @return un computer dao.
+	 */
+	public IComputerDao getComputerDao() {
 		return new ComputerDaoImpl(this);
 	}
+	
+	/**public Dao<?> getDao(DaoType daoType) {
+		Dao<?> res;
+		switch(daoType) {
+			case COMPANY:res = new CompanyDaoImpl(this);
+			case COMPUTER:res = new ComputerDaoImpl(this);
+			default: res = new ComputerDaoImpl(this);
+		}
+		return res;
+	}*/
 	
 }

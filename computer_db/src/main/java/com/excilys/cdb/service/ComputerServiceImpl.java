@@ -9,15 +9,24 @@ import main.java.com.excilys.cdb.persistence.CompanyDaoImpl;
 import main.java.com.excilys.cdb.persistence.ComputerDaoImpl;
 import main.java.com.excilys.cdb.persistence.DaoFactory;
 
+/**
+ * Service permettant de gérer les requêtes de gestion de la table computer
+ * et de la table company qui lui est lié.
+ * @author vogel
+ *
+ */
 public class ComputerServiceImpl implements IComputerService{
 
 	private ComputerDaoImpl computerDao;
 	private CompanyDaoImpl companyDao;
 	
+	/**
+	 * Constructor ne nécessitant pas d'arguments.
+	 */
 	public ComputerServiceImpl() {
 		DaoFactory factory = new DaoFactory();
-		computerDao = factory.getComputerDao();
-		companyDao = factory.getCompanyDao();
+		computerDao = (ComputerDaoImpl) factory.getComputerDao();
+		companyDao = (CompanyDaoImpl) factory.getCompanyDao();
 	}
 
 	@Override
@@ -183,6 +192,11 @@ public class ComputerServiceImpl implements IComputerService{
 		return companyDao.getCompanyCount();
 	}
 	
+	/**
+	 * Méthode pour modifier en valide le format d'un string
+	 * @param s le string a valider
+	 * @return un objet de type String.
+	 */
 	public String validTextProcess(String s) {
 		return s.replaceAll("<[^>]*>", "");
 	}

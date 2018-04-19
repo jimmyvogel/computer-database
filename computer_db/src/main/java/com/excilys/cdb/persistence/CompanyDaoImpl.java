@@ -10,9 +10,16 @@ import java.util.List;
 
 import main.java.com.excilys.cdb.model.Company;
 
+/**
+ * Classe d'implémentation d'une compagnieDao contenant les requêtes possibles sur
+ * la table des company de la base de donnée.
+ * @author vogel
+ *
+ */
 public class CompanyDaoImpl implements ICompanyDao{
 
 	private DaoFactory factory;
+	
 	private static final String SQL_ALL_COMPANIES =
 			"SELECT `id`,`name` FROM `company`";
 	private static final String SQL_ONE_COMPANY =
@@ -20,6 +27,10 @@ public class CompanyDaoImpl implements ICompanyDao{
 	private static final String SQL_COUNT_COMPANY =
 			"SELECT COUNT(`id`) AS `total` FROM `company`";
 	
+	/**
+	 * Constructor avec la dao en paramètre pour accéder à d'autres daos si nécessaire.
+	 * @param factory an object of type DaoFactory
+	 */
 	public CompanyDaoImpl(DaoFactory factory) {
 		super();
 		this.factory = factory;

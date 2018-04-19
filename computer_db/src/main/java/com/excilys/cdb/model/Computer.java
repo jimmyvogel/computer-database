@@ -3,6 +3,11 @@ package main.java.com.excilys.cdb.model;
 import java.time.LocalDateTime;
 import java.time.Month;
 
+/**
+ * Class représentant un computer avec un lien unidirectionnel vers la compagnie de manufactu.
+ * @author vogel
+ *
+ */
 public class Computer {
 	
 	public static final int TAILLE_MAX_NAME = 100;

@@ -6,8 +6,18 @@ import java.sql.SQLException;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 
+/**
+ * Classe gérant le mapping des résultats sql sous un format objets.
+ * @author vogel
+ *
+ */
 public class MapperDao {
 
+	/**
+	 * Mapping d'une ligne de la table company en un objet company
+	 * @param result an object du type ResultSet
+	 * @return an object du type Company
+	 */
 	public static Company mapCompany(ResultSet result) {
 		try {
 			//id and name
@@ -20,6 +30,11 @@ public class MapperDao {
 		return null;
 	}
 	
+	/**
+	 * Mapping d'une ligne de la table computer en un objet computer
+	 * @param result an object du type ResultSet
+	 * @return an object du type Computer
+	 */
 	public static Computer mapComputer(ResultSet result) {
 		Computer computer = new Computer();
 		
