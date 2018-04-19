@@ -2,14 +2,12 @@ package main.java.com.excilys.cdb.ui;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.service.ComputerServiceImpl;
+import main.java.com.excilys.cdb.persistence.Page;
 import main.java.com.excilys.cdb.service.IComputerService;
-import main.java.com.excilys.cdb.vue.Pageur;
 import main.java.com.excilys.cdb.vue.UITextes;
 import main.java.com.excilys.cdb.vue.UIView;
 
@@ -37,11 +35,6 @@ public class UIController {
 	private Update stateUpdate;
 	private Ajout stateAjout;
 	
-	//Les pageurs pour gérer la pagination
-	private Pageur<Computer> pageurComputer;
-	private Pageur<Company> pageurCompany;
-	private static final int LIMIT = 20;
-	
 	//Les pages sur lesquels on est actuellement
 	private int numPageComputer = 1;
 	private int numPageCompany = 1;
@@ -61,8 +54,6 @@ public class UIController {
 		stateUpdate = Update.NONE;
 		stateAjout = Ajout.NONE;
 		view = new UIView(UITextes.MENU_INITIAL);
-		pageurComputer = new Pageur<Computer>(LIMIT);
-		pageurCompany = new Pageur<Company>(LIMIT);
 	}
 	
 	/**
@@ -233,12 +224,10 @@ public class UIController {
 	private void switchPrincipal(int choix) {
 		switch(choix) {
 			case 1: 
-				pageurComputer.postDatas(service.getAllComputer(), 1);
-				view.setAffichage(pageurComputerShow(numPageComputer));
+				view.setAffichage(pageurComputerShow(1));
 				state = State.LIST_COMPUTER; break;
 			case 2: 
-				pageurCompany.postDatas(service.getAllCompany(), 1);
-				view.setAffichage(pageurCompanyShow(numPageCompany));
+				view.setAffichage(pageurCompanyShow(1));
 				state = State.LIST_COMPANY; break;
 			case 3: 
 				view.setAffichage("Choissisez l'id.");
@@ -427,15 +416,23 @@ public class UIController {
 	}
 	
 	private String pageurComputerShow(int page) {
-		return pageurComputer.display(page)
-				+"\n Page:" + page + "/" 
-				+ pageurComputer.getSize() + "\n"+UITextes.LIST_PAGINATION;
+		Page<Computer> pageComputer = service.getPageComputer(page);
+		int taille = (int) service.countComputers();
+		int limit = pageComputer.getLimit();
+		int endBloc = taille / limit;
+		if(taille % limit > 0)endBloc++;
+		return pageComputer.toString() +"\n Page:" + page + "/"  + endBloc 
+				+ "\n"+UITextes.LIST_PAGINATION;
 	}
 	
 	private String pageurCompanyShow(int page) {
-		return pageurCompany.display(page)
-				+"\n Page:" + page + "/" 
-				+ pageurCompany.getSize() + "\n"+UITextes.LIST_PAGINATION;
+		Page<Company> pageCompany = service.getPageCompany(page);
+		int taille = (int) service.countCompanies();
+		int limit = pageCompany.getLimit();
+		int endBloc = taille / limit;
+		if(taille % limit > 0)endBloc++;
+		return pageCompany.toString()+"\n Page:" + page + "/" + endBloc 
+				+ "\n"+UITextes.LIST_PAGINATION;
 	}
 	
 	/**

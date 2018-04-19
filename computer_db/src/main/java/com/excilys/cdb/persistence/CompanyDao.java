@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.java.com.excilys.cdb.model.Company;
+import main.java.com.excilys.cdb.model.Computer;
 
 /**
  * Classe d'implémentation d'une compagnieDao contenant les requêtes possibles sur
@@ -16,9 +17,10 @@ import main.java.com.excilys.cdb.model.Company;
  * @author vogel
  *
  */
-public class CompanyDaoImpl implements ICompanyDao{
+public class CompanyDao implements Dao<Company>{
 
 	private DaoFactory factory;
+	private static CompanyDao dao;
 	
 	private static final String SQL_ALL_COMPANIES =
 			"SELECT `id`,`name` FROM `company`";
@@ -26,18 +28,20 @@ public class CompanyDaoImpl implements ICompanyDao{
 			"SELECT `id`,`name` FROM `company` WHERE `id`=?";
 	private static final String SQL_COUNT_COMPANY =
 			"SELECT COUNT(`id`) AS `total` FROM `company`";
+	private static final String SQL_PAGE_COMPANY = 
+			SQL_ALL_COMPANIES + " LIMIT ? OFFSET ?"; 
+	private static final int LIMIT_DEFAULT = 10;
 	
-	/**
-	 * Constructor avec la dao en paramètre pour accéder à d'autres daos si nécessaire.
-	 * @param factory an object of type DaoFactory
-	 */
-	public CompanyDaoImpl(DaoFactory factory) {
-		super();
-		this.factory = factory;
+	public static CompanyDao getInstance(DaoFactory factory) {
+		if(dao==null) {
+			dao = new CompanyDao();
+			dao.factory = factory;
+		}
+		return dao;
 	}
-
+	
 	@Override
-	public List<Company> getCompanies() {
+	public List<Company> getAll() {
 		List<Company> companies = new ArrayList<Company>();
 		try {
 			Connection c = factory.getConnection();
@@ -50,7 +54,6 @@ public class CompanyDaoImpl implements ICompanyDao{
 	        }
 	        
 			stmt.close();
-			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -59,7 +62,7 @@ public class CompanyDaoImpl implements ICompanyDao{
 	}
 
 	@Override
-	public Company getCompanyById(long id) {
+	public Company getById(long id) {
 		Company company = null;
 		try {
 			Connection c = factory.getConnection();
@@ -74,7 +77,6 @@ public class CompanyDaoImpl implements ICompanyDao{
 	        }
 	        
 			stmt.close();
-			c.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -84,7 +86,7 @@ public class CompanyDaoImpl implements ICompanyDao{
 	}
 
 	@Override
-	public long getCompanyCount() {
+	public long getCount() {
 		long count = -1;
 		try {
 			Connection c = factory.getConnection();
@@ -94,13 +96,36 @@ public class CompanyDaoImpl implements ICompanyDao{
 	        if(result.next())
 	        	count = result.getLong("total");
 			stmt.close();
-			c.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 		return count;
+	}
+
+	@Override
+	public Page<Company> getPage(int numeroPage) {
+		Page<Company> page = new Page<Company>(LIMIT_DEFAULT);
+		try {
+			List<Company> companies= new ArrayList<Company>();
+			Connection c = factory.getConnection();
+			PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPANY);
+			stmt.setInt(1, page.getLimit());
+			stmt.setInt(2, page.offset(numeroPage));
+			
+	        ResultSet result = stmt.executeQuery();
+	        
+	        while(result.next()) {
+	        	companies.add(MapperDao.mapCompany(result));
+	        }
+	        page.charge(companies);
+			stmt.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return page;
 	}
 
 }

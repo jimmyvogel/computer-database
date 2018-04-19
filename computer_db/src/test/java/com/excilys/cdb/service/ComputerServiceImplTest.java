@@ -102,10 +102,6 @@ public class ComputerServiceImplTest {
 		long count = service.countComputers();
 		Assert.assertTrue(count==nbComputers+1);
 		
-		//Tester après mais nécessaire car pas de bdd pour les tests
-		boolean delete = service.deleteComputer(DaoFactory.sequenceComputer);
-		Assert.assertTrue(delete);
-		
 		//Invalid
 		create = service.createComputer(NAME_INVALID);
 		Assert.assertFalse(create);
@@ -124,10 +120,6 @@ public class ComputerServiceImplTest {
 		Assert.assertTrue(create);
 		long count = service.countComputers();
 		Assert.assertTrue(count==nbComputers+1);
-		
-		//nécessaire car pas de bdd pour les tests
-		boolean delete = service.deleteComputer(DaoFactory.sequenceComputer);
-		Assert.assertTrue(delete);
 		
 		//Trois Insertions invalid à cause des dates
 		create = service.createComputer(NAME_VALID, Computer.BEGIN_DATE_VALID, 

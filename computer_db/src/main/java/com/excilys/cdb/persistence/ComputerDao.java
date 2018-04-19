@@ -17,9 +17,11 @@ import main.java.com.excilys.cdb.model.Computer;
  * @author vogel
  *
  */
-public class ComputerDaoImpl implements IComputerDao{
+public class ComputerDao implements Dao<Computer>{
 
 	private DaoFactory factory;
+	private static ComputerDao dao;
+	
 	private static final String SQL_ALL_COMPUTERS = 
 			"SELECT company.id,company.name, computer.id, "
 					+ "computer.name, computer.introduced, computer.discontinued FROM company "
@@ -29,7 +31,7 @@ public class ComputerDaoImpl implements IComputerDao{
 					+ "computer.name, computer.introduced, computer.discontinued FROM company "
 					+ "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.id=?";
 	private static final String SQL_AJOUT_COMPUTER = 
-			"INSERT into `computer` VALUES (?,?,?,?,?)";
+			"INSERT into `computer` VALUES (?,?,?,?)";
 	private static final String SQL_UPDATE_COMPUTER =
 			"UPDATE computer SET name=?, introduced=?, discontinued=?, "
 			+ "company_id=? WHERE id=? ";
@@ -37,18 +39,21 @@ public class ComputerDaoImpl implements IComputerDao{
 			"DELETE FROM `computer` WHERE `id`=?";
 	private static final String SQL_COUNT_COMPUTER = 
 			"SELECT COUNT(`id`) AS `total` FROM `computer`";
+	private static final String SQL_PAGE_COMPUTER = 
+			SQL_ALL_COMPUTERS + " LIMIT ? OFFSET ?"; 
+	private static final int LIMIT_DEFAULT = 10;
 	
-	/**
-	 * Constructor avec la dao en paramètre pour accéder à d'autres daos si nécessaire.
-	 * @param factory an object of type DaoFactory
-	 */
-	public ComputerDaoImpl(DaoFactory factory) {
-		super();
-		this.factory = factory;
+	
+	public static ComputerDao getInstance(DaoFactory daoFactory) {
+		if(dao==null) {
+			dao = new ComputerDao();
+			dao.factory = daoFactory;
+		}
+		return dao;
 	}
 
 	@Override
-	public List<Computer> getComputers() {
+	public List<Computer> getAll() {
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
 			Connection c = factory.getConnection();
@@ -62,8 +67,6 @@ public class ComputerDaoImpl implements IComputerDao{
 	        }
 	        
 			stmt.close();
-			c.close();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -72,7 +75,7 @@ public class ComputerDaoImpl implements IComputerDao{
 	}
 	
 	@Override
-	public Computer getComputerById(long id) {
+	public Computer getById(long id) {
 		Computer computer = null;
 		try {
 			Connection c = factory.getConnection();
@@ -85,8 +88,6 @@ public class ComputerDaoImpl implements IComputerDao{
 	        	computer = MapperDao.mapComputer(result);
 	        
 			stmt.close();
-			c.close();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -94,37 +95,31 @@ public class ComputerDaoImpl implements IComputerDao{
 		return computer;
 	}
 
-	@Override
-	public boolean createComputer(Computer computer) {
+	public boolean create(Computer computer) {
 		int result = 0;
 		try {
 			Connection c = factory.getConnection();
 			PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER);
 			
-			//Selection de l'identifiant supérieur à la séquence dans DaoFactory
-			stmt.setLong(1, DaoFactory.sequenceComputer+1);
-			
-			stmt.setString(2, computer.getName());
+			stmt.setString(1, computer.getName());
 			if(computer.getIntroduced()!=null)
-				stmt.setTimestamp(3, Timestamp.valueOf(computer.getIntroduced()));
+				stmt.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
+			else
+				stmt.setTimestamp(2, null);
+			
+			if(computer.getDiscontinued()!=null)
+				stmt.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued()));
 			else
 				stmt.setTimestamp(3, null);
 			
-			if(computer.getDiscontinued()!=null)
-				stmt.setTimestamp(4, Timestamp.valueOf(computer.getDiscontinued()));
-			else
-				stmt.setTimestamp(4, null);
-			
 			if(computer.getCompany()!=null)
-				stmt.setLong(5, computer.getCompany().getId());
+				stmt.setLong(4, computer.getCompany().getId());
 			else
-				stmt.setString(5, null);
+				stmt.setString(4, null);
 			
 	        result = stmt.executeUpdate();
-	        DaoFactory.sequenceComputer++;
 	        
 			stmt.close();
-			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -132,11 +127,10 @@ public class ComputerDaoImpl implements IComputerDao{
 		return (result>0)?true:false;
 	}
 
-	@Override
-	public boolean updateComputer(Computer computer) {
+	public boolean update(Computer computer) {
 		int result = 0;
 		try {
-			Computer before = this.getComputerById(computer.getId());
+			Computer before = this.getById(computer.getId());
 			
 			Connection c = factory.getConnection();
 			PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER);
@@ -162,7 +156,6 @@ public class ComputerDaoImpl implements IComputerDao{
 	        result = stmt.executeUpdate();
 	        
 			stmt.close();
-			c.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -171,7 +164,6 @@ public class ComputerDaoImpl implements IComputerDao{
 		return (result>0)?true:false;
 	}
 
-	@Override
 	public boolean deleteComputer(Computer computer) {
 		int result = 0;
 		try {
@@ -182,7 +174,6 @@ public class ComputerDaoImpl implements IComputerDao{
 	        result = stmt.executeUpdate();
 	        
 			stmt.close();
-			c.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -192,7 +183,7 @@ public class ComputerDaoImpl implements IComputerDao{
 	}
 
 	@Override
-	public long getComputerCount() {
+	public long getCount() {
 		long count = -1;
 		try {
 			Connection c = factory.getConnection();
@@ -201,13 +192,37 @@ public class ComputerDaoImpl implements IComputerDao{
 	        if(result.next())
 	        	count = result.getLong("total");
 			stmt.close();
-			c.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 		return count;
+	}
+
+	@Override
+	public Page<Computer> getPage(int numeroPage) {
+		Page<Computer> page = new Page<Computer>(LIMIT_DEFAULT);
+		try {
+			List<Computer> computers = new ArrayList<Computer>();
+			Connection c = factory.getConnection();
+			PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER);
+			stmt.setInt(1, page.getLimit());
+			stmt.setInt(2, page.offset(numeroPage));
+			
+	        ResultSet result = stmt.executeQuery();
+	        
+	        while(result.next()) {
+	        	computers.add(MapperDao.mapComputer(result));
+	        }
+	        page.charge(computers);
+	        
+			stmt.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return page;
 	}
 
 }

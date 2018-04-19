@@ -5,9 +5,10 @@ import java.util.List;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.persistence.CompanyDaoImpl;
-import main.java.com.excilys.cdb.persistence.ComputerDaoImpl;
+import main.java.com.excilys.cdb.persistence.CompanyDao;
+import main.java.com.excilys.cdb.persistence.ComputerDao;
 import main.java.com.excilys.cdb.persistence.DaoFactory;
+import main.java.com.excilys.cdb.persistence.Page;
 import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
@@ -18,36 +19,49 @@ import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationExceptio
  */
 public class ComputerServiceImpl implements IComputerService{
 
-	private ComputerDaoImpl computerDao;
-	private CompanyDaoImpl companyDao;
+	private ComputerDao computerDao;
+	private CompanyDao companyDao;
 	
-	/**
-	 * Constructor ne nécessitant pas d'arguments.
-	 */
-	public ComputerServiceImpl() throws DAOConfigurationException{
-		DaoFactory factory = DaoFactory.getInstance();
-		computerDao = (ComputerDaoImpl) factory.getComputerDao();
-		companyDao = (CompanyDaoImpl) factory.getCompanyDao();
+	private static ComputerServiceImpl service;
+
+	public static ComputerServiceImpl getInstance() throws DAOConfigurationException{
+		if(service == null) {
+			service = new ComputerServiceImpl();
+			DaoFactory factory = DaoFactory.getInstance();
+			service.computerDao = (ComputerDao) factory.getDao(DaoFactory.DaoType.COMPUTER);
+			service.companyDao = (CompanyDao) factory.getDao(DaoFactory.DaoType.COMPANY);
+		}
+		return service;
 	}
 
 	@Override
 	public List<Computer> getAllComputer() {
-		return computerDao.getComputers();
+		return computerDao.getAll();
 	}
 
 	@Override
 	public List<Company> getAllCompany() {
-		return companyDao.getCompanies();
+		return companyDao.getAll();
+	}
+	
+	@Override
+	public Page<Company> getPageCompany(int page) {
+		return companyDao.getPage(page);
+	}
+
+	@Override
+	public Page<Computer> getPageComputer(int page) {
+		return computerDao.getPage(page);
 	}
 
 	@Override
 	public Company getCompany(long id) {
-		return companyDao.getCompanyById(id);
+		return companyDao.getById(id);
 	}
 
 	@Override
 	public Computer getComputer(long id) {
-		return computerDao.getComputerById(id);
+		return computerDao.getById(id);
 	}
 
 	@Override
@@ -58,7 +72,7 @@ public class ComputerServiceImpl implements IComputerService{
 		String s = validTextProcess(name);
 		Computer c = new Computer(s);
 		
-		return computerDao.createComputer(c);
+		return computerDao.create(c);
 	}
 
 	@Override
@@ -86,10 +100,10 @@ public class ComputerServiceImpl implements IComputerService{
 		}
 		
 		Company inter;
-		if(companyId > 0 && (inter = companyDao.getCompanyById(companyId))!=null)
+		if(companyId > 0 && (inter = companyDao.getById(companyId))!=null)
 			c.setCompany(inter);
 		
-		return computerDao.createComputer(c);
+		return computerDao.create(c);
 	}
 
 	@Override
@@ -97,11 +111,11 @@ public class ComputerServiceImpl implements IComputerService{
 		if(id < 1)
 			return false;
 		
-		Computer c = computerDao.getComputerById(id);
+		Computer c = computerDao.getById(id);
 		if(c == null)
 			return false;
 		
-		return computerDao.deleteComputer(c);
+		return ((ComputerDao)computerDao).deleteComputer(c);
 	}
 
 	@Override
@@ -111,13 +125,13 @@ public class ComputerServiceImpl implements IComputerService{
 		
 		String s = validTextProcess(name);
 		
-		Computer c = computerDao.getComputerById(id);
+		Computer c = computerDao.getById(id);
 		if(c == null)
 			return false;
 		
 		c.setName(s);
 		
-		return computerDao.updateComputer(c);
+		return computerDao.update(c);
 	}
 
 	@Override
@@ -135,7 +149,7 @@ public class ComputerServiceImpl implements IComputerService{
 
 		
 		//Recuperation initial.
-		Computer initial = computerDao.getComputerById(id);
+		Computer initial = computerDao.getById(id);
 		
 		if(initial == null) return false;
 		
@@ -175,22 +189,22 @@ public class ComputerServiceImpl implements IComputerService{
 		
 		//Gestion différente selon si on a déjà une company lié ou non.
 		if(companyId > 0) {
-			Company comp = companyDao.getCompanyById(companyId);
+			Company comp = companyDao.getById(companyId);
 			if(comp==null)return false;
 			nouveau.setCompany(comp);
 		}
 		
-		return computerDao.updateComputer(nouveau);
+		return computerDao.update(nouveau);
 	}
 	
 	@Override
 	public long countComputers() {
-		return computerDao.getComputerCount();
+		return computerDao.getCount();
 	}
 	
 	@Override
 	public long countCompanies() {
-		return companyDao.getCompanyCount();
+		return companyDao.getCount();
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
+import main.java.com.excilys.cdb.persistence.Page;
 
 /**
  * Interface représentant les méthodes du service de gestion des computers nécessaires.
@@ -24,6 +25,10 @@ public interface IComputerService {
 	 * @return un objet de type List
 	 */
 	public List<Company> getAllCompany();
+	
+	public Page<Company> getPageCompany(int page);
+	
+	public Page<Computer> getPageComputer(int page);
 	
 	/**
 	 * Optenir une compagnie.

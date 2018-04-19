@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			IComputerService service = new ComputerServiceImpl();
+			IComputerService service = ComputerServiceImpl.getInstance();
 			UIController controller = new UIController(service);
 			while(true) {
 				controller.read();
