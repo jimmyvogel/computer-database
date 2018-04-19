@@ -84,179 +84,44 @@ public class UIController {
 			
 			//Si on est pas sur un retour pour l'ajout ou l'update, rafficher le menu principal.
 			if(state==State.RETOUR || state==State.LIST_COMPANY || state==State.LIST_COMPUTER  
-					|| state==State.DELETE || state==State.SHOW)
+					|| state==State.DELETE || state==State.SHOW 
+					|| stateAjout==Ajout.NONE || stateUpdate==Update.NONE)
 				view.setAffichage(UITextes.MENU_INITIAL);
 			
-			//Effetuer le retour demandé.
+			//AUTOMATE RETOUR
 			actionRetour();
+			
 		}else {
 			
-			//Variable intermédiaire.
 			long value;
-			LocalDateTime timeInter;
-			
 			//Selon l'état de l'automate.
 			switch(state) {
 			
-				//Si on est sur le menu initial.
+				//Gestion des choix sur le menu initial.
 				case INITIAL:
-					
-					//Gestion des choix sur le menu initial.
 					int choix = Integer.valueOf(ligne);
-					switch(choix) {
-						case 1: 
-							pageurComputer.postDatas(service.getAllComputer(), 1);
-							view.setAffichage(pageurComputer.display(numPageComputer)
-									+"\n Page:" + numPageComputer + "/" 
-									+ pageurComputer.getSize() + "\n"+UITextes.LIST_PAGINATION);
-							
-							state = State.LIST_COMPUTER; break;
-						case 2: 
-							pageurCompany.postDatas(service.getAllCompany(), 1);
-							view.setAffichage(pageurCompany.display(numPageCompany)
-									+"\n Page:" + numPageCompany + "/" 
-									+ pageurCompany.getSize() + "\n"+UITextes.LIST_PAGINATION);
-							state = State.LIST_COMPANY; break;
-						case 3: 
-							view.setAffichage("Choissisez l'id.");
-							state = State.SHOW; break;
-						case 4: 
-							state = State.FORM_AJOUT; 
-							view.setAffichage(UITextes.AJOUT_NAME);
-							break;
-						case 5: 
-							state = State.FORM_UPDATE; 
-							view.setAffichage(UITextes.UPDATE_ID);
-							break;
-						case 6: 
-							view.setAffichage("Choissisez l'id:");
-							state = State.DELETE;
-							break;
-						default:break;
-					}
-					break;
+					this.switchPrincipal(choix); break;
 					
 				//Gestion des choix si on est dans le formulaire d'ajout.
 				case FORM_AJOUT:
-					switch(stateAjout) {
-						case NAME: 
-							inter = new Computer();
-							inter.setName(ligne); 
-							view.setAffichage(UITextes.AJOUT_INTRODUCED);
-							break;
-						case INTRODUCED: 
-							if(!ligne.equals("no")) {
-								timeInter = traitementDate(ligne);
-								if(timeInter == null) {
-									view.setAffichage("Error"+UITextes.AJOUT_INTRODUCED);
-									stateAjout = Ajout.NAME;
-									break;
-								}
-								inter.setIntroduced(timeInter);
-							}
-							view.setAffichage(UITextes.AJOUT_DISCONTINUED);
-							break;
-						case DISCONTINUED: 
-							if(!ligne.equals("no")) {
-								timeInter = traitementDate(ligne);
-								if(timeInter == null) {
-									view.setAffichage("Error"+UITextes.AJOUT_DISCONTINUED);
-									stateAjout = Ajout.INTRODUCED;
-									break;
-								}
-								inter.setDiscontinued(timeInter); 
-							}
-							view.setAffichage(UITextes.AJOUT_COMPANY_ID);
-							break;
-						case COMPANY_ID:
-							if(!ligne.equals("no")) {
-								Company c = service.getCompany(Integer.valueOf(ligne));
-								inter.setCompany(c); 
-							}
-							view.setAffichage(UITextes.VALIDATION);
-							break;
-						case VALIDATE: 
-							if(!ligne.equals("yes"))
-								view.setAffichage(UITextes.MENU_INITIAL);
-							else
-								view.setAffichage(ajouterComputer()+"\n"+UITextes.MENU_INITIAL);
-							break;
-						default:break;
-					}break;
+					this.switchFormulaireAjout(ligne);break;
 					
 				//Gestion des choix si on est dans le formulaire d'update.
 				case FORM_UPDATE: 
-					switch(stateUpdate) {
-						case ID:
-							value = Long.valueOf(ligne);
-							if(service.getComputer(value)!=null) {
-								inter = new Computer();
-								inter.setId(value);
-								view.setAffichage(UITextes.UPDATE_NAME);
-							}else {
-								//Quitte si erreur;
-								stateUpdate = Update.VALIDATE;
-							}
-							break;
-						case NAME: 
-							if(!ligne.equals("no"))
-								inter.setName(ligne); 
-							view.setAffichage(UITextes.UPDATE_INTRODUCED);break;
-						case INTRODUCED: 
-							if(!ligne.equals("no")) {
-								timeInter = traitementDate(ligne);
-								if(timeInter == null) {
-									view.setAffichage("Error"+UITextes.UPDATE_INTRODUCED);
-									stateUpdate = Update.NAME;
-									break;
-								}
-								inter.setIntroduced(traitementDate(ligne));
-							}
-							view.setAffichage(UITextes.UPDATE_DISCONTINUED);
-							break;
-						case DISCONTINUED: 
-							if(!ligne.equals("no")) {
-								timeInter = traitementDate(ligne);
-								if(timeInter != null) {
-									view.setAffichage("Error"+UITextes.UPDATE_DISCONTINUED);
-									stateUpdate = Update.INTRODUCED;
-									break;
-								}
-								inter.setDiscontinued(traitementDate(ligne));
-							}
-							view.setAffichage(UITextes.UPDATE_COMPANY_ID);break;
-						case COMPANY_ID: 
-							if(!ligne.equals("no")) {
-								Company c = service.getCompany(Integer.valueOf(ligne));
-								inter.setCompany(c); 
-							}
-							view.setAffichage(UITextes.VALIDATION);
-							break;
-						case VALIDATE: 
-							if(!ligne.equals("yes"))
-								view.setAffichage(UITextes.MENU_INITIAL);
-							else
-								view.setAffichage(updateComputer()+"\n"+UITextes.MENU_INITIAL);
-							break;
-						default:break;
-					}break;
+					this.switchFormulaireUpdate(ligne);break;
 					
 				//Gestion des choix si on est dans l'affichage des compagnies.
 				case LIST_COMPANY:
 					value = Long.valueOf(ligne);
 					numPageCompany = (int)value;
-					view.setAffichage(pageurCompany.display(numPageCompany)
-							+"\n Page:" + numPageCompany + "/" 
-							+ pageurCompany.getSize() + "\n"+UITextes.LIST_PAGINATION);
+					view.setAffichage(pageurCompanyShow(numPageCompany));
 					break;
 					
 				//Gestion des choix si on est dans l'affichage des computers.
 				case LIST_COMPUTER:
 					value = Long.valueOf(ligne);
 					numPageComputer = (int)value;
-					view.setAffichage(pageurComputer.display(numPageComputer)
-							+"\n Page:" + numPageComputer + "/" 
-							+ pageurComputer.getSize() + "\n"+UITextes.LIST_PAGINATION);
+					view.setAffichage(pageurComputerShow(numPageComputer));
 					break;
 					
 				//Gestion des choix si on est dans l'affichage des détails d'un computer 
@@ -272,11 +137,16 @@ public class UIController {
 					break;
 				default: break;
 			}
+			
+			//AUTOMATE AVANCE
 			actionAvance();
 		}
+		
+		//Si l'état est différent du menu initial on rajoute la possibilité du retour.
 		if(state != State.INITIAL) {
 			view.setAffichage(view.getAffichage()+"["+UITextes.RETOUR+"]");
 		}
+		
 	}
 	
 	/**
@@ -356,6 +226,154 @@ public class UIController {
 	}
 	
 	/**
+	 * Gestion du switch sur le menu initial pour l'interpretation
+	 * @param choix choix sous la forme d'un int.
+	 */
+	private void switchPrincipal(int choix) {
+		switch(choix) {
+			case 1: 
+				pageurComputer.postDatas(service.getAllComputer(), 1);
+				view.setAffichage(pageurComputerShow(numPageComputer));
+				state = State.LIST_COMPUTER; break;
+			case 2: 
+				pageurCompany.postDatas(service.getAllCompany(), 1);
+				view.setAffichage(pageurCompanyShow(numPageCompany));
+				state = State.LIST_COMPANY; break;
+			case 3: 
+				view.setAffichage("Choissisez l'id.");
+				state = State.SHOW; break;
+			case 4: 
+				state = State.FORM_AJOUT; 
+				view.setAffichage(UITextes.AJOUT_NAME);
+				break;
+			case 5: 
+				state = State.FORM_UPDATE; 
+				view.setAffichage(UITextes.UPDATE_ID);
+				break;
+			case 6: 
+				view.setAffichage("Choissisez l'id:");
+				state = State.DELETE;
+				break;
+			default:break;
+		}
+	}
+	
+	/**
+	 * Gestion du switch sur le formulaire d'ajout pour l'interpretation
+	 * @param ligne input de l'utilisateur
+	 */
+	private void switchFormulaireAjout(String ligne) {
+		LocalDateTime timeInter;
+		switch(stateAjout) {
+			case NAME: 
+				inter = new Computer();
+				inter.setName(ligne); 
+				view.setAffichage(UITextes.AJOUT_INTRODUCED);
+				break;
+			case INTRODUCED: 
+				if(!ligne.equals("no")) {
+					timeInter = traitementDate(ligne);
+					if(timeInter == null) {
+						view.setAffichage("Error"+UITextes.AJOUT_INTRODUCED);
+						stateAjout = Ajout.NAME;
+						break;
+					}
+					inter.setIntroduced(timeInter);
+				}
+				view.setAffichage(UITextes.AJOUT_DISCONTINUED);
+				break;
+			case DISCONTINUED: 
+				if(!ligne.equals("no")) {
+					timeInter = traitementDate(ligne);
+					if(timeInter == null) {
+						view.setAffichage("Error"+UITextes.AJOUT_DISCONTINUED);
+						stateAjout = Ajout.INTRODUCED;
+						break;
+					}
+					inter.setDiscontinued(timeInter); 
+				}
+				view.setAffichage(UITextes.AJOUT_COMPANY_ID);
+				break;
+			case COMPANY_ID:
+				if(!ligne.equals("no")) {
+					Company c = service.getCompany(Integer.valueOf(ligne));
+					inter.setCompany(c); 
+				}
+				view.setAffichage(UITextes.VALIDATION);
+				break;
+			case VALIDATE: 
+				if(!ligne.equals("yes"))
+					view.setAffichage(UITextes.MENU_INITIAL);
+				else
+					view.setAffichage(ajouterComputer()+"\n"+UITextes.MENU_INITIAL);
+				break;
+			default:break;
+		}
+	}
+	
+	/**
+	 * Gestion du formulaire d'update pour l'interpretation
+	 * @param ligne input de l'utilisateur
+	 */
+	private void switchFormulaireUpdate(String ligne) {
+		long value;
+		LocalDateTime timeInter;
+		switch(stateUpdate) {
+			case ID:
+				value = Long.valueOf(ligne);
+				if(service.getComputer(value)!=null) {
+					inter = new Computer();
+					inter.setId(value);
+					view.setAffichage(UITextes.UPDATE_NAME);
+				}else {
+					//Quitte si erreur;
+					stateUpdate = Update.VALIDATE;
+				}
+				break;
+			case NAME: 
+				if(!ligne.equals("no"))
+					inter.setName(ligne); 
+				view.setAffichage(UITextes.UPDATE_INTRODUCED);break;
+			case INTRODUCED: 
+				if(!ligne.equals("no")) {
+					timeInter = traitementDate(ligne);
+					if(timeInter == null) {
+						view.setAffichage("Error"+UITextes.UPDATE_INTRODUCED);
+						stateUpdate = Update.NAME;
+						break;
+					}
+					inter.setIntroduced(traitementDate(ligne));
+				}
+				view.setAffichage(UITextes.UPDATE_DISCONTINUED);
+				break;
+			case DISCONTINUED: 
+				if(!ligne.equals("no")) {
+					timeInter = traitementDate(ligne);
+					if(timeInter != null) {
+						view.setAffichage("Error"+UITextes.UPDATE_DISCONTINUED);
+						stateUpdate = Update.INTRODUCED;
+						break;
+					}
+					inter.setDiscontinued(traitementDate(ligne));
+				}
+				view.setAffichage(UITextes.UPDATE_COMPANY_ID);break;
+			case COMPANY_ID: 
+				if(!ligne.equals("no")) {
+					Company c = service.getCompany(Integer.valueOf(ligne));
+					inter.setCompany(c); 
+				}
+				view.setAffichage(UITextes.VALIDATION);
+				break;
+			case VALIDATE: 
+				if(!ligne.equals("yes"))
+					view.setAffichage(UITextes.MENU_INITIAL);
+				else
+					view.setAffichage(updateComputer()+"\n"+UITextes.MENU_INITIAL);
+				break;
+			default:break;
+		}
+	}
+	/**
 	 * Ajouter un computer dans la bdd.
 	 * @return l'affichage du résultat dans un string.
 	 */
@@ -405,6 +423,18 @@ public class UIController {
 			return "Update réussit\n";
 		
 		return "Update fail\n";
+	}
+	
+	private String pageurComputerShow(int page) {
+		return pageurComputer.display(page)
+				+"\n Page:" + page + "/" 
+				+ pageurComputer.getSize() + "\n"+UITextes.LIST_PAGINATION;
+	}
+	
+	private String pageurCompanyShow(int page) {
+		return pageurCompany.display(page)
+				+"\n Page:" + page + "/" 
+				+ pageurCompany.getSize() + "\n"+UITextes.LIST_PAGINATION;
 	}
 	
 	/**
