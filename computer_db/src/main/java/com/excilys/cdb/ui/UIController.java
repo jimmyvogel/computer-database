@@ -21,7 +21,7 @@ import main.java.com.excilys.cdb.vue.UIView;
 public class UIController {
 
 	//Le service de gestion des computers et des compagnies.
-	private IComputerService service = new ComputerServiceImpl();
+	private IComputerService service;
 	
 	//Les énumérations permettant la gestion comme un automate du processus.
 	private enum State { INITIAL, LIST_COMPANY, LIST_COMPUTER, 
@@ -55,7 +55,8 @@ public class UIController {
 	/**
 	 * Constructor sans arguments initiant les variables d'états, la vue et les pageurs.
 	 */
-	public UIController() {
+	public UIController(IComputerService computerService) {
+		this.service = computerService;
 		state = State.INITIAL;
 		stateUpdate = Update.NONE;
 		stateAjout = Ajout.NONE;

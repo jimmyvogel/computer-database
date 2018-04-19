@@ -1,11 +1,15 @@
 package main.java.com.excilys.cdb.persistence;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+
+import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
  * Factory pour la création des daos gérant les requêtes sur la base de donnée.
@@ -15,10 +19,16 @@ import java.util.Properties;
 public class DaoFactory{
 
 	//Les properties en dur pour l'instant //TODO
-	private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db-test";
-	private static final String USERNAME = "admincdb";
-	private static final String PASSWORD = "qwerty1234";
-	private static final String MAX_POOL = "250"; // set your own limit
+	
+	private static String url;
+	private static String username;
+	private static String password;
+	
+	//Variables du fichier properties
+	private static final String FICHIER_PROPERTIES = "main/ressources/dao.properties";
+	private static final String PROPERTY_URL = "url";
+	private static final String PROPERTY_NOM_UTILISATEUR = "username";
+	private static final String PROPERTY_MOT_DE_PASSE = "password";
 	
 	//Variables pour récupérer les id max à l'initialisation pour gérer
 	//l'auto-incrémentation en manuelle.
@@ -33,7 +43,10 @@ public class DaoFactory{
 	/**
 	 * Constructor daofactory
 	 */
-	public DaoFactory() {
+	public DaoFactory(String url, String username, String password) {
+		DaoFactory.url = url;
+		DaoFactory.username = username;
+		DaoFactory.password = password;
 		if(!sequenceInitialized) {
 			sequenceInitialized = true;
 			sequenceComputer = this.maxIdComputer();
@@ -92,24 +105,44 @@ public class DaoFactory{
 	}
 	
 	/**
-	 * Retourn les propriétés de la connection.
-	 * @return an object of class Properties
+	 * Retourne une instance de DaoFactory.
+	 * @return un objet DaoFactory
+	 * @throws DAOConfigurationException envoie une erreur de config si exception.
 	 */
-	public static Properties getProperties() {
+	public static DaoFactory getInstance() throws DAOConfigurationException {
 		Properties properties = new Properties();
-        properties.setProperty("user", USERNAME);
-        properties.setProperty("password", PASSWORD);
-        properties.setProperty("MaxPooledStatements", MAX_POOL);
-	    return properties;
-	}
-	
+	    String url;
+	    String nomUtilisateur;
+	    String motDePasse;
+	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+	    InputStream fichierProperties = classLoader.getResourceAsStream( FICHIER_PROPERTIES );
+	    
+	    if ( fichierProperties == null ) {
+	        throw new DAOConfigurationException(
+	        		"Le fichier properties " + FICHIER_PROPERTIES + " est introuvable." );
+	    }
+	    
+	    try {
+	        properties.load( fichierProperties );
+	        url = properties.getProperty( PROPERTY_URL );
+	        nomUtilisateur = properties.getProperty( PROPERTY_NOM_UTILISATEUR );
+	        motDePasse = properties.getProperty( PROPERTY_MOT_DE_PASSE );
+	        
+	    } catch ( IOException e ) {
+	        throw new DAOConfigurationException(
+	        		"Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e );
+	    }
+	    DaoFactory instance = new DaoFactory( url, nomUtilisateur, motDePasse );
+	    return instance;
+    
+}
 	/**
 	 * Retourne une connection à la base de donnée.
 	 * @return an object of class Connection
 	 * @throws SQLException Retourne une erreur si la connection à la bdd fail.
 	 */
 	public Connection getConnection() throws SQLException{
-		Connection connection = DriverManager.getConnection(URL, getProperties());
+		Connection connection = DriverManager.getConnection(url, username, password);
 		return connection;
 	}
 	

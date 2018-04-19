@@ -11,12 +11,13 @@ import org.junit.Test;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.persistence.DaoFactory;
+import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import main.java.com.excilys.cdb.service.ComputerServiceImpl;
 import main.java.com.excilys.cdb.service.IComputerService;
 
 public class ComputerServiceImplTest {
 
-	private IComputerService service = new ComputerServiceImpl();
+	private IComputerService service;
 	private long nbComputers;
 	private long nbCompany;
 	
@@ -46,7 +47,8 @@ public class ComputerServiceImplTest {
 	private Computer computerValid;
 	
     @Before
-    public void initialisation() {
+    public void initialisation() throws DAOConfigurationException {
+    	service = new ComputerServiceImpl();
     	nbComputers = service.countComputers();
     	nbCompany = service.countCompanies();
     	

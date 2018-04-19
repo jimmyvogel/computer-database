@@ -135,6 +135,11 @@ public class Computer {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param ldt
+	 * @return
+	 */
 	public static boolean validDate(LocalDateTime ldt) {
 		if(ldt.isAfter(Computer.BEGIN_DATE_VALID)
 				&& ldt.isBefore(Computer.END_DATE_VALID))
@@ -142,6 +147,11 @@ public class Computer {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static boolean validName(String name) {
 		if(name.length() > TAILLE_MAX_NAME)
 			return false;

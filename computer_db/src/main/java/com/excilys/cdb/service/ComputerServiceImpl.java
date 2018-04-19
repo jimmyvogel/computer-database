@@ -8,6 +8,7 @@ import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.persistence.CompanyDaoImpl;
 import main.java.com.excilys.cdb.persistence.ComputerDaoImpl;
 import main.java.com.excilys.cdb.persistence.DaoFactory;
+import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer
@@ -23,8 +24,8 @@ public class ComputerServiceImpl implements IComputerService{
 	/**
 	 * Constructor ne nécessitant pas d'arguments.
 	 */
-	public ComputerServiceImpl() {
-		DaoFactory factory = new DaoFactory();
+	public ComputerServiceImpl() throws DAOConfigurationException{
+		DaoFactory factory = DaoFactory.getInstance();
 		computerDao = (ComputerDaoImpl) factory.getComputerDao();
 		companyDao = (CompanyDaoImpl) factory.getCompanyDao();
 	}
