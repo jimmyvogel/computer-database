@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
@@ -49,6 +53,9 @@ public class UIController {
 	 * Constructor sans arguments initiant les variables d'états, la vue et les pageurs.
 	 */
 	public UIController(IComputerService computerService) {
+		Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
+		logger.info("Création d'un objet de type UIController");
+		
 		this.service = computerService;
 		state = State.INITIAL;
 		stateUpdate = Update.NONE;
@@ -373,7 +380,7 @@ public class UIController {
 			id= inter.getCompany().getId();
 		boolean ajout = 
 				service.createComputer(inter.getName(), inter.getIntroduced(), 
-						inter.getDiscontinued(), id);
+						inter.getDiscontinued(), id)!=-1;
 		
 		if(ajout)
 			return "Ajout réussit\n";

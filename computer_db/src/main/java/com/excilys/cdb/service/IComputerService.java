@@ -47,9 +47,9 @@ public interface IComputerService {
 	/**
 	 * Sauvegarder un nouveau computer avec juste un nom spécifié.
 	 * @param name le nom du nouveau computer
-	 * @return un boolean pour spécifié la réussite ou non de la sauvegarde.
+	 * @return l'id de l'objet pour spécifié la réussite ou -1.
 	 */
-	public boolean createComputer(String name);
+	public long createComputer(String name);
 	
 	/**
 	 * Sauvegarder un nouveau computer avec tous les champs spécifiés
@@ -57,9 +57,9 @@ public interface IComputerService {
 	 * @param introduced la date de type LocalDateTime d'introduction
 	 * @param discontinued la date de type LocalDateTime d'arrêt
 	 * @param companyId l'id de la compagnie de manufacture du computer
-	 * @return un boolean pour spécifié la réussite ou non de la sauvegarde.
+	 * @return l'id de l'objet pour spécifié la réussite ou -1.
 	 */
-	public boolean createComputer(String name, LocalDateTime introduced, 
+	public long createComputer(String name, LocalDateTime introduced, 
 			LocalDateTime discontinued, long companyId);
 	
 	/**

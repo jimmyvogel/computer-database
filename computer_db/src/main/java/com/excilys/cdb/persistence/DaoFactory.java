@@ -7,6 +7,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
@@ -36,6 +40,9 @@ public class DaoFactory{
 	public static enum DaoType { COMPUTER, COMPANY };
 	
 	private static void initializeFactory() throws DAOConfigurationException{
+	    Logger logger = LoggerFactory.getLogger(DaoFactory.class);
+	    logger.info("Initialisation du singleton dao factory");
+
 		String url;
 		String username;
 		String password;

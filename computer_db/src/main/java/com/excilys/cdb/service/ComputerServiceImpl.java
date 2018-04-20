@@ -3,6 +3,9 @@ package com.excilys.cdb.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CompanyDao;
@@ -26,6 +29,9 @@ public class ComputerServiceImpl implements IComputerService{
 
 	public static ComputerServiceImpl getInstance() throws DAOConfigurationException{
 		if(service == null) {
+			Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
+			logger.info("Initialisation du singleton computer service");
+
 			service = new ComputerServiceImpl();
 			DaoFactory factory = DaoFactory.getInstance();
 			service.computerDao = (ComputerDao) factory.getDao(DaoFactory.DaoType.COMPUTER);
@@ -58,9 +64,9 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.getById(id);
 	}
 
-	public boolean createComputer(String name) {
-		if(name == null) return false;
-		if(!Computer.validName(name))return false;
+	public long createComputer(String name) {
+		if(name == null) return -1;
+		if(!Computer.validName(name))return -1;
 		
 		String s = validTextProcess(name);
 		Computer c = new Computer(s);
@@ -68,27 +74,27 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.create(c);
 	}
 
-	public boolean createComputer(String name, LocalDateTime introduced, 
+	public long createComputer(String name, LocalDateTime introduced, 
 			LocalDateTime discontinued, long companyId) {
 		if(name==null)
-			return false;
-		if(!Computer.validName(name))return false;
+			return -1;
+		if(!Computer.validName(name))return -1;
 		
 		String s = validTextProcess(name);
 		Computer c = new Computer(s);
 		
 		//Verification validité date.
 		if(introduced!=null && !Computer.validDate(introduced))
-			return false;
+			return -1;
 		else
 			c.setIntroduced(introduced);
 		if(discontinued!=null && !Computer.validDate(discontinued))
-			return false;
+			return -1;
 		else
 			c.setDiscontinued(discontinued);
 		
 		if(introduced!=null && discontinued != null) {
-			if(introduced.isAfter(discontinued))return false;
+			if(introduced.isAfter(discontinued))return -1;
 		}
 		
 		Company inter;
@@ -102,11 +108,7 @@ public class ComputerServiceImpl implements IComputerService{
 		if(id < 1)
 			return false;
 		
-		Computer c = computerDao.getById(id);
-		if(c == null)
-			return false;
-		
-		return ((ComputerDao)computerDao).deleteComputer(c);
+		return computerDao.deleteComputer(id);
 	}
 
 	public boolean updateComputer(long id, String name) {

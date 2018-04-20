@@ -8,11 +8,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
 
 /**
- * Classe d'implémentation d'une compagnieDao contenant les requêtes possibles sur
+ * Classe contenant les requêtes possibles sur
  * la table des company de la base de donnée.
  * @author vogel
  *
@@ -34,6 +36,10 @@ public class CompanyDao implements Dao<Company>{
 	
 	public static CompanyDao getInstance(DaoFactory factory) {
 		if(dao==null) {
+			
+			Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+			logger.info("Initialisation du singleton de type CompanyDao");
+			
 			dao = new CompanyDao();
 			dao.factory = factory;
 		}

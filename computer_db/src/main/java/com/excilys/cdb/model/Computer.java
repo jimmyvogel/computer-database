@@ -10,7 +10,7 @@ import java.time.Month;
  */
 public class Computer {
 	
-	public static final int TAILLE_MAX_NAME = 100;
+	public static final int TAILLE_MAX_NAME = 60;
 	
 	public static final LocalDateTime BEGIN_DATE_VALID = 
 			LocalDateTime.of(1949, Month.DECEMBER, 31, 23, 59);
@@ -136,9 +136,9 @@ public class Computer {
 	}
 
 	/**
-	 * 
+	 * Validate une date pour un Computer valide.
 	 * @param ldt
-	 * @return
+	 * @return un boolean résultat
 	 */
 	public static boolean validDate(LocalDateTime ldt) {
 		if(ldt.isAfter(Computer.BEGIN_DATE_VALID)
@@ -148,15 +148,15 @@ public class Computer {
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Validate un nom pour un Computer valide.
+	 * @param name nom a vérifier
+	 * @return un boolean résultat.
 	 */
 	public static boolean validName(String name) {
-		if(name.length() > TAILLE_MAX_NAME)
-			return false;
+		if(name != null && name.length() > 3 && name.length() < TAILLE_MAX_NAME)
+			return true;
 		
-		return true;
+		return false;
 	}
 	
 }

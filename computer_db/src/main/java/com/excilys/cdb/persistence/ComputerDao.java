@@ -9,10 +9,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Computer;
 
 /**
- *  Classe d'implémentation d'une IComputerDao contenant les requêtes possibles sur
+ *  Classe contenant les requêtes possibles sur
  * la table des computer de la base de donnée.
  * @author vogel
  *
@@ -47,6 +50,10 @@ public class ComputerDao implements Dao<Computer>{
 	
 	public static ComputerDao getInstance(DaoFactory daoFactory) {
 		if(dao==null) {
+			
+			Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+			logger.info("Initialisation du singleton de type ComputerDao");
+			
 			dao = new ComputerDao();
 			dao.factory = daoFactory;
 		}
@@ -60,8 +67,6 @@ public class ComputerDao implements Dao<Computer>{
 			Statement stmt = c.createStatement();
 	        ResultSet result = stmt.executeQuery(SQL_ALL_COMPUTERS);
 	        
-	        /* Parcours de la ligne de données de l'éventuel ResulSet retourné */
-	        Computer computer;
 	        while(result.next()) {
 	        	computers.add(MapperDao.mapComputer(result));
 	        }
@@ -94,11 +99,17 @@ public class ComputerDao implements Dao<Computer>{
 		return computer;
 	}
 
-	public boolean create(Computer computer) {
-		int result = 0;
+	/**
+	 * Créer un objet de type computer
+	 * @param computer Un objet complet en argument
+	 * @return 
+	 */
+	public long create(Computer computer) {
+		long id = -1;
 		try {
 			Connection c = factory.getConnection();
-			PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER);
+			PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER,
+					Statement.RETURN_GENERATED_KEYS);
 			
 			stmt.setString(1, computer.getName());
 			if(computer.getIntroduced()!=null)
@@ -116,14 +127,18 @@ public class ComputerDao implements Dao<Computer>{
 			else
 				stmt.setString(4, null);
 			
-	        result = stmt.executeUpdate();
+			stmt.execute();
+			
+			ResultSet rs = stmt.getGeneratedKeys();
+			if(rs != null && rs.first())
+				id = rs.getLong(1);
 	        
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return (result>0)?true:false;
+		return id;
 	}
 
 	public boolean update(Computer computer) {
@@ -138,17 +153,20 @@ public class ComputerDao implements Dao<Computer>{
 			if(computer.getIntroduced()!=null)
 				stmt.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
 			else
-				stmt.setTimestamp(2, null);
+				stmt.setTimestamp(2, Timestamp.valueOf(before.getIntroduced()));
 			
 			if(computer.getIntroduced()!=null)
 				stmt.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued()));
 			else
-				stmt.setTimestamp(3, null);
+				stmt.setTimestamp(3, Timestamp.valueOf(before.getDiscontinued()));
 			
 			if(computer.getCompany()!=null)
 				stmt.setLong(4, computer.getCompany().getId());
 			else
-				stmt.setString(4, null);
+				if(before.getCompany()!=null)
+					stmt.setLong(4, before.getCompany().getId());
+				else
+					stmt.setString(4, null);
 			
 			stmt.setLong(5, computer.getId());
 			
@@ -163,12 +181,14 @@ public class ComputerDao implements Dao<Computer>{
 		return (result>0)?true:false;
 	}
 
-	public boolean deleteComputer(Computer computer) {
+	public boolean deleteComputer(long id) {
+		if(this.getById(id)==null)return false;
+		
 		int result = 0;
 		try {
 			Connection c = factory.getConnection();
 			PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER);
-			stmt.setLong(1, computer.getId());
+			stmt.setLong(1, id);
 			
 	        result = stmt.executeUpdate();
 	        
@@ -215,7 +235,6 @@ public class ComputerDao implements Dao<Computer>{
 	        page.charge(computers);
 	        
 			stmt.close();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

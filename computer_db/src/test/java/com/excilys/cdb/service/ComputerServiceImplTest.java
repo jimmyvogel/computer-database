@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -31,7 +32,8 @@ public class ComputerServiceImplTest {
 										+ "ffff ffff ffff ffff"
 										+ "ffff ffff ffff ffff"
 										+ "ffff ffff ffff ffff"
-										+ "ffff ffff ffff fffff";
+										+ "ffff ffff ffff fffff"
+										+ "ffffffffffffffffffff";
 	
 	private final LocalDateTime DATE_INTRODUCED_VALID = 
 			LocalDateTime.of(1986, Month.APRIL, 8, 12, 30);
@@ -47,23 +49,24 @@ public class ComputerServiceImplTest {
 	
     @Before
     public void initialisation() throws DAOConfigurationException {
+    	MockitoAnnotations.initMocks(this);
+    	
     	service = ComputerServiceImpl.getInstance();
     	nbComputers = service.countComputers();
     	nbCompany = service.countCompanies();
     	
     	assert (nbCompany>0):"Il faut des compagnies pour les tests";
     	
-    	List<Company> comps = service.getAllCompany();
-    	companyValid = comps.get(1);
-    	
-    	List<Computer> computers = service.getAllComputer();
-    	computerValid = computers.get(1);
+    	companyValid = service.getPageCompany(1).getObjects().get(0);
+    	computerValid = service.getPageComputer(1).getObjects().get(0);
     }
-
-	@Test
+    	
 	public void testGetAllComputer() {
+		
 		List<Computer> computers = service.getAllComputer();
 		Assert.assertEquals(computers.size(), nbComputers);
+		
+		Assert.assertTrue(service.getComputer(605)!=null);
 	}
 
 	@Test
@@ -96,16 +99,16 @@ public class ComputerServiceImplTest {
 	public void testCreateComputerString() {
 		
 		//Valid
-		boolean create = service.createComputer(NAME_VALID);
+		boolean create = service.createComputer(NAME_VALID)>0;
 		Assert.assertTrue(create);
 		long count = service.countComputers();
 		Assert.assertTrue(count==nbComputers+1);
 		
 		//Invalid
-		create = service.createComputer(NAME_INVALID);
+		create = service.createComputer(NAME_INVALID)>0;
 		Assert.assertFalse(create);
 		count = service.countComputers();
-		Assert.assertTrue(count==nbComputers);
+		Assert.assertTrue(count==nbComputers+1);
 		
 	}
 
@@ -115,22 +118,22 @@ public class ComputerServiceImplTest {
 		
 		//Insertion valid
 		boolean create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID, 
-				DATE_DISCONTINUED_VALID, companyValid.getId());
+				DATE_DISCONTINUED_VALID, companyValid.getId())>0;
 		Assert.assertTrue(create);
 		long count = service.countComputers();
 		Assert.assertTrue(count==nbComputers+1);
 		
 		//Trois Insertions invalid à cause des dates
 		create = service.createComputer(NAME_VALID, Computer.BEGIN_DATE_VALID, 
-				DATE_DISCONTINUED_VALID, companyValid.getId());
+				DATE_DISCONTINUED_VALID, companyValid.getId())>0;
 		Assert.assertFalse(create);
 		
 		create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID, 
-				Computer.END_DATE_VALID, companyValid.getId());
+				Computer.END_DATE_VALID, companyValid.getId())>0;
 		Assert.assertFalse(create);
 		
 		create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID, 
-				DD_INVALID_BEFORE_DI, companyValid.getId());
+				DD_INVALID_BEFORE_DI, companyValid.getId())>0;
 		Assert.assertFalse(create);
 		
 	}
