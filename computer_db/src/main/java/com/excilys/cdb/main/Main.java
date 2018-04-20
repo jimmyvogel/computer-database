@@ -1,9 +1,9 @@
-package main.java.com.excilys.cdb.main;
+package com.excilys.cdb.main;
 
-import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
-import main.java.com.excilys.cdb.service.ComputerServiceImpl;
-import main.java.com.excilys.cdb.service.IComputerService;
-import main.java.com.excilys.cdb.ui.UIController;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.service.ComputerServiceImpl;
+import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.ui.UIController;
 
 public class Main {
 

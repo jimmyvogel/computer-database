@@ -1,15 +1,15 @@
-package main.java.com.excilys.cdb.persistence;
+package com.excilys.cdb.persistence;
 
 import java.util.List;
 
 public interface Dao<T> {
 
-	long getCount();
+	public long getCount();
 
-	T getById(long id);
+	public T getById(long id);
 
-	List<T> getAll();
+	public List<T> getAll();
 	
-	Page<T> getPage(int numeroPage);
+	public Page<T> getPage(int numeroPage);
 	
 }

@@ -1,15 +1,15 @@
-package main.java.com.excilys.cdb.ui;
+package com.excilys.cdb.ui;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.persistence.Page;
-import main.java.com.excilys.cdb.service.IComputerService;
-import main.java.com.excilys.cdb.vue.UITextes;
-import main.java.com.excilys.cdb.vue.UIView;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.vue.UITextes;
+import com.excilys.cdb.vue.UIView;
 
 /**
  * Controler de l'interface cli.

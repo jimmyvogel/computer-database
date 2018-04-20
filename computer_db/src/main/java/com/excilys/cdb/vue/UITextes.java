@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.vue;
+package com.excilys.cdb.vue;
 
 /**
  * Ressources de types String incorporés dans la vue.

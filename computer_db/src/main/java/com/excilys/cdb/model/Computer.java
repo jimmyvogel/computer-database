@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.model;
+package com.excilys.cdb.model;
 
 import java.time.LocalDateTime;
 import java.time.Month;

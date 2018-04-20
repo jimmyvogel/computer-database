@@ -1,15 +1,15 @@
-package main.java.com.excilys.cdb.service;
+package com.excilys.cdb.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.persistence.CompanyDao;
-import main.java.com.excilys.cdb.persistence.ComputerDao;
-import main.java.com.excilys.cdb.persistence.DaoFactory;
-import main.java.com.excilys.cdb.persistence.Page;
-import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.CompanyDao;
+import com.excilys.cdb.persistence.ComputerDao;
+import com.excilys.cdb.persistence.DaoFactory;
+import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer
@@ -34,37 +34,30 @@ public class ComputerServiceImpl implements IComputerService{
 		return service;
 	}
 
-	@Override
 	public List<Computer> getAllComputer() {
 		return computerDao.getAll();
 	}
 
-	@Override
 	public List<Company> getAllCompany() {
 		return companyDao.getAll();
 	}
 	
-	@Override
 	public Page<Company> getPageCompany(int page) {
 		return companyDao.getPage(page);
 	}
 
-	@Override
 	public Page<Computer> getPageComputer(int page) {
 		return computerDao.getPage(page);
 	}
 
-	@Override
 	public Company getCompany(long id) {
 		return companyDao.getById(id);
 	}
 
-	@Override
 	public Computer getComputer(long id) {
 		return computerDao.getById(id);
 	}
 
-	@Override
 	public boolean createComputer(String name) {
 		if(name == null) return false;
 		if(!Computer.validName(name))return false;
@@ -75,7 +68,6 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.create(c);
 	}
 
-	@Override
 	public boolean createComputer(String name, LocalDateTime introduced, 
 			LocalDateTime discontinued, long companyId) {
 		if(name==null)
@@ -106,7 +98,6 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.create(c);
 	}
 
-	@Override
 	public boolean deleteComputer(long id) {
 		if(id < 1)
 			return false;
@@ -118,7 +109,6 @@ public class ComputerServiceImpl implements IComputerService{
 		return ((ComputerDao)computerDao).deleteComputer(c);
 	}
 
-	@Override
 	public boolean updateComputer(long id, String name) {
 		if(name == null) return false;
 		if(!Computer.validName(name))return false;
@@ -134,7 +124,6 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.update(c);
 	}
 
-	@Override
 	public boolean updateComputer(long id, String name, LocalDateTime introduced, LocalDateTime discontinued,
 			long companyId) {
 		if(name == null && introduced == null && discontinued == null && companyId < 1)
@@ -197,12 +186,10 @@ public class ComputerServiceImpl implements IComputerService{
 		return computerDao.update(nouveau);
 	}
 	
-	@Override
 	public long countComputers() {
 		return computerDao.getCount();
 	}
 	
-	@Override
 	public long countCompanies() {
 		return companyDao.getCount();
 	}

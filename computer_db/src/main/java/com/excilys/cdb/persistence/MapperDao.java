@@ -1,10 +1,10 @@
-package main.java.com.excilys.cdb.persistence;
+package com.excilys.cdb.persistence;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
 
 /**
  * Classe gérant le mapping des résultats sql sous un format objets.

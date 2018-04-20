@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.persistence;
+package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Computer;
 
 /**
  *  Classe d'implémentation d'une IComputerDao contenant les requêtes possibles sur
@@ -31,7 +31,8 @@ public class ComputerDao implements Dao<Computer>{
 					+ "computer.name, computer.introduced, computer.discontinued FROM company "
 					+ "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.id=?";
 	private static final String SQL_AJOUT_COMPUTER = 
-			"INSERT into `computer` VALUES (?,?,?,?)";
+			"INSERT into `computer` (name,introduced,discontinued,company_id)"
+			+ " VALUES (?,?,?,?)";
 	private static final String SQL_UPDATE_COMPUTER =
 			"UPDATE computer SET name=?, introduced=?, discontinued=?, "
 			+ "company_id=? WHERE id=? ";
@@ -52,7 +53,6 @@ public class ComputerDao implements Dao<Computer>{
 		return dao;
 	}
 
-	@Override
 	public List<Computer> getAll() {
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
@@ -74,7 +74,6 @@ public class ComputerDao implements Dao<Computer>{
 		return computers;
 	}
 	
-	@Override
 	public Computer getById(long id) {
 		Computer computer = null;
 		try {
@@ -182,7 +181,6 @@ public class ComputerDao implements Dao<Computer>{
 		return (result>0)?true:false;
 	}
 
-	@Override
 	public long getCount() {
 		long count = -1;
 		try {
@@ -200,7 +198,6 @@ public class ComputerDao implements Dao<Computer>{
 		return count;
 	}
 
-	@Override
 	public Page<Computer> getPage(int numeroPage) {
 		Page<Computer> page = new Page<Computer>(LIMIT_DEFAULT);
 		try {

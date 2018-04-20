@@ -1,15 +1,13 @@
-package main.java.com.excilys.cdb.persistence;
+package com.excilys.cdb.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
-import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
  * Factory pour la création des daos gérant les requêtes sur la base de donnée.
@@ -19,7 +17,7 @@ import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationExceptio
 public class DaoFactory{
 	
 	//Variables du fichier properties
-	private static final String FICHIER_PROPERTIES = "main/ressources/dao.properties";
+	private static final String FICHIER_PROPERTIES = "dao.properties";
 	private static final String PROPERTY_URL = "url";
 	private static final String PROPERTY_NOM_UTILISATEUR = "username";
 	private static final String PROPERTY_MOT_DE_PASSE = "password";

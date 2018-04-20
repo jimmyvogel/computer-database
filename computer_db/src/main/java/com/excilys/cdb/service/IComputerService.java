@@ -1,11 +1,11 @@
-package main.java.com.excilys.cdb.service;
+package com.excilys.cdb.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.Page;
 
 /**
  * Interface représentant les méthodes du service de gestion des computers nécessaires.

@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.persistence.exceptions;
+package com.excilys.cdb.persistence.exceptions;
 
 public class DAOConfigurationException extends Exception {
 

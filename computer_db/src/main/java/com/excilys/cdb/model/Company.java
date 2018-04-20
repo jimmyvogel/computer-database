@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.model;
+package com.excilys.cdb.model;
 
 /**
  * Classe représentant une compagnie de manière simple, sans détails.

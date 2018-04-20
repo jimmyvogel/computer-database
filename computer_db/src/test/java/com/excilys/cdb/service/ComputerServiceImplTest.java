@@ -1,4 +1,4 @@
-package test.java.com.excilys.cdb.service;
+package com.excilys.cdb.service;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -8,12 +8,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.persistence.DaoFactory;
-import main.java.com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
-import main.java.com.excilys.cdb.service.ComputerServiceImpl;
-import main.java.com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.service.ComputerServiceImpl;
+import com.excilys.cdb.service.IComputerService;
 
 public class ComputerServiceImplTest {
 
@@ -48,7 +47,7 @@ public class ComputerServiceImplTest {
 	
     @Before
     public void initialisation() throws DAOConfigurationException {
-    	service = new ComputerServiceImpl();
+    	service = ComputerServiceImpl.getInstance();
     	nbComputers = service.countComputers();
     	nbCompany = service.countCompanies();
     	

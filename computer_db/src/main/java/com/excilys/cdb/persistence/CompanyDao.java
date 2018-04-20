@@ -1,4 +1,4 @@
-package main.java.com.excilys.cdb.persistence;
+package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.com.excilys.cdb.model.Company;
-import main.java.com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
 
 /**
  * Classe d'implémentation d'une compagnieDao contenant les requêtes possibles sur
@@ -40,7 +40,6 @@ public class CompanyDao implements Dao<Company>{
 		return dao;
 	}
 	
-	@Override
 	public List<Company> getAll() {
 		List<Company> companies = new ArrayList<Company>();
 		try {
@@ -61,7 +60,6 @@ public class CompanyDao implements Dao<Company>{
 		return companies;
 	}
 
-	@Override
 	public Company getById(long id) {
 		Company company = null;
 		try {
@@ -85,7 +83,6 @@ public class CompanyDao implements Dao<Company>{
 		return company;
 	}
 
-	@Override
 	public long getCount() {
 		long count = -1;
 		try {
@@ -104,7 +101,6 @@ public class CompanyDao implements Dao<Company>{
 		return count;
 	}
 
-	@Override
 	public Page<Company> getPage(int numeroPage) {
 		Page<Company> page = new Page<Company>(LIMIT_DEFAULT);
 		try {
