@@ -14,6 +14,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.service.exceptions.ServiceException;
 
 public class ComputerServiceImplTest {
 
@@ -48,7 +49,7 @@ public class ComputerServiceImplTest {
 	private Computer computerValid;
 	
     @Before
-    public void initialisation() throws DAOConfigurationException {
+    public void initialisation() throws DAOConfigurationException, ServiceException {
     	MockitoAnnotations.initMocks(this);
     	
     	service = ComputerServiceImpl.getInstance();
@@ -61,7 +62,7 @@ public class ComputerServiceImplTest {
     	computerValid = service.getPageComputer(1).getObjects().get(0);
     }
     	
-	public void testGetAllComputer() {
+	public void testGetAllComputer() throws ServiceException {
 		
 		List<Computer> computers = service.getAllComputer();
 		Assert.assertEquals(computers.size(), nbComputers);
@@ -70,13 +71,13 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testGetAllCompany() {
+	public void testGetAllCompany() throws ServiceException {
 		List<Company> companies = service.getAllCompany();
 		Assert.assertEquals(companies.size(), nbCompany);
 	}
 
 	@Test
-	public void testGetCompany() {
+	public void testGetCompany() throws ServiceException {
 		List<Company> companies = service.getAllCompany();
 		Company comp;
 		for(Company c : companies) {
@@ -86,7 +87,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testGetComputer() {
+	public void testGetComputer() throws ServiceException {
 		List<Computer> computers = service.getAllComputer();
 		Computer comp;
 		for(Computer c : computers) {
@@ -96,7 +97,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testCreateComputerString() {
+	public void testCreateComputerString() throws ServiceException {
 		
 		//Valid
 		boolean create = service.createComputer(NAME_VALID)>0;
@@ -113,7 +114,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testCreateComputerStringLocalDateTimeLocalDateTimeLong(){
+	public void testCreateComputerStringLocalDateTimeLocalDateTimeLong() throws ServiceException{
 		Assert.assertTrue(nbCompany>0);
 		
 		//Insertion valid
@@ -123,15 +124,17 @@ public class ComputerServiceImplTest {
 		long count = service.countComputers();
 		Assert.assertTrue(count==nbComputers+1);
 		
-		//Trois Insertions invalid à cause des dates
-		create = service.createComputer(NAME_VALID, Computer.BEGIN_DATE_VALID, 
+		//Insertion invalid à cause du null
+		create = service.createComputer(NAME_VALID, null, 
 				DATE_DISCONTINUED_VALID, companyValid.getId())>0;
 		Assert.assertFalse(create);
 		
-		create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID, 
-				Computer.END_DATE_VALID, companyValid.getId())>0;
+		//Insertion invalid à cause du manque de tout
+		create = service.createComputer(null, null, 
+				null, -1)>0;
 		Assert.assertFalse(create);
 		
+		//Insertion invalid à cause de la date discontinued avant la date introduced.
 		create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID, 
 				DD_INVALID_BEFORE_DI, companyValid.getId())>0;
 		Assert.assertFalse(create);
@@ -139,7 +142,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testDeleteComputer() {
+	public void testDeleteComputer() throws ServiceException {
 		Assert.assertTrue(nbComputers>0);
 		
 		boolean delete = service.deleteComputer(computerValid.getId());
@@ -149,7 +152,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateComputer() {
+	public void testUpdateComputer() throws ServiceException {
 		
 		//Valid
 		boolean update = service.updateComputer(computerValid.getId(), NAME_VALID);
@@ -164,7 +167,7 @@ public class ComputerServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateComputerLongStringLocalDateTimeLocalDateTimeLong() {
+	public void testUpdateComputerLongStringLocalDateTimeLocalDateTimeLong() throws ServiceException {
 		
 		//Valid
 		boolean update = service.updateComputer(computerValid.getId(), NAME_VALID, 

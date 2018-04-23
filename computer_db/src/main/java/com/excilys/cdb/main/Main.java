@@ -11,9 +11,7 @@ public class Main {
 		try {
 			IComputerService service = ComputerServiceImpl.getInstance();
 			UIController controller = new UIController(service);
-			while(true) {
-				controller.read();
-			}
+			controller.run();
 		} catch (DAOConfigurationException e) {
 			System.out.println(e);
 		}

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
  *  Classe contenant les requêtes possibles sur
@@ -60,7 +61,7 @@ public class ComputerDao implements Dao<Computer>{
 		return dao;
 	}
 
-	public List<Computer> getAll() {
+	public List<Computer> getAll() throws DaoException {
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
 			Connection c = factory.getConnection();
@@ -73,13 +74,13 @@ public class ComputerDao implements Dao<Computer>{
 	        
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return computers;
 	}
 	
-	public Computer getById(long id) {
+	public Computer getById(long id) throws DaoException {
 		Computer computer = null;
 		try {
 			Connection c = factory.getConnection();
@@ -93,7 +94,7 @@ public class ComputerDao implements Dao<Computer>{
 	        
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return computer;
@@ -102,9 +103,10 @@ public class ComputerDao implements Dao<Computer>{
 	/**
 	 * Créer un objet de type computer
 	 * @param computer Un objet complet en argument
-	 * @return 
+	 * @return l'id de l'objet crée ou -1 si la création a échoué
+	 * @throws DaoException 
 	 */
-	public long create(Computer computer) {
+	public long create(Computer computer) throws DaoException {
 		long id = -1;
 		try {
 			Connection c = factory.getConnection();
@@ -135,13 +137,13 @@ public class ComputerDao implements Dao<Computer>{
 	        
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return id;
 	}
 
-	public boolean update(Computer computer) {
+	public boolean update(Computer computer) throws DaoException {
 		int result = 0;
 		try {
 			Computer before = this.getById(computer.getId());
@@ -175,13 +177,13 @@ public class ComputerDao implements Dao<Computer>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return (result>0)?true:false;
 	}
 
-	public boolean deleteComputer(long id) {
+	public boolean deleteComputer(long id) throws DaoException {
 		if(this.getById(id)==null)return false;
 		
 		int result = 0;
@@ -195,14 +197,14 @@ public class ComputerDao implements Dao<Computer>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return (result>0)?true:false;
 	}
 
-	public long getCount() {
-		long count = -1;
+	public long getCount() throws DaoException {
+		long count = 0;
 		try {
 			Connection c = factory.getConnection();
 			Statement stmt = c.createStatement();
@@ -212,13 +214,13 @@ public class ComputerDao implements Dao<Computer>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return count;
 	}
 
-	public Page<Computer> getPage(int numeroPage) {
+	public Page<Computer> getPage(int numeroPage) throws DaoException {
 		Page<Computer> page = new Page<Computer>(LIMIT_DEFAULT);
 		try {
 			List<Computer> computers = new ArrayList<Computer>();
@@ -236,7 +238,7 @@ public class ComputerDao implements Dao<Computer>{
 	        
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		return page;
 	}

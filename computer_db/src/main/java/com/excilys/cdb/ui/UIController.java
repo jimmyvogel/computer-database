@@ -12,6 +12,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
 
@@ -57,26 +58,52 @@ public class UIController {
 		logger.info("Création d'un objet de type UIController");
 		
 		this.service = computerService;
+		initialize();
+	}
+	
+	private void initialize() {
 		state = State.INITIAL;
 		stateUpdate = Update.NONE;
 		stateAjout = Ajout.NONE;
-		view = new UIView(UITextes.MENU_INITIAL);
+		view = new UIView(UITextes.MENU_INITIAL+ " \n[stop->quit]");
+	}
+	
+	/**
+	 * Lancement de l'ui.
+	 */
+	public void run() {
+		while(read());
 	}
 	
 	/**
 	 * Le pas de lecture de l'automate.
 	 */
-	public void read() {
-		view.display();
-		String ligne = scanner.nextLine();
-		interprate(ligne);
+	private boolean read() {
+		boolean continu = true;
+		try {
+			view.display();
+			String ligne = scanner.nextLine();
+			if(ligne.equals("quit") || ligne.equals("stop"))
+				return false;
+			
+			try {
+				interprate(ligne);
+			} catch (ServiceException e) {
+				initialize();
+				view.setAffichage("Erreur de la dao \n" + view.getAffichage());
+			}
+		}catch(java.lang.NumberFormatException e) {
+			view.setAffichage("Erreur, rentrée un chiffre \n" + view.getAffichage());
+		}
+		return continu;
 	}
 	
 	/**
 	 * L'interprétation des résultats.
 	 * @param ligne
+	 * @throws ServiceException 
 	 */
-	private void interprate(String ligne) {
+	private void interprate(String ligne) throws ServiceException {
 		
 		//Un retour a été demandé.
 		if(ligne.trim().equals("r")) {
@@ -85,7 +112,7 @@ public class UIController {
 			if(state==State.RETOUR || state==State.LIST_COMPANY || state==State.LIST_COMPUTER  
 					|| state==State.DELETE || state==State.SHOW 
 					|| stateAjout==Ajout.NONE || stateUpdate==Update.NONE)
-				view.setAffichage(UITextes.MENU_INITIAL);
+				view.setAffichage(UITextes.MENU_INITIAL+ " \n[stop->quit]");
 			
 			//AUTOMATE RETOUR
 			actionRetour();
@@ -143,8 +170,9 @@ public class UIController {
 		
 		//Si l'état est différent du menu initial on rajoute la possibilité du retour.
 		if(state != State.INITIAL) {
-			view.setAffichage(view.getAffichage()+"["+UITextes.RETOUR+"]");
+			view.setAffichage(view.getAffichage()+" ["+UITextes.RETOUR+"]");
 		}
+		view.setAffichage(view.getAffichage() + " \n[stop->quit]");
 		
 	}
 	
@@ -227,8 +255,9 @@ public class UIController {
 	/**
 	 * Gestion du switch sur le menu initial pour l'interpretation
 	 * @param choix choix sous la forme d'un int.
+	 * @throws ServiceException 
 	 */
-	private void switchPrincipal(int choix) {
+	private void switchPrincipal(int choix) throws ServiceException {
 		switch(choix) {
 			case 1: 
 				view.setAffichage(pageurComputerShow(1));
@@ -258,8 +287,9 @@ public class UIController {
 	/**
 	 * Gestion du switch sur le formulaire d'ajout pour l'interpretation
 	 * @param ligne input de l'utilisateur
+	 * @throws ServiceException 
 	 */
-	private void switchFormulaireAjout(String ligne) {
+	private void switchFormulaireAjout(String ligne) throws ServiceException {
 		LocalDateTime timeInter;
 		switch(stateAjout) {
 			case NAME: 
@@ -311,8 +341,10 @@ public class UIController {
 	/**
 	 * Gestion du formulaire d'update pour l'interpretation
 	 * @param ligne input de l'utilisateur
+	 * @throws ServiceException 
+	 * @throws NumberFormatException 
 	 */
-	private void switchFormulaireUpdate(String ligne) {
+	private void switchFormulaireUpdate(String ligne) throws NumberFormatException, ServiceException {
 		long value;
 		LocalDateTime timeInter;
 		switch(stateUpdate) {
@@ -373,8 +405,9 @@ public class UIController {
 	/**
 	 * Ajouter un computer dans la bdd.
 	 * @return l'affichage du résultat dans un string.
+	 * @throws ServiceException 
 	 */
-	private String ajouterComputer() {
+	private String ajouterComputer() throws ServiceException {
 		long id = -1;
 		if(inter.getCompany()!=null)
 			id= inter.getCompany().getId();
@@ -392,8 +425,9 @@ public class UIController {
 	 * Supprimer un computer dans la bdd
 	 * @param id l'id du computer a supprimé
 	 * @return l'affichage du résultat dans un string.
+	 * @throws ServiceException 
 	 */
-	private String supprimerComputer(long id) {
+	private String supprimerComputer(long id) throws ServiceException {
 		boolean delete = 
 				service.deleteComputer(id);
 		
@@ -406,8 +440,9 @@ public class UIController {
 	/**
 	 * Modifié un computer dans la bdd.
 	 * @return l'affichage du résultat dans un string.
+	 * @throws ServiceException 
 	 */
-	private String updateComputer() {
+	private String updateComputer() throws ServiceException {
 		long id = -1;
 		if(inter.getCompany()!=null)
 			id = inter.getCompany().getId();
@@ -422,7 +457,7 @@ public class UIController {
 		return "Update fail\n";
 	}
 	
-	private String pageurComputerShow(int page) {
+	private String pageurComputerShow(int page) throws ServiceException {
 		Page<Computer> pageComputer = service.getPageComputer(page);
 		int taille = (int) service.countComputers();
 		int limit = pageComputer.getLimit();
@@ -432,7 +467,7 @@ public class UIController {
 				+ "\n"+UITextes.LIST_PAGINATION;
 	}
 	
-	private String pageurCompanyShow(int page) {
+	private String pageurCompanyShow(int page) throws ServiceException {
 		Page<Company> pageCompany = service.getPageCompany(page);
 		int taille = (int) service.countCompanies();
 		int limit = pageCompany.getLimit();
@@ -446,8 +481,9 @@ public class UIController {
 	 * Afficher les détails d'un computer
 	 * @param id l'id du computer a affiché
 	 * @return les résultats dans un String.
+	 * @throws ServiceException 
 	 */
-	private String detailComputer(long id) {
+	private String detailComputer(long id) throws ServiceException {
 		Computer c = service.getComputer(id);
 		if(c==null)return "Erreur d'id";
 		

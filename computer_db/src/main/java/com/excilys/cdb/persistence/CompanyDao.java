@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
  * Classe contenant les requêtes possibles sur
@@ -46,7 +47,7 @@ public class CompanyDao implements Dao<Company>{
 		return dao;
 	}
 	
-	public List<Company> getAll() {
+	public List<Company> getAll() throws DaoException {
 		List<Company> companies = new ArrayList<Company>();
 		try {
 			Connection c = factory.getConnection();
@@ -60,13 +61,13 @@ public class CompanyDao implements Dao<Company>{
 	        
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return companies;
 	}
 
-	public Company getById(long id) {
+	public Company getById(long id) throws DaoException {
 		Company company = null;
 		try {
 			Connection c = factory.getConnection();
@@ -83,14 +84,14 @@ public class CompanyDao implements Dao<Company>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return company;
 	}
 
-	public long getCount() {
-		long count = -1;
+	public long getCount() throws DaoException {
+		long count = 0;
 		try {
 			Connection c = factory.getConnection();
 			Statement stmt = c.createStatement();
@@ -101,13 +102,13 @@ public class CompanyDao implements Dao<Company>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		
 		return count;
 	}
 
-	public Page<Company> getPage(int numeroPage) {
+	public Page<Company> getPage(int numeroPage) throws DaoException {
 		Page<Company> page = new Page<Company>(LIMIT_DEFAULT);
 		try {
 			List<Company> companies= new ArrayList<Company>();
@@ -125,7 +126,7 @@ public class CompanyDao implements Dao<Company>{
 			stmt.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException("Requête exception", e);
 		}
 		return page;
 	}
