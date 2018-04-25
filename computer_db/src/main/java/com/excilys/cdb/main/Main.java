@@ -5,16 +5,32 @@ import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.ui.UIController;
 
-public class Main {
+/**
+ * Class main.
+ * @author vogel
+ *
+ */
+final class Main {
 
-	public static void main(String[] args) {
-		try {
-			IComputerService service = ComputerServiceImpl.getInstance();
-			UIController controller = new UIController(service);
-			controller.run();
-		} catch (DAOConfigurationException e) {
-			System.out.println(e);
-		}
-	}	
+    /**
+     * Constructor.
+     *
+     */
+    private Main() {
+    }
+
+    /**
+     * Main.
+     * @param args arguments
+     */
+    public static void main(final String[] args) {
+        try {
+            IComputerService service = ComputerServiceImpl.getInstance();
+            UIController controller = new UIController(service);
+            controller.run();
+        } catch (DAOConfigurationException e) {
+            System.out.println(e);
+        }
+    }
 
 }

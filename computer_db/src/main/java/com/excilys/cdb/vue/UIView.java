@@ -7,23 +7,36 @@ package com.excilys.cdb.vue;
  */
 public class UIView {
 
-	private String affichage;
-	
-	public UIView(String initial) {
-		affichage = initial;
-	}
+    private String affichage;
 
-	public String getAffichage() {
-		return affichage;
-	}
+    /**
+     * Constructor.
+     * @param initial parametre d'affichage
+     */
+    public UIView(final String initial) {
+        affichage = initial;
+    }
 
-	public void setAffichage(String affichage) {
-		this.affichage = affichage;
-	}
-	
-	public void display() {
-		System.out.println(affichage);
-	}
-	
-	
+    /**
+     * Getteur.
+     * @return affichage
+     */
+    public String getAffichage() {
+        return affichage;
+    }
+
+    /*
+     * Setteur.
+     */
+    public void setAffichage(final String affichage) {
+        this.affichage = affichage;
+    }
+
+    /**
+     * Afficher la vue.
+     */
+    public void display() {
+        System.out.println(affichage);
+    }
+
 }

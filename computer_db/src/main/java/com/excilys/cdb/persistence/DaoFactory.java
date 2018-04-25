@@ -10,7 +10,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 
 /**
@@ -18,104 +17,125 @@ import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
  * @author vogel
  *
  */
-public class DaoFactory{
-	
-	//Variables du fichier properties
-	private static final String FICHIER_PROPERTIES = "dao.properties";
-	private static final String PROPERTY_URL = "url";
-	private static final String PROPERTY_NOM_UTILISATEUR = "username";
-	private static final String PROPERTY_MOT_DE_PASSE = "password";
-	
-	//Variables pour récupérer les id max à l'initialisation pour gérer
-	//l'auto-incrémentation en manuelle.
-	private static boolean initialized=false;
-	
-	//Connexion unique
-	private static Connection connection;
-	
-	//DaoFactory unique
-	private static DaoFactory dao;
-	
-	//Enum pour la généricité de la méthode factory.
-	public static enum DaoType { COMPUTER, COMPANY };
-	
-	private static void initializeFactory() throws DAOConfigurationException{
-	    Logger logger = LoggerFactory.getLogger(DaoFactory.class);
-	    logger.info("Initialisation du singleton dao factory");
+public class DaoFactory {
 
-		String url;
-		String username;
-		String password;
-		
-		//Single dao;
-		dao = new DaoFactory();
-		
-		//Initialise la connection unique.
-		Properties properties = new Properties();
-	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	    InputStream fichierProperties = classLoader.getResourceAsStream( FICHIER_PROPERTIES );
-	    if (fichierProperties == null) {
-	        throw new DAOConfigurationException(
-	        		"Le fichier properties " + FICHIER_PROPERTIES + " est introuvable." );
-	    }
-	    try {
-	        properties.load( fichierProperties );
-	        url = properties.getProperty( PROPERTY_URL );
-	        username = properties.getProperty( PROPERTY_NOM_UTILISATEUR );
-	        password = properties.getProperty( PROPERTY_MOT_DE_PASSE );
-	        
-	    } catch ( IOException e ) {
-	        throw new DAOConfigurationException(
-	        		"Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e );
-	    }
-	    try {
-			connection = DriverManager.getConnection(url, username, password);
-		} catch (SQLException e) {
-	        throw new DAOConfigurationException("Connection impossible", e );
-		}
-		
-		initialized = true;
-	}
-	
-	/**
-	 * Retourne une instance de DaoFactory.
-	 * @return un objet DaoFactory
-	 * @throws DAOConfigurationException envoie une erreur de config si exception.
-	 * @throws SQLException 
-	 */
-	public static DaoFactory getInstance() throws DAOConfigurationException {
-		if(!initialized) {
-			initializeFactory();
-		}
-	    return dao;
-	}
-	
-	/**
-	 * Retourne une connection à la base de donnée.
-	 * @return an object of class Connection
-	 */
-	public Connection getConnection(){
-		return connection;
-	}
-	
+    // Variables du fichier properties
+    private static final String FICHIER_PROPERTIES = "dao.properties";
+    private static final String PROPERTY_URL = "url";
+    private static final String PROPERTY_NOM_UTILISATEUR = "username";
+    private static final String PROPERTY_MOT_DE_PASSE = "password";
 
-	/**
-	 * Factory pour dao company
-	 * @return une dao
-	 */
-	public Dao<?> getDao(DaoType daoType) {
-		Dao<?> res=null;
-		switch(daoType) {
-			case COMPANY:res = CompanyDao.getInstance(this); break;
-			case COMPUTER:res = ComputerDao.getInstance(this); break;
-			default:break;
-		}
-		return res;
-	}
-	
-	@Override
-	public void finalize() throws Throwable{
-		connection.close();
-	}
-	
+    // Variables pour récupérer les id max à l'initialisation pour gérer
+    // l'auto-incrémentation en manuelle.
+    private static boolean initialized = false;
+
+    // Connexion unique
+    private static Connection connection;
+
+    // DaoFactory unique
+    private static DaoFactory dao;
+
+    // Enum pour la généricité de la méthode factory.
+    public enum DaoType {
+        COMPUTER, COMPANY
+    };
+
+    /**
+     * Initialisation de la factory pour créer le singleton.
+     * @throws DAOConfigurationException erreur de configuration.
+     */
+    private static void initializeFactory() throws DAOConfigurationException {
+        Logger logger = LoggerFactory.getLogger(DaoFactory.class);
+        logger.info("Initialisation du singleton dao factory");
+
+        String url;
+        String username;
+        String password;
+
+        // Single dao;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new DAOConfigurationException("Driver introuvable");
+        }
+        dao = new DaoFactory();
+
+        // Initialise la connection unique.
+        Properties properties = new Properties();
+        ClassLoader classLoader = Thread.currentThread()
+                .getContextClassLoader();
+        InputStream fichierProperties = classLoader
+                .getResourceAsStream(FICHIER_PROPERTIES);
+        if (fichierProperties == null) {
+            throw new DAOConfigurationException("Le fichier properties "
+                    + FICHIER_PROPERTIES + " est introuvable.");
+        }
+        try {
+            properties.load(fichierProperties);
+            url = properties.getProperty(PROPERTY_URL);
+            username = properties.getProperty(PROPERTY_NOM_UTILISATEUR);
+            password = properties.getProperty(PROPERTY_MOT_DE_PASSE);
+
+        } catch (IOException e) {
+            throw new DAOConfigurationException(
+                    "Impossible de charger le fichier properties "
+                            + FICHIER_PROPERTIES,
+                    e);
+        }
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (SQLException e) {
+            throw new DAOConfigurationException("Connection impossible", e);
+        }
+
+        initialized = true;
+    }
+
+    /**
+     * Retourne une instance de DaoFactory.
+     * @return un objet DaoFactory
+     * @throws DAOConfigurationException
+     *             envoie une erreur de config si exception.
+     * @throws SQLException
+     */
+    public static DaoFactory getInstance() throws DAOConfigurationException {
+        if (!initialized) {
+            initializeFactory();
+        }
+        return dao;
+    }
+
+    /**
+     * Retourne une connection à la base de donnée.
+     * @return an object of class Connection
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
+     * Factory pour dao company.
+     * @param daoType le type de dao demandé.
+     * @return une dao
+     */
+    public Dao<?> getDao(DaoType daoType) {
+        Dao<?> res = null;
+        switch (daoType) {
+        case COMPANY:
+            res = CompanyDao.getInstance(this);
+            break;
+        case COMPUTER:
+            res = ComputerDao.getInstance(this);
+            break;
+        default:
+            break;
+        }
+        return res;
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+        connection.close();
+    }
+
 }

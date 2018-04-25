@@ -2,18 +2,25 @@ package com.excilys.cdb.persistence.exceptions;
 
 public class DAOConfigurationException extends Exception {
 
+    /**
+     */
+    private static final long serialVersionUID = -3740823104873709188L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3740823104873709188L;
+    /**
+     * Constructor de l'exception.
+     * @param string le problème
+     */
+    public DAOConfigurationException(String string) {
+        super(string);
+    }
 
-	public DAOConfigurationException(String string) {
-		super(string);
-	}
-
-	public DAOConfigurationException(String string, Exception e) {
-		super(string, e);
-	}
+    /**
+     * Constructor de l'exception.
+     * @param string le problème
+     * @param e l'exception précédente
+     */
+    public DAOConfigurationException(String string, Exception e) {
+        super(string, e);
+    }
 
 }
