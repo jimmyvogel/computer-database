@@ -282,7 +282,7 @@ public class ComputerServiceImpl implements IComputerService {
      * @param name le nouveau nom de la compagnie ou null
      * @param introduced la nouvelle date ou null
      * @param discontinued la nouvelle date d'arret ou null
-     * @param companyId l'id de la nouvelle company ou -1.
+     * @param companyId l'id de la nouvelle company, 0 pour supprimer, ou -1 pour null.
      * @return un boolean pour le résultat
      * @throws ServiceException erreur de service.
      */
@@ -290,9 +290,10 @@ public class ComputerServiceImpl implements IComputerService {
             LocalDateTime introduced, LocalDateTime discontinued,
             long companyId) throws ServiceException {
         if (name == null && introduced == null && discontinued == null
-                && companyId < 1) {
+                && companyId < 0) {
             return false;
         }
+
         if (name != null && !Computer.validName(name)) {
             return false;
         }
@@ -366,9 +367,14 @@ public class ComputerServiceImpl implements IComputerService {
                     return false;
                 }
                 nouveau.setCompany(comp);
+
+            //Suppression si on choisit 0;
+            } else if (companyId == 0) {
+                nouveau.setCompany(null);
             }
 
             result = computerDao.update(nouveau);
+
         } catch (DaoException e) {
             throw new ServiceException("Méthode de la dao fail", e);
         }

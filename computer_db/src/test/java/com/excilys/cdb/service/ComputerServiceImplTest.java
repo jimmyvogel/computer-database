@@ -1,5 +1,8 @@
 package com.excilys.cdb.service;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
@@ -33,6 +36,9 @@ public class ComputerServiceImplTest {
             Month.APRIL, 8, 12, 30);
 
     private final LocalDateTime DATE_DISCONTINUED_VALID = LocalDateTime.of(2000,
+            Month.APRIL, 8, 12, 30);
+
+    private final LocalDateTime DI_INVALID_AFTER_DD = LocalDateTime.of(2001,
             Month.APRIL, 8, 12, 30);
 
     private final LocalDateTime DD_INVALID_BEFORE_DI = LocalDateTime.of(1985,
@@ -203,6 +209,20 @@ public class ComputerServiceImplTest {
 
     /**
      * Méthode de test du updateComputer.
+     * @throws ServiceException erreur de service.
+     */
+    @Test
+    public void testUpdateComputerWithNameNull() throws ServiceException {
+
+        // Valid
+        boolean update = service.updateComputer(computerValid.getId(),
+                null);
+        Assert.assertFalse(update);
+    }
+
+
+    /**
+     * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
     @Test
@@ -230,11 +250,6 @@ public class ComputerServiceImplTest {
                 DATE_INTRODUCED_VALID, null, companyValid.getId());
         Assert.assertTrue(update);
 
-        // Invalid with no arguments
-        update = service.updateComputer(computerValid.getId(), null, null, null,
-                -1);
-        Assert.assertFalse(update);
-
         // Invalid with date not valid
         update = service.updateComputer(computerValid.getId(), null, null,
                 Computer.BEGIN_DATE_VALID, -1);
@@ -255,4 +270,152 @@ public class ComputerServiceImplTest {
         Assert.assertFalse(update);
     }
 
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateInvalidDate()
+            throws ServiceException {
+
+        // Invalid date
+        boolean update = service.updateComputer(computerValid.getId(), null,
+                Computer.BEGIN_DATE_VALID, null, -1);
+        Assert.assertFalse(update);
+
+        // Invalid date
+        update = service.updateComputer(computerValid.getId(), null,
+                Computer.END_DATE_VALID, null, -1);
+        Assert.assertFalse(update);
+
+        // Invalid date
+        update = service.updateComputer(computerValid.getId(), null,
+                null, Computer.BEGIN_DATE_VALID, -1);
+        Assert.assertFalse(update);
+
+        // Invalid date
+        update = service.updateComputer(computerValid.getId(), null,
+                null, Computer.END_DATE_VALID, -1);
+        Assert.assertFalse(update);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateDiscontinuedWithoutIntroduced() throws ServiceException {
+
+        long id = service.createComputer("nouveau");
+        assertTrue(id > 0);
+        Computer c = service.getComputer(id);
+        assertTrue(c != null);
+
+        assertFalse(service.updateComputer(id, null, null, DATE_DISCONTINUED_VALID, -1));
+        assertFalse(service.updateComputer(id,  null, DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1));
+
+        assertTrue(service.updateComputer(id,  null, DATE_INTRODUCED_VALID, null, -1));
+        assertFalse(service.updateComputer(id,  null, null, DD_INVALID_BEFORE_DI, -1));
+
+        assertTrue(service.deleteComputer(id));
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateIntroducedNotNecessary() throws ServiceException {
+
+        long id = service.createComputer("nouveau");
+        assertTrue(id > 0);
+        Computer c = service.getComputer(id);
+        assertTrue(c != null);
+
+        assertTrue(service.updateComputer(id, null, null, null, companyValid.getId()));
+
+        assertTrue(service.deleteComputer(id));
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateWithoutArguments() throws ServiceException {
+
+        boolean update = service.updateComputer(computerValid.getId(), null, null, null,
+                -1);
+        Assert.assertFalse(update);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateWithCompany0() throws ServiceException {
+
+        boolean update = service.updateComputer(computerValid.getId(), null, null, null,
+                0);
+        Assert.assertTrue(update);
+        Assert.assertNull(service.getComputer(computerValid.getId()).getCompany());
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateFailWithCompanyMaxInexistant() throws ServiceException {
+
+        boolean update = service.updateComputer(computerValid.getId(), null, null, null,
+                Long.MAX_VALUE);
+        Assert.assertFalse(update);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateNoModifCompanyWithMoinsUn() throws ServiceException {
+
+        boolean update = service.updateComputer(computerValid.getId(), computerValid.getName(), null, null,
+                -1);
+        Assert.assertTrue(update);
+        Assert.assertTrue(service.getComputer(computerValid.getId()).getCompany().equals(computerValid.getCompany()));
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException {
+
+        boolean update = service.updateComputer(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null,
+                -1);
+        Assert.assertFalse(update);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateFailWithBadId() throws ServiceException {
+
+        service.updateComputer(-1, computerValid.getName(), null, null, -1);
+    }
+
+    /**
+     * Méthode de test du deleteComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test
+    public void testDeleteWithBadId() throws ServiceException {
+        assertFalse(service.deleteComputer(-1));
+        assertFalse(service.deleteComputer(Long.MAX_VALUE));
+    }
 }

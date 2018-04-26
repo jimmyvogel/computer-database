@@ -175,24 +175,29 @@ public class ComputerDao implements Dao<Computer> {
             if (computer.getIntroduced() != null) {
                 stmt.setTimestamp(2,
                         Timestamp.valueOf(computer.getIntroduced()));
+            } else if (before.getIntroduced() != null) {
+                stmt.setTimestamp(2,
+                        Timestamp.valueOf(before.getIntroduced()));
             } else {
-                stmt.setTimestamp(2, Timestamp.valueOf(before.getIntroduced()));
+                stmt.setString(2, null);
             }
 
-            if (computer.getIntroduced() != null) {
+            if (computer.getDiscontinued() != null) {
                 stmt.setTimestamp(3,
                         Timestamp.valueOf(computer.getDiscontinued()));
+            } else if (before.getDiscontinued() != null) {
+                    stmt.setTimestamp(3,
+                            Timestamp.valueOf(before.getDiscontinued()));
             } else {
-                stmt.setTimestamp(3,
-                        Timestamp.valueOf(before.getDiscontinued()));
+                stmt.setString(3, null);
             }
 
-            if (computer.getCompany() != null) {
-                stmt.setLong(4, computer.getCompany().getId());
-            } else if (before.getCompany() != null) {
-                stmt.setLong(4, before.getCompany().getId());
-            } else {
+
+            //Si on veut garder le même il faut le garder en paramètre.
+            if (computer.getCompany() == null) {
                 stmt.setString(4, null);
+            } else {
+                stmt.setLong(4, computer.getCompany().getId());
             }
 
             stmt.setLong(5, computer.getId());
@@ -214,9 +219,6 @@ public class ComputerDao implements Dao<Computer> {
      * @throws DaoException exception sur la requête
      */
     public boolean deleteComputer(final long id) throws DaoException {
-        if (this.getById(id) == null) {
-            return false;
-        }
 
         int result = 0;
         try {

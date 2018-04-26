@@ -127,8 +127,6 @@ public class DaoFactory {
         case COMPUTER:
             res = ComputerDao.getInstance(this);
             break;
-        default:
-            break;
         }
         return res;
     }
