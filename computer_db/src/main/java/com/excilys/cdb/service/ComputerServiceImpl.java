@@ -204,15 +204,15 @@ public class ComputerServiceImpl implements IComputerService {
                     || (introduced != null && discontinued != null
                             && introduced.isBefore(discontinued))) {
 
-                try {
-                    Company inter = companyDao.getById(companyId);
-                    if (companyId > 0
-                            && (inter = companyDao.getById(companyId)) != null) {
-                        c.setCompany(inter);
+                if (companyId > 0) {
+                    try {
+                        Company inter = companyDao.getById(companyId);
+                        if (inter != null) {
+                            c.setCompany(inter);
+                        }
+                    } catch (DaoException e) {
+                        throw new ServiceException("Méthode dao fail on getById", e);
                     }
-                } catch (DaoException e) {
-                    throw new ServiceException("Méthode dao fail on getById",
-                            e);
                 }
 
                 try {

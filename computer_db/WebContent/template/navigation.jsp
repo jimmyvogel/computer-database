@@ -10,7 +10,7 @@
       
       <li class="active"><a href="computer">Home</a></li>
       <c:url value="computer" var="urlAddComputer">
- 				<c:param name="action" value="${applicationScope.actions.ADD_COMPUTER}"/>
+ 				<c:param name="action" value="${applicationScope.actions.ADD_FORM_COMPUTER}"/>
 	  </c:url>
       <li><a href="${urlAddComputer}">Add entry</a></li>
       

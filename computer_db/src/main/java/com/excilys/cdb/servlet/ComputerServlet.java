@@ -1,6 +1,7 @@
 package com.excilys.cdb.servlet;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validation.DateValidation;
 
 /**
  * Class du composant Servlet.
@@ -94,16 +96,11 @@ public class ComputerServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        System.out.println("Utilisation du doGet");
         if (request.getParameter("action") != null) {
             Action action = Action.valueOf(request.getParameter("action"));
             try {
                 switch (action) {
-                    case ADD_COMPUTER:
-                        addComputer(request);
-                        break;
-                    case EDIT_COMPUTER:
-                        editComputer(request);
-                        break;
                     case ADD_FORM_COMPUTER:
                         request.setAttribute("companies", service.getAllCompany());
                         break;
@@ -171,12 +168,32 @@ public class ComputerServlet extends HttpServlet {
      * @throws ServiceException erreur de service.
      */
     private void editComputer(HttpServletRequest request) throws ServiceException {
-        String name = request.getParameter("computerName");
-        System.out.println(name);
-        System.out.println(request.getParameter("introduced"));
-        System.out.println(request.getParameter("discontinued"));
-        request.getParameter("companyId");
-        throw new ServiceException("blabla");
+        long id = Long.valueOf(request.getParameter("id"));
+        String name = request.getParameter("computerName").trim();
+        long idCompany = -1;
+        LocalDateTime introduced = null;
+        LocalDateTime discontinued = null;
+        String introducedS = request.getParameter("introduced");
+        String discontinuedS = request.getParameter("discontinued");
+        String idS = request.getParameter("companyId");
+
+        if (introducedS != null  && introducedS != "") {
+            introduced = DateValidation.validationDate(introducedS);
+        }
+
+        if (discontinuedS != null  && discontinuedS != "") {
+            discontinued = DateValidation.validationDate(discontinuedS);
+        }
+        if (idS != null && idS != "") {
+            idCompany = Long.valueOf(idS);
+        }
+        System.out.println(introducedS);
+        System.out.println(discontinuedS);
+        System.out.println(introduced);
+        System.out.println(discontinued);
+        System.out.println(idS);
+        System.out.println(id);
+        System.out.println(service.updateComputer(id, name, introduced, discontinued, idCompany));
     }
 
     /**
@@ -185,12 +202,32 @@ public class ComputerServlet extends HttpServlet {
      * @throws ServiceException erreur de service.
      */
     private void addComputer(HttpServletRequest request) throws ServiceException {
-        String name = request.getParameter("computerName");
-        System.out.println(name);
-        System.out.println(request.getParameter("introduced"));
-        System.out.println(request.getParameter("discontinued"));
-        request.getParameter("companyId");
-        throw new ServiceException("blabla");
+        String name = request.getParameter("computerName").trim();
+        long id = -1;
+        LocalDateTime introduced = null;
+        LocalDateTime discontinued = null;
+        String introducedS = request.getParameter("introduced");
+        String discontinuedS = request.getParameter("discontinued");
+        String idS = request.getParameter("companyId");
+
+        if (introducedS != null  && introducedS != "") {
+            introduced = DateValidation.validationDate(introducedS);
+        }
+
+        if (discontinuedS != null  && discontinuedS != "") {
+            discontinued = DateValidation.validationDate(discontinuedS);
+        }
+
+        if (idS != null && idS != "") {
+            id = Long.valueOf(idS);
+        }
+        System.out.println(introducedS);
+        System.out.println(discontinuedS);
+        System.out.println(introduced);
+        System.out.println(discontinued);
+        System.out.println(idS);
+        System.out.println(id);
+        System.out.println(service.createComputer(name, introduced, discontinued, id));
     }
 
     /**
@@ -257,4 +294,5 @@ public class ComputerServlet extends HttpServlet {
         this.getServletContext().getRequestDispatcher(chemin)
         .forward(request, response);
     }
+
 }

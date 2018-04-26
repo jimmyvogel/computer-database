@@ -3,23 +3,27 @@
     <div class="row">
         <div class="col-xs-8 col-xs-offset-2 box">
             <h1>Add Computer</h1>
-            <form action="addComputer" method="POST">
+            <form action="computer" method="POST">
                 <fieldset>
                     <div class="form-group">
                         <label for="computerName">Computer name</label>
-                        <input type="text" class="form-control" id="computerName" placeholder="Computer name">
+                        <input type="text" class="form-control" name="computerName" id="computerName" placeholder="Computer name">
                     </div>
                     <div class="form-group">
                         <label for="introduced">Introduced date</label>
-                        <input type="date" class="form-control" id="introduced" placeholder="Introduced date">
+                        <input type="date" class="form-control" name="introduced" id="introduced" 
+                        placeholder="Introduced date (yyyy-mm-dd)">
                     </div>
                     <div class="form-group">
                         <label for="discontinued">Discontinued date</label>
-                        <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date">
+                        <input type="date" class="form-control" name="discontinued" id="discontinued" 
+                        placeholder="Discontinued date (yyyy-mm-dd)">
                     </div>
                     <div class="form-group">
                         <label for="companyId">Company</label>
-                        <select class="form-control" id="companyId">
+                        
+                        <select class="form-control" id="companyId" name="companyId">
+                          <option value="-1">- - - - - - - -</option>
                           <c:forEach items="${companies}" var="company">
                           		<option value="${company.id}">${company.name}</option>
                           </c:forEach>
@@ -28,11 +32,9 @@
                 </fieldset>
                 
                 <div class="actions pull-right">
-                    <input type="submit" value="Add" class="btn btn-primary">
-                    or
-                    <a href="dashboard.html" class="btn btn-default">Cancel</a>
+                    <input type="hidden" value="${applicationScope.actions.ADD_COMPUTER}" name="action"/>
+                    <input type="submit" value="Ajouter" class="btn btn-primary">
                 </div>
-                
             </form>
         </div>
     </div>

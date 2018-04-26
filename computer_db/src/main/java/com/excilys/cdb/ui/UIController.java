@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.service.ComputerServiceImpl;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validation.DateValidation;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
 
@@ -381,7 +381,7 @@ public class UIController {
             break;
         case INTRODUCED:
             if (!ligne.equals("no")) {
-                timeInter = traitementDate(ligne);
+                timeInter = DateValidation.validationDate(ligne);
                 if (timeInter == null) {
                     view.setAffichage("Error" + UITextes.AJOUT_INTRODUCED);
                     stateAjout = Ajout.NAME;
@@ -393,7 +393,7 @@ public class UIController {
             break;
         case DISCONTINUED:
             if (!ligne.equals("no")) {
-                timeInter = traitementDate(ligne);
+                timeInter = DateValidation.validationDate(ligne);
                 if (timeInter == null) {
                     view.setAffichage("Error" + UITextes.AJOUT_DISCONTINUED);
                     stateAjout = Ajout.INTRODUCED;
@@ -454,25 +454,25 @@ public class UIController {
             break;
         case INTRODUCED:
             if (!ligne.equals("no")) {
-                timeInter = traitementDate(ligne);
+                timeInter = DateValidation.validationDate(ligne);
                 if (timeInter == null) {
                     view.setAffichage("Error" + UITextes.UPDATE_INTRODUCED);
                     stateUpdate = Update.NAME;
                     break;
                 }
-                inter.setIntroduced(traitementDate(ligne));
+                inter.setIntroduced(DateValidation.validationDate(ligne));
             }
             view.setAffichage(UITextes.UPDATE_DISCONTINUED);
             break;
         case DISCONTINUED:
             if (!ligne.equals("no")) {
-                timeInter = traitementDate(ligne);
+                timeInter = DateValidation.validationDate(ligne);
                 if (timeInter != null) {
                     view.setAffichage("Error" + UITextes.UPDATE_DISCONTINUED);
                     stateUpdate = Update.INTRODUCED;
                     break;
                 }
-                inter.setDiscontinued(traitementDate(ligne));
+                inter.setDiscontinued(DateValidation.validationDate(ligne));
             }
             view.setAffichage(UITextes.UPDATE_COMPANY_ID);
             break;
@@ -613,31 +613,6 @@ public class UIController {
             affichage += c.getCompany().getName() + "\n ";
         }
         return affichage;
-    }
-
-    /**
-     * Traitement de l'input de la date par l'utilisateur.
-     * @param ligne
-     *            le String tappé par l'utilisateur.
-     * @return Une LocalDateTime spécifié par l'utilisateur ou null si une
-     *         erreur.
-     */
-    private LocalDateTime traitementDate(final String ligne) {
-        String regex = "^\\d{4}-\\d{2}-\\d{2}$"; // (yyyy-mm-dd)
-        if (!ligne.matches(regex)) {
-            return null;
-        }
-
-        LocalDateTime dateTime;
-        try {
-            String line = ligne + " 00:00";
-            DateTimeFormatter formatter = DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd HH:mm");
-            dateTime = LocalDateTime.parse(line, formatter);
-        } catch (java.time.format.DateTimeParseException e) {
-            return null;
-        }
-        return dateTime;
     }
 
 }
