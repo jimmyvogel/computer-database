@@ -57,7 +57,7 @@ public class CompanyDaoTest {
     public void testGetPage() throws DaoException {
         Page<Company> page = dao.getPage(1);
         Assert.assertTrue(page.getObjects().size() == page.getLimit());
-        Page<Company> page2 = dao.getPage(-1);
+        dao.getPage(-1);
     }
 
 }

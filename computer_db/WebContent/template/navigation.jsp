@@ -5,6 +5,9 @@
       <a class="navbar-brand" href="#">Actions</a>
     </div>
     <ul class="nav navbar-nav">
+      
+      <c:set var="test" value="nav_active" scope="session" />
+      
       <li class="active"><a href="computer">Home</a></li>
       <c:url value="computer" var="urlAddComputer">
  				<c:param name="action" value="${applicationScope.actions.ADD_COMPUTER}"/>

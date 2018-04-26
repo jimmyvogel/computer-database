@@ -26,7 +26,11 @@
 					<td class="editMode">
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
 					</td>
-					<td><a href="editComputer.jsp" onclick="">${computer.name }</a></td>
+					<c:url value="computer" var="urlEditComputer">
+		 				<c:param name="action" value="${applicationScope.actions.EDIT_COMPUTER}"/>
+		 				<c:param name="id" value="${computer.id}"/>
+	  				</c:url>
+					<td><a href="editComputer.jsp" onclick="">${computer.name}</a></td>
 					<td>${computer.introduced }</td>
 					<td>${computer.discontinued }</td>
 					<td>${computer.company}</td>

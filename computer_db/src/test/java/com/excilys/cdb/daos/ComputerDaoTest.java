@@ -88,7 +88,7 @@ public class ComputerDaoTest {
     public void testGetPage() throws DaoException {
         Page<Computer> page = dao.getPage(1);
         Assert.assertTrue(page.getObjects().size() == page.getLimit());
-        Page<Computer> page2 = dao.getPage(-1);
+        dao.getPage(-1);
     }
 
 }

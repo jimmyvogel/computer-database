@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
@@ -34,6 +35,9 @@ public class ComputerServlet extends HttpServlet {
     public enum Action {
         HOME(CHEMIN_ACCUEIL),
         ADD_COMPUTER(CHEMIN_ADD_COMPUTER),
+        EDIT_COMPUTER(CHEMIN_EDIT_COMPUTER),
+        ADD_FORM_COMPUTER(CHEMIN_FORM_ADD_COMPUTER),
+        EDIT_FORM_COMPUTER(CHEMIN_FORM_EDIT_COMPUTER),
         LIST_COMPUTERS(CHEMIN_LIST_COMPUTERS),
         LIST_COMPANIES(CHEMIN_LIST_COMPANIES);
 
@@ -56,7 +60,10 @@ public class ComputerServlet extends HttpServlet {
         }
     }
     private static final String CHEMIN_ACCUEIL = "/WEB-INF/accueil.jsp";
+    private static final String CHEMIN_FORM_ADD_COMPUTER = "/forms/formAjoutComputer.jsp";
+    private static final String CHEMIN_FORM_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
     private static final String CHEMIN_ADD_COMPUTER = "/forms/formAjoutComputer.jsp";
+    private static final String CHEMIN_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
     private static final String CHEMIN_LIST_COMPUTERS = "/views/listeComputers.jsp";
     private static final String CHEMIN_LIST_COMPANIES = "/views/listeCompanies.jsp";
 
@@ -91,15 +98,22 @@ public class ComputerServlet extends HttpServlet {
             Action action = Action.valueOf(request.getParameter("action"));
             try {
                 switch (action) {
-                    case HOME: break;
                     case ADD_COMPUTER:
+                        addComputer(request);
+                        break;
+                    case EDIT_COMPUTER:
+                        editComputer(request);
+                        break;
+                    case ADD_FORM_COMPUTER:
                         request.setAttribute("companies", service.getAllCompany());
                         break;
+                    case EDIT_FORM_COMPUTER:
+                        addParamsEditComputer(request);
                     case LIST_COMPUTERS:
                         addParamsListComputers(request);
                         break;
                     case LIST_COMPANIES:
-                        request.setAttribute("companies", service.getAllCompany());
+                        addParamsListCompanies(request);
                         break;
                     default: dispatch(request, response, CHEMIN_ACCUEIL); break;
                 }
@@ -112,6 +126,99 @@ public class ComputerServlet extends HttpServlet {
         } else {
             dispatch(request, response, CHEMIN_ACCUEIL);
         }
+    }
+
+    /**
+     * Récupération des requêtes en POST.
+     * @param request
+     *            la requête
+     * @param response
+     *            la reponse
+     * @throws ServletException
+     *             exception de réception
+     * @throws IOException
+     *             exception de lecture
+     */
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        if (request.getParameter("action") != null) {
+            Action action = Action.valueOf(request.getParameter("action"));
+            try {
+                switch (action) {
+                    case ADD_COMPUTER:
+                        addComputer(request);
+                        break;
+                    case EDIT_COMPUTER:
+                        editComputer(request);
+                        break;
+                    default: dispatch(request, response, CHEMIN_ACCUEIL); break;
+                }
+                dispatch(request, response, action.getVue());
+
+            } catch (ServiceException e) {
+                dispatch(request, response, CHEMIN_ACCUEIL);
+            }
+
+        } else {
+            dispatch(request, response, CHEMIN_ACCUEIL);
+        }
+    }
+
+    /**
+     * Modification d'un computer, injection et redirection.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
+     */
+    private void editComputer(HttpServletRequest request) throws ServiceException {
+        String name = request.getParameter("computerName");
+        System.out.println(name);
+        System.out.println(request.getParameter("introduced"));
+        System.out.println(request.getParameter("discontinued"));
+        request.getParameter("companyId");
+        throw new ServiceException("blabla");
+    }
+
+    /**
+     * Ajout d'un computer, injection et redirection.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
+     */
+    private void addComputer(HttpServletRequest request) throws ServiceException {
+        String name = request.getParameter("computerName");
+        System.out.println(name);
+        System.out.println(request.getParameter("introduced"));
+        System.out.println(request.getParameter("discontinued"));
+        request.getParameter("companyId");
+        throw new ServiceException("blabla");
+    }
+
+    /**
+     * Gestion d'injection avant redirection pour la page editComputer.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
+     */
+    private void addParamsEditComputer(HttpServletRequest request) throws ServiceException {
+        long id = Long.valueOf(request.getParameter("id"));
+        request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
+        request.setAttribute("companies", service.getAllCompany());
+    }
+
+    /**
+     * Gestion d'injection avant redirection pour la page listCompanies.
+     * @param request modification des injections
+     * @throws ServiceException erreur de service.
+     */
+    private void addParamsListCompanies(HttpServletRequest request) throws ServiceException {
+        int value = 1;
+        if (request.getParameter("page") != null) {
+            value = Integer.valueOf(request.getParameter("page"));
+        }
+        Page<Company> page = service.getPageCompany(value);
+        request.setAttribute("companies", page.getObjects());
+        request.setAttribute("nbCompanies", page.getCount());
+        request.setAttribute("maxPage", page.getMaxPage());
+        request.setAttribute("pages", page.pageRestantesInList(5));
     }
 
     /**
@@ -134,23 +241,6 @@ public class ComputerServlet extends HttpServlet {
         request.setAttribute("nbComputers", page.getCount());
         request.setAttribute("maxPage", page.getMaxPage());
         request.setAttribute("pages", page.pageRestantesInList(5));
-    }
-
-    /**
-     * Récupération des requêtes en POST.
-     * @param request
-     *            la requête
-     * @param response
-     *            la reponse
-     * @throws ServletException
-     *             exception de réception
-     * @throws IOException
-     *             exception de lecture
-     */
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        this.getServletContext().getRequestDispatcher(CHEMIN_ACCUEIL)
-                .forward(request, response);
     }
 
     /**
