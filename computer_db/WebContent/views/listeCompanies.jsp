@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="../WEB-INF/tags.tld" prefix="pg" %> 
 <h1 id="homeTitle">
     ${ nbCompanies } Companies
 </h1>
