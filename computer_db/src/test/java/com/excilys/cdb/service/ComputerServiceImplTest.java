@@ -249,61 +249,70 @@ public class ComputerServiceImplTest {
         update = service.updateComputer(computerValid.getId(), null,
                 DATE_INTRODUCED_VALID, null, companyValid.getId());
         Assert.assertTrue(update);
-
-        // Invalid with date not valid
-        update = service.updateComputer(computerValid.getId(), null, null,
-                Computer.BEGIN_DATE_VALID, -1);
-        Assert.assertFalse(update);
-
-        // Invalid with name not good
-        update = service.updateComputer(computerValid.getId(), NAME_INVALID,
-                null, null, -1);
-        Assert.assertFalse(update);
-
-        // Invalid with invalid id
-        update = service.updateComputer(-1, null, null, null, -1);
-        Assert.assertFalse(update);
-
-        // Invalid with introduced before discontinued not valid
-        update = service.updateComputer(computerValid.getId(), null,
-                DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1);
-        Assert.assertFalse(update);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
-    @Test
-    public void testUpdateInvalidDate()
+    @Test(expected = ServiceException.class)
+    public void testUpdateComputerInvalidName()
             throws ServiceException {
-
-        // Invalid date
-        boolean update = service.updateComputer(computerValid.getId(), null,
-                Computer.BEGIN_DATE_VALID, null, -1);
-        Assert.assertFalse(update);
-
-        // Invalid date
-        update = service.updateComputer(computerValid.getId(), null,
-                Computer.END_DATE_VALID, null, -1);
-        Assert.assertFalse(update);
-
-        // Invalid date
-        update = service.updateComputer(computerValid.getId(), null,
-                null, Computer.BEGIN_DATE_VALID, -1);
-        Assert.assertFalse(update);
-
-        // Invalid date
-        update = service.updateComputer(computerValid.getId(), null,
-                null, Computer.END_DATE_VALID, -1);
-        Assert.assertFalse(update);
+        service.updateComputer(computerValid.getId(), NAME_INVALID, null, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
-    @Test
+    @Test(expected = ServiceException.class)
+    public void testUpdateComputerInvalidIdCompany()
+            throws ServiceException {
+        service.updateComputer(-1, null, null, null, -1);
+    }
+
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateInvalidDateIntroducedMinDate() throws ServiceException {
+        service.updateComputer(computerValid.getId(), null, Computer.BEGIN_DATE_VALID, null, -1);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateInvalidDateIntroducedMaxDate() throws ServiceException {
+        service.updateComputer(computerValid.getId(), null, Computer.END_DATE_VALID, null, -1);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateInvalidDateDiscontinuedMinDate() throws ServiceException {
+        service.updateComputer(computerValid.getId(), null, null, Computer.BEGIN_DATE_VALID, -1);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateInvalidDateDiscontinuedMaxDate() throws ServiceException {
+        service.updateComputer(computerValid.getId(), null, null, Computer.END_DATE_VALID, -1);
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
     public void testUpdateDiscontinuedWithoutIntroduced() throws ServiceException {
 
         long id = service.createComputer("nouveau");
@@ -312,12 +321,36 @@ public class ComputerServiceImplTest {
         assertTrue(c != null);
 
         assertFalse(service.updateComputer(id, null, null, DATE_DISCONTINUED_VALID, -1));
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateDiscontinuedBeforeIntroduced() throws ServiceException {
+
+        long id = service.createComputer("nouveau");
+        assertTrue(id > 0);
+        Computer c = service.getComputer(id);
+        assertTrue(c != null);
         assertFalse(service.updateComputer(id,  null, DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1));
+    }
+
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur sur le service
+     */
+    @Test(expected = ServiceException.class)
+    public void testUpdateDiscontinuedBeforeInitialIntroduced() throws ServiceException {
+
+        long id = service.createComputer("nouveau");
+        assertTrue(id > 0);
+        Computer c = service.getComputer(id);
+        assertTrue(c != null);
 
         assertTrue(service.updateComputer(id,  null, DATE_INTRODUCED_VALID, null, -1));
         assertFalse(service.updateComputer(id,  null, null, DD_INVALID_BEFORE_DI, -1));
-
-        assertTrue(service.deleteComputer(id));
     }
 
     /**
@@ -341,12 +374,9 @@ public class ComputerServiceImplTest {
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
-    @Test
+    @Test(expected = ServiceException.class)
     public void testUpdateWithoutArguments() throws ServiceException {
-
-        boolean update = service.updateComputer(computerValid.getId(), null, null, null,
-                -1);
-        Assert.assertFalse(update);
+        service.updateComputer(computerValid.getId(), null, null, null, -1);
     }
 
     /**
@@ -366,12 +396,9 @@ public class ComputerServiceImplTest {
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
-    @Test
+    @Test(expected = ServiceException.class)
     public void testUpdateFailWithCompanyMaxInexistant() throws ServiceException {
-
-        boolean update = service.updateComputer(computerValid.getId(), null, null, null,
-                Long.MAX_VALUE);
-        Assert.assertFalse(update);
+        service.updateComputer(computerValid.getId(), null, null, null, Long.MAX_VALUE);
     }
 
     /**
@@ -391,12 +418,9 @@ public class ComputerServiceImplTest {
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
      */
-    @Test
+    @Test(expected = ServiceException.class)
     public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException {
-
-        boolean update = service.updateComputer(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null,
-                -1);
-        Assert.assertFalse(update);
+        service.updateComputer(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
     }
 
     /**

@@ -284,26 +284,26 @@ public class ComputerServiceImpl implements IComputerService {
      * @param discontinued la nouvelle date d'arret ou null
      * @param companyId l'id de la nouvelle company, 0 pour supprimer, ou -1 pour null.
      * @return un boolean pour le résultat
-     * @throws ServiceException erreur de service.
+     * @throws ServiceException erreur de service ou problèmes explicites
      */
     public boolean updateComputer(long id, String name,
             LocalDateTime introduced, LocalDateTime discontinued,
             long companyId) throws ServiceException {
         if (name == null && introduced == null && discontinued == null
                 && companyId < 0) {
-            return false;
+            throw new ServiceException("Aucun éléments n'a été spécifié.");
         }
 
         if (name != null && !Computer.validName(name)) {
-            return false;
+            throw new ServiceException("Name invalid.");
         }
 
         // Verification validité date.
         if (introduced != null && !Computer.validDate(introduced)) {
-            return false;
+            throw new ServiceException("Date invalid.");
         }
         if (discontinued != null && !Computer.validDate(discontinued)) {
-            return false;
+            throw new ServiceException("Date invalid.");
         }
 
         boolean result = false;
@@ -331,7 +331,7 @@ public class ComputerServiceImpl implements IComputerService {
                 // Les deux existent
                 if (introduced != null && discontinued != null) {
                     if (introduced.isAfter(discontinued)) {
-                        return false;
+                        throw new ServiceException("Date introduced is after discontinued.");
                     }
                     nouveau.setIntroduced(introduced);
                     nouveau.setDiscontinued(discontinued);
@@ -341,7 +341,7 @@ public class ComputerServiceImpl implements IComputerService {
 
                         if (initial.getDiscontinued() != null && introduced
                                 .isAfter(initial.getDiscontinued())) {
-                            return false;
+                            throw new ServiceException("Date introduced is after discontinued.");
                         }
 
                         // Pas de problème temporel si le discontinued
@@ -351,10 +351,10 @@ public class ComputerServiceImpl implements IComputerService {
                         // Discontinued ne peut exister si il n'y en avait pas
                         // avant.
                         if (initial.getIntroduced() == null) {
-                            return false;
+                            throw new ServiceException("Discontinued impossible without introduced.");
                         }
                         if (discontinued.isBefore(initial.getIntroduced())) {
-                            return false;
+                            throw new ServiceException("Ancien discontinued est avant le nouveau introduced.");
                         }
                     }
                 }
@@ -364,7 +364,7 @@ public class ComputerServiceImpl implements IComputerService {
             if (companyId > 0) {
                 Company comp = companyDao.getById(companyId);
                 if (comp == null) {
-                    return false;
+                    throw new ServiceException("La compagnie spécifié n'existe pas.");
                 }
                 nouveau.setCompany(comp);
 

@@ -25,7 +25,8 @@
                    <div class="form-group">
                        <label for="companyId">Company</label>
                        <select class="form-control" id="companyId" name="companyId">
-                         <option value="-1">- - - - - - - -</option>
+                         <option value="-1">NO CHANGE</option>
+                         <option value="0">NONE</option>
                          <c:forEach items="${companies}" var="company">
                          <c:choose>
 						    <c:when test="${company.id==computer.companyId}">

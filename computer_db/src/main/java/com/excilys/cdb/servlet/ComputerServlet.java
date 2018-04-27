@@ -154,6 +154,7 @@ public class ComputerServlet extends HttpServlet {
                 dispatch(request, response, action.getVue());
 
             } catch (ServiceException e) {
+                System.out.println(e.getMessage());
                 dispatch(request, response, CHEMIN_ACCUEIL);
             }
 
@@ -169,7 +170,12 @@ public class ComputerServlet extends HttpServlet {
      */
     private void editComputer(HttpServletRequest request) throws ServiceException {
         long id = Long.valueOf(request.getParameter("id"));
-        String name = request.getParameter("computerName").trim();
+
+        String name = null;
+        String nameS = request.getParameter("computerName");
+        if (nameS != null && nameS != "") {
+            name = request.getParameter("computerName").trim();
+        }
         long idCompany = -1;
         LocalDateTime introduced = null;
         LocalDateTime discontinued = null;
