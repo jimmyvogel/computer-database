@@ -30,6 +30,9 @@ target
 #settings
 .settings
 
+#test-output
+test-output
+
 #projet
 .project
 
