@@ -29,9 +29,6 @@ public class ComputerDaoTest {
     private final LocalDateTime DATE_DISCONTINUED_VALID = LocalDateTime.of(2000,
             Month.APRIL, 8, 12, 30);
 
-    private final LocalDateTime DD_INVALID_BEFORE_DI = LocalDateTime.of(1985,
-            Month.APRIL, 8, 12, 30);
-
     /**
      * Initialisation.
      * @throws DAOConfigurationException erreur de configuration.
@@ -121,7 +118,6 @@ public class ComputerDaoTest {
      */
     @Test
     public void testUpdateCompanyNullDoChange() throws DaoException {
-        long id = -1;
         computerValid.setCompany(null);
         Assert.assertTrue(dao.update(computerValid));
         Assert.assertNull(dao.getById(computerValid.getId()).getCompany());

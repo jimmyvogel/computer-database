@@ -2,7 +2,7 @@
 <%@ taglib uri="../WEB-INF/tags.tld" prefix="pg" %> 
  
 <h1 id="homeTitle">
-    ${ nbComputers } Computers
+    ${ page.count } Computers
 </h1>
 <div class="container" style="margin-top: 10px;">
 	<table class="table table-striped table-bordered">
@@ -23,7 +23,7 @@
 		</thead>
 		<!-- Browse attribute computers -->
 		<tbody id="results">
-		    <c:forEach items="${computers}" var="computer">
+		    <c:forEach items="${page.objects}" var="computer">
 				<tr>
 					<td class="editMode">
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
@@ -44,10 +44,5 @@
 
 <div class="navbar">
 	<pg:pager target="computer" action="${applicationScope.actions.LIST_COMPUTERS}" page="${page}"> </pg:pager>
-	<div class="btn-group btn-group-sm pull-right" role="group">
-		<button type="button" class="btn btn-default">10</button>
-		<button type="button" class="btn btn-default">50</button>
-		<button type="button" class="btn btn-default">100</button>
-	</div>
 </div>
 

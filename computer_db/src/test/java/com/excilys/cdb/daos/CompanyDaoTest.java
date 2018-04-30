@@ -7,8 +7,8 @@ import org.junit.Test;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.DaoFactory;
-import com.excilys.cdb.persistence.DaoFactory.DaoType;
 import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.DaoFactory.DaoType;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 

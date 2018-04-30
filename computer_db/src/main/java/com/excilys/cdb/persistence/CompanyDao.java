@@ -30,7 +30,6 @@ public class CompanyDao implements Dao<Company> {
     private static final String SQL_COUNT_COMPANY = "SELECT COUNT(`id`) AS `total` FROM `company`";
     private static final String SQL_PAGE_COMPANY = SQL_ALL_COMPANIES
             + " LIMIT ? OFFSET ?";
-    private static final int LIMIT_DEFAULT = 10;
 
     /**
      * Méthode de fabrique de company dao.
@@ -142,7 +141,18 @@ public class CompanyDao implements Dao<Company> {
      *             exception sur la requête
      */
     public Page<Company> getPage(final int numeroPage) throws DaoException {
-        Page<Company> page = new Page<Company>(LIMIT_DEFAULT, (int) this.getCount());
+        return getPage(numeroPage, LIMIT_DEFAULT);
+    }
+
+    /** Méthode pour récupérer un nombre spécifié d'objets d'une certaine page.
+     * @param numeroPage le numéro de la page a récupérer
+     * @param limit nombre d'objets à récupérer
+     * @return une liste d'objets dans une page
+     * @throws DaoException
+     *             exception sur la requête
+     */
+    public Page<Company> getPage(final int numeroPage, final int limit) throws DaoException {
+        Page<Company> page = new Page<Company>(limit, (int) this.getCount());
         try {
             List<Company> companies = new ArrayList<Company>();
             Connection c = factory.getConnection();

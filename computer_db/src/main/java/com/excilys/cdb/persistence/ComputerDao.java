@@ -40,7 +40,6 @@ public class ComputerDao implements Dao<Computer> {
     private static final String SQL_COUNT_COMPUTER = "SELECT COUNT(`id`) AS `total` FROM `computer`";
     private static final String SQL_PAGE_COMPUTER = SQL_ALL_COMPUTERS
             + " LIMIT ? OFFSET ?";
-    private static final int LIMIT_DEFAULT = 10;
 
     /**
      * Méthode de fabrique de computer dao.
@@ -267,7 +266,17 @@ public class ComputerDao implements Dao<Computer> {
      * @throws DaoException exception sur la requête
      */
     public Page<Computer> getPage(final int numeroPage) throws DaoException {
-        Page<Computer> page = new Page<Computer>(LIMIT_DEFAULT, (int) this.getCount());
+        return getPage(numeroPage, LIMIT_DEFAULT);
+    }
+
+    /** Méthode pour récupérer un nombre spécifié d'objets d'une certaine page de computer.
+     * @param numeroPage le numéro de la page a récupérer
+     * @param limit le nombre d'objets a instancier
+     * @return une liste de computers dans une page
+     * @throws DaoException exception sur la requête
+     */
+    public Page<Computer> getPage(final int numeroPage, final int limit) throws DaoException {
+        Page<Computer> page = new Page<Computer>(limit, (int) this.getCount());
         try {
             List<Computer> computers = new ArrayList<Computer>();
             Connection c = factory.getConnection();

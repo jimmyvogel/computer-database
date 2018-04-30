@@ -87,11 +87,26 @@ public class ComputerServiceImpl implements IComputerService {
      * @return une page chargé.
      * @throws ServiceException erreur de service
      */
-    public Page<Company> getPageCompany(int page)
+    public Page<Company> getPageCompany(final int page) throws ServiceException {
+        return getPageCompany(page, null);
+    }
+
+    /**
+     * Optenir une page de company avec un nombre d'éléments spécifié.
+     * @param page le numero de la page
+     * @param limit le nombre d'objets à instancié, if null: valeur default.
+     * @return une page chargé.
+     * @throws ServiceException erreur de service
+     */
+    public Page<Company> getPageCompany(final int page, final Integer limit)
             throws ServiceException {
         Page<Company> pageCompany = null;
         try {
-            pageCompany = companyDao.getPage(page);
+            if (limit == null) {
+                pageCompany = companyDao.getPage(page);
+            } else {
+                pageCompany = companyDao.getPage(page, limit);
+            }
         } catch (DaoException e) {
             throw new ServiceException("Méthode dao fail", e);
         }
@@ -104,10 +119,25 @@ public class ComputerServiceImpl implements IComputerService {
      * @return une page chargé.
      * @throws ServiceException erreur de service
      */
-    public Page<Computer> getPageComputer(int page) throws ServiceException {
+    public Page<Computer> getPageComputer(final int page) throws ServiceException {
+        return getPageComputer(page, null);
+    }
+
+    /**
+     * Optenir une page de computer avec un nombre d'éléments spécifié.
+     * @param page le numero de la page
+     * @param limit le nombre d'éléments à récupérer, si null: valeur default.
+     * @return une page chargé.
+     * @throws ServiceException erreur de service
+     */
+    public Page<Computer> getPageComputer(final int page, final Integer limit) throws ServiceException {
         Page<Computer> pageComputer = null;
         try {
-            pageComputer = computerDao.getPage(page);
+            if (limit == null) {
+                pageComputer = computerDao.getPage(page);
+            } else {
+                pageComputer = computerDao.getPage(page, limit);
+            }
         } catch (DaoException e) {
             throw new ServiceException("Méthode dao fail", e);
         }

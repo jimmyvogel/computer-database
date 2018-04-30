@@ -1,6 +1,6 @@
 package com.excilys.cdb.util;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -47,24 +47,39 @@ public class PagerTag extends TagSupport {
             out.print("<ul class=\"pagination\">");
             //left possible
             if (page.getPageCourante() > 1) {
-                printUrl(out, target, action, page.getPageCourante() - 1);
-                out.print("<li><a href=\"urlPagerTag\" aria-label=\"Previous\">");
+                out.print("<li><a href=\"" + getUrl(1) + "\" aria-label=\"First\">");
                 out.print("<span aria-hidden=\"true\">&laquo;</span></a></li>");
+                out.print("<li><a href=\"" + getUrl(page.getPageCourante() - 1) + "\" aria-label=\"Previous\">");
+                out.print("<span aria-hidden=\"true\"><</span></a></li>");
             }
 
             @SuppressWarnings("unchecked")
             List<Integer> list = page.pageRestantesInList(5);
 
             for (Integer i : list) {
-                printUrl(out, target, action, i);
-                out.print("<li><a href=\"urlPagerTag\">" + i + "</a></li>");
+                if (i == page.getPageCourante()) {
+                    out.print("<li class=\"active\"><a href=\"" + getUrl(i) + "\">" + i + "</a></li>");
+                } else {
+                    out.print("<li><a href=\"" + getUrl(i) + "\">" + i + "</a></li>");
+                }
             }
 
             //right possible
             if (page.getPageCourante() < page.getMaxPage()) {
-                printUrl(out, target, action, page.getPageCourante() + 1);
-                out.print("<li><a href=\"urlPagerTag\" aria-label=\"Next\">");
+                out.print("<li><a href=\"" + getUrl(page.getPageCourante() + 1) + "\" aria-label=\"Next\">");
+                out.print("<span aria-hidden=\"true\">></span></a></li>");
+                out.print("<li><a href=\"" + getUrl(page.getMaxPage()) + "\" aria-label=\"Last\">");
                 out.print("<span aria-hidden=\"true\">&raquo;</span></a></li>");
+            }
+            out.print("</ul><br>");
+            List<Integer> limites = Arrays.asList(10, 20, 50, 100);
+            out.print("<ul class=\"pagination\">");
+            for (Integer limit : limites) {
+                if (limit.equals(page.getLimit())) {
+                    out.print("<li class=\"active\"><a href=\"" + getUrl(1, limit) + "\">" + limit + "</a></li>");
+                } else {
+                    out.print("<li><a href=\"" + getUrl(1, limit) + "\">" + limit + "</a></li>");
+                }
             }
             out.print("</ul>");
             out.print("</div>");
@@ -76,18 +91,22 @@ public class PagerTag extends TagSupport {
     }
 
     /**
-     * Ecriture de l'url de redirection.
-     * @param out le writer jsp
-     * @param target le controlleur
-     * @param action l'action
-     * @param page la page a spécfié.
-     * @throws IOException exception
+     * Format de l'url en GET.
+     * @param page le numero de la page
+     * @return le format sous forme d'un string
      */
-    private void printUrl(JspWriter out, String target, String action, int page) throws IOException {
-        out.print("<c:url value=\"" + target + "\" var=\"urlPagerTag\">");
-        out.print("<c:param name=\"action\" value=\"" + action + "\"/>");
-        out.print("<c:param name=\"page\" value=\"" + page + "\"/>");
-        out.print("</c:url>");
+    private String getUrl(int page) {
+        return target + "?action=" + action + "&page=" + page;
+    }
+
+    /**
+     * Format de l'url en GET with limit.
+     * @param page le numero de la page
+     * @param limit rajout de la limit dans la requête
+     * @return le format sous forme d'un string
+     */
+    private String getUrl(int page, int limit) {
+        return target + "?action=" + action + "&page=" + page + "&limit=" + limit;
     }
 
 }

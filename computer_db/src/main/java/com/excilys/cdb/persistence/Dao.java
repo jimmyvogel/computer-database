@@ -12,6 +12,8 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
  */
 public interface Dao<T> {
 
+    int LIMIT_DEFAULT = 10;
+
     /**
      * Retourne le nombre d'instances de l'objets T dans la bdd.
      * @return un résultat en long

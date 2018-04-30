@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.Dao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.service.ComputerServiceImpl;
@@ -68,6 +69,10 @@ public class ComputerServlet extends HttpServlet {
     private static final String CHEMIN_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
     private static final String CHEMIN_LIST_COMPUTERS = "/views/listeComputers.jsp";
     private static final String CHEMIN_LIST_COMPANIES = "/views/listeCompanies.jsp";
+
+    private static final String SESSION_LIMIT_COMPUTERS_ID = "LimitComputers";
+    private static final String SESSION_LIMIT_COMPANIES_ID = "LimitCompanies";
+    private static final Integer DEFAULT_LIMIT = Dao.LIMIT_DEFAULT;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -257,11 +262,27 @@ public class ComputerServlet extends HttpServlet {
         if (request.getParameter("page") != null) {
             value = Integer.valueOf(request.getParameter("page"));
         }
-        Page<Company> page = service.getPageCompany(value);
-        request.setAttribute("companies", page.getObjects());
-        request.setAttribute("nbCompanies", page.getCount());
-        request.setAttribute("maxPage", page.getMaxPage());
-        request.setAttribute("pages", page.pageRestantesInList(5));
+
+        //Valeur par défaut si rien de spécifié.
+        Integer limit = DEFAULT_LIMIT;
+
+        //Modification de la limite
+        if (request.getParameter("limit") != null) {
+            System.out.println("paremeter limit vue");
+            limit = Integer.valueOf(request.getParameter("limit"));
+            request.getSession().setAttribute(SESSION_LIMIT_COMPANIES_ID, limit);
+            value = Integer.valueOf(request.getParameter("page"));
+
+        //Verification de la limite en session.
+        } else if (request.getSession().getAttribute(SESSION_LIMIT_COMPANIES_ID) != null) {
+
+            System.out.println("paremeter get Attribute vue");
+            limit = (Integer) request.getSession().getAttribute(SESSION_LIMIT_COMPANIES_ID);
+        }
+
+        System.out.println(limit);
+        Page<Company> page = service.getPageCompany(value, limit);
+        request.setAttribute("page", page);
     }
 
     /**
@@ -275,15 +296,32 @@ public class ComputerServlet extends HttpServlet {
             value = Integer.valueOf(request.getParameter("page"));
         }
 
+        //Valeur par défaut si rien de spécifié.
+        Integer limit = DEFAULT_LIMIT;
+
+        //Modification de la limite
+        if (request.getParameter("limit") != null) {
+            limit = Integer.valueOf(request.getParameter("limit"));
+            request.getSession().setAttribute(SESSION_LIMIT_COMPUTERS_ID, limit);
+            value = Integer.valueOf(request.getParameter("page"));
+
+        //Verification de la limite en session.
+        } else if (request.getSession().getAttribute(SESSION_LIMIT_COMPUTERS_ID) != null) {
+            limit = (Integer) request.getSession().getAttribute(SESSION_LIMIT_COMPUTERS_ID);
+        }
+
+        //Recuperation des computers et transformation en dtos.
         List<ComputerDTO> computersDtos = new ArrayList<>();
-        Page<Computer> page = service.getPageComputer(value);
+        Page<Computer> page = service.getPageComputer(value, limit);
         for (Computer c : page.getObjects()) {
             computersDtos.add(new ComputerDTO(c));
         }
-        request.setAttribute("computers", computersDtos);
-        request.setAttribute("nbComputers", page.getCount());
-        request.setAttribute("maxPage", page.getMaxPage());
-        request.setAttribute("pages", page.pageRestantesInList(5));
+
+        //Creation de la copie de la page avec chargement des dtos plutôt que des entities.
+        Page<ComputerDTO> newpage = new Page<>(page.getLimit(), page.getCount());
+        newpage.charge(computersDtos, page.getPageCourante());
+
+        request.setAttribute("page", newpage);
     }
 
     /**

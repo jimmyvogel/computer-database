@@ -55,17 +55,54 @@
 		    <version>1.2</version>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
 		<dependency>
-	        <groupId>taglibs</groupId>
-	        <artifactId>standard</artifactId>
-	        <version>1.1.2</version>
-    	</dependency> 
-    	
+		    <groupId>org.apache.taglibs</groupId>
+		    <artifactId>taglibs-standard-impl</artifactId>
+		    <version>1.2.5</version>
+		</dependency>
+
 		<dependency>
 	        <groupId>cglib</groupId>
 	        <artifactId>cglib</artifactId>
 	        <version>2.2.2</version>
     	</dependency>
+    	
+    	<!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+		<dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>javax.servlet.jsp-api</artifactId>
+		    <version>2.3.1</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-java</artifactId>
+		    <version>3.4.0</version>
+		    <scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server -->
+		<dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-server</artifactId>
+		    <version>3.4.0</version>
+		    <scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver -->
+		<dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-firefox-driver</artifactId>
+		    <version>3.4.0</version>
+		    <scope>test</scope>
+		</dependency>
+		  <dependency>
+		    <groupId>org.testng</groupId>
+		    <artifactId>testng</artifactId>
+		    <version>6.8</version>
+		    <scope>test</scope>
+		  </dependency>
 
 	</dependencies>
     
@@ -89,6 +126,57 @@
 				<configLocation>checkstyle.xml</configLocation>	
 				<suppressionsLocation>suppressions.xml</suppressionsLocation>				
 			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>selenium-maven-plugin</artifactId>
+			<version>1.0.1</version>
+			<configuration>
+				<background>true</background>
+			</configuration>
+			<executions>
+				<execution>
+					<id>start-selenium-server</id>
+					<phase>pre-integration-test</phase>
+					<goals>
+						<goal>start-server</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>stop-selenium-server</id>
+					<phase>post-integration-test</phase>
+					<goals>
+						<goal>stop-server</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.5</version>
+			<configuration>
+				<excludes>
+					<exclude>**/selenium/*.java</exclude> <!-- Les tests selenium sont exclus de la phase de test -->
+				</excludes>
+			</configuration>
+			<executions>
+				<execution>
+					<id>surefire-integration-test</id>
+					<phase>integration-test</phase>
+					<goals>
+						<goal>test</goal> <!-- La phase integration-test va lancer les tests... -->
+					</goals>
+					<configuration>
+						<excludes>
+							<exclude>none</exclude>
+						</excludes>
+						<includes>
+							<include>**/selenium/*Test.java</include> <!-- ...en incluant les tests selenium -->
+						</includes>
+					</configuration>
+				</execution>
+			</executions>
 		</plugin>
 	  </plugins>
 	</build>
