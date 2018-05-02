@@ -5,6 +5,7 @@
     <classes>
       <class name="com.excilys.cdb.selenium.NewTest">
         <methods>
+          <include name="afterClass"/>
           <include name="verifySearchButton"/>
           <include name="beforeClass"/>
         </methods>

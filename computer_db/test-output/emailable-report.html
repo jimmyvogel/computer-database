@@ -31,35 +31,14 @@ div.shootout {padding:2em;border:3px #4854A8 solid}
 <body>
 <table cellspacing="0" cellpadding="0" class="result">
 <tr><th>Test</th><th class="numi">Methods<br/>Passed</th><th class="numi">Scenarios<br/>Passed</th><th class="numi"># skipped</th><th class="numi"># failed</th><th class="numi">Total<br/>Time</th><th class="numi">Included<br/>Groups</th><th class="numi">Excluded<br/>Groups</th></tr>
-<tr><td style="text-align:left;padding-right:2em">Default test</td><td class="numi">0</td><td class="numi">0</td><td class="numi_attn">1</td><td class="numi">0</td><td class="numi">0,2 seconds</td><td class="numi"></td><td class="numi"></td></tr>
+<tr><td style="text-align:left;padding-right:2em">Default test</td><td class="numi">1</td><td class="numi">1</td><td class="numi">0</td><td class="numi">0</td><td class="numi">5,2 seconds</td><td class="numi"></td><td class="numi"></td></tr>
 </table>
 <table cellspacing="0" cellpadding="0" class="passed" id="summary">
 <tr><th>Class</th><th>Method</th><th># of<br/>Scenarios</th><th>Start</th><th>Time<br/>(ms)</th></tr>
-<tr><th colspan="4">Default test &#8212; failed (configuration methods)</th></tr>
-<tr class="failedodd"><td rowspan="1">com.excilys.cdb.selenium.NewTest</td><td><a href="#m1"><b>beforeClass</b>  </a></td><td class="numi">1</td><td>1525096772734</td><td class="numi">0</td></tr>
-<tr><th colspan="4">Default test &#8212; skipped (configuration methods)</th></tr>
-<tr class="skippedodd"><td rowspan="1">com.excilys.cdb.selenium.NewTest</td><td><a href="#m2"><b>afterClass</b>  </a></td><td class="numi">1</td><td>1525096772956</td><td class="numi">0</td></tr>
-<tr><th colspan="4">Default test &#8212; skipped</th></tr>
-<tr class="skippedodd"><td rowspan="1">com.excilys.cdb.selenium.NewTest</td><td><a href="#m3"><b>verifySearchButton</b>  </a></td><td class="numi">1</td><td>1525096772953</td><td class="numi">2</td></tr>
+<tr><th colspan="4">Default test &#8212; passed</th></tr>
+<tr class="passedodd"><td rowspan="1">com.excilys.cdb.selenium.NewTest</td><td><a href="#m1"><b>verifySearchButton</b>  </a></td><td class="numi">1</td><td>1525101739087</td><td class="numi">1336</td></tr>
 </table>
 <h1>Default test</h1>
-<h2 id="m1">com.excilys.cdb.selenium.NewTest:beforeClass</h2>
-<div style="padding-left:3em">
-<p>The path to the driver executable must be set by the webdriver.gecko.driver system property; for more information, see https://github.com/mozilla/geckodriver. The latest version can be downloaded from https://github.com/mozilla/geckodriver/releases</p>
-com.google.common.base.Preconditions.checkState(Preconditions.java:738)
-<br/>at org.openqa.selenium.remote.service.DriverService.findExecutable(DriverService.java:124)
-<br/>at org.openqa.selenium.firefox.GeckoDriverService.access$100(GeckoDriverService.java:41)
-<br/>at org.openqa.selenium.firefox.GeckoDriverService$Builder.findDefaultExecutable(GeckoDriverService.java:115)
-<br/>at org.openqa.selenium.remote.service.DriverService$Builder.build(DriverService.java:330)
-<br/>at org.openqa.selenium.firefox.FirefoxDriver.toExecutor(FirefoxDriver.java:207)
-<br/>at org.openqa.selenium.firefox.FirefoxDriver.&lt;init&gt;(FirefoxDriver.java:108)
-<br/>at org.openqa.selenium.firefox.FirefoxDriver.&lt;init&gt;(FirefoxDriver.java:104)
-<br/>at com.excilys.cdb.selenium.NewTest.beforeClass(NewTest.java:21)
-<br/>25 lines not shown
-</div>
-<p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m2">com.excilys.cdb.selenium.NewTest:afterClass</h2>
-<p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m3">com.excilys.cdb.selenium.NewTest:verifySearchButton</h2>
+<h2 id="m1">com.excilys.cdb.selenium.NewTest:verifySearchButton</h2>
 <p class="totop"><a href="#summary">back to summary</a></p>
 </body></html>

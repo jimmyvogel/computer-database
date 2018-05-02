@@ -11,6 +11,7 @@
 			<li>Modifier un computer</li>
 		</ul>
 		
+		<button name="test">Test</button>
 		Ce site est en cours de production !!!!!!
 	</div>
 </section>
