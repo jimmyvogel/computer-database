@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.service.ComputerServiceImpl;
-import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.validation.DateValidation;
+import com.excilys.cdb.validator.DateValidation;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
 
@@ -23,11 +24,35 @@ import com.excilys.cdb.vue.UIView;
 public class UIController {
 
     // Le service de gestion des computers et des compagnies.
-    private IComputerService service;
+    private ComputerService service;
 
     // Les énumérations permettant la gestion comme un automate du processus.
     private enum State {
-        INITIAL, LIST_COMPANY, LIST_COMPUTER, FORM_UPDATE, FORM_AJOUT, DELETE, SHOW, RETOUR
+        INITIAL(0), LIST_COMPANY(2), LIST_COMPUTER(1), FORM_UPDATE(5), FORM_AJOUT(4), DELETE(6), SHOW(3), RETOUR(0);
+        private Integer value;
+        /**
+         * Constructor.
+         * @param value valeur correspondant à l'action.
+         */
+        State(Integer value) {
+            this.value = value;
+        }
+        public Integer getValue() {
+            return value;
+        }
+        /**
+         * Method pour passer d'une valeur demandé à un énum.
+         * @param value un integer
+         * @return l'état correspondant à la valeur
+         */
+        public static State getByValue(Integer value) {
+            for (State s : State.values()) {
+                if (s.getValue().equals(value)) {
+                    return s;
+                }
+            }
+            return null;
+        }
     };
 
     private enum Update {
@@ -61,8 +86,8 @@ public class UIController {
      * pageurs.
      * @param computerService le singleton service.
      */
-    public UIController(final IComputerService computerService) {
-        Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
+    public UIController(final ComputerService computerService) {
+        Logger logger = LoggerFactory.getLogger(UIController.class);
         logger.info("Création d'un objet de type UIController");
 
         this.service = computerService;
@@ -103,9 +128,9 @@ public class UIController {
 
             try {
                 interprate(ligne);
-            } catch (ServiceException e) {
+            } catch (ServiceException | DaoException e) {
                 initialize();
-                view.setAffichage("Erreur de la dao \n" + view.getAffichage());
+                view.setAffichage(e.getMessage() + view.getAffichage());
             }
         } catch (java.lang.NumberFormatException e) {
             view.setAffichage(
@@ -118,8 +143,9 @@ public class UIController {
      * L'interprétation des résultats.
      * @param ligne le string a interprété
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private void interprate(final String ligne) throws ServiceException {
+    private void interprate(final String ligne) throws ServiceException, DaoException {
 
         // Un retour a été demandé.
         if (ligne.trim().equals("r")) {
@@ -333,35 +359,40 @@ public class UIController {
      * @param choix
      *            choix sous la forme d'un int.
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private void switchPrincipal(final int choix) throws ServiceException {
-        switch (choix) {
-        case 1:
-            view.setAffichage(pageurComputerShow(1));
-            state = State.LIST_COMPUTER;
-            break;
-        case 2:
-            view.setAffichage(pageurCompanyShow(1));
-            state = State.LIST_COMPANY;
-            break;
-        case 3:
-            view.setAffichage("Choissisez l'id.");
-            state = State.SHOW;
-            break;
-        case 4:
-            state = State.FORM_AJOUT;
-            view.setAffichage(UITextes.AJOUT_NAME);
-            break;
-        case 5:
-            state = State.FORM_UPDATE;
-            view.setAffichage(UITextes.UPDATE_ID);
-            break;
-        case 6:
-            view.setAffichage("Choissisez l'id:");
-            state = State.DELETE;
-            break;
-        default:
-            break;
+    private void switchPrincipal(final int choix) throws ServiceException, DaoException {
+        State stateChoix = State.getByValue(choix);
+        if (stateChoix != null) {
+            switch (stateChoix) {
+                case LIST_COMPUTER:
+                    view.setAffichage(pageurComputerShow(1));
+                    state = State.LIST_COMPUTER;
+                    break;
+                case LIST_COMPANY:
+                    view.setAffichage(pageurCompanyShow(1));
+                    state = State.LIST_COMPANY;
+                    break;
+                case SHOW:
+                    view.setAffichage("Choissisez l'id.");
+                    state = State.SHOW;
+                    break;
+                case FORM_AJOUT:
+                    state = State.FORM_AJOUT;
+                    view.setAffichage(UITextes.AJOUT_NAME);
+                    break;
+                case FORM_UPDATE:
+                    state = State.FORM_UPDATE;
+                    view.setAffichage(UITextes.UPDATE_ID);
+                    break;
+                case DELETE:
+                    view.setAffichage("Choissisez l'id:");
+                    state = State.DELETE;
+                    break;
+                default:
+                    break;
+            }
+            this.state = stateChoix;
         }
     }
 
@@ -370,8 +401,9 @@ public class UIController {
      * @param ligne
      *            input de l'utilisateur
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private void switchFormulaireAjout(String ligne) throws ServiceException {
+    private void switchFormulaireAjout(String ligne) throws ServiceException, DaoException {
         LocalDateTime timeInter;
         switch (stateAjout) {
         case NAME:
@@ -429,9 +461,10 @@ public class UIController {
      *            input de l'utilisateur
      * @throws ServiceException exception de service
      * @throws NumberFormatException exception sur le type caster en lecture
+     * @throws DaoException erreur de reqûete.
      */
     private void switchFormulaireUpdate(String ligne)
-            throws NumberFormatException, ServiceException {
+            throws NumberFormatException, ServiceException, DaoException {
         long value;
         LocalDateTime timeInter;
         switch (stateUpdate) {
@@ -499,8 +532,9 @@ public class UIController {
     /**Ajouter un computer dans la bdd.
      * @return l'affichage du résultat dans un string.
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private String ajouterComputer() throws ServiceException {
+    private String ajouterComputer() throws ServiceException, DaoException {
         long id = -1;
         if (inter.getCompany() != null) {
             id = inter.getCompany().getId();
@@ -520,8 +554,9 @@ public class UIController {
      *            l'id du computer a supprimé
      * @return l'affichage du résultat dans un string.
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private String supprimerComputer(final long id) throws ServiceException {
+    private String supprimerComputer(final long id) throws ServiceException, DaoException {
         boolean delete = service.deleteComputer(id);
 
         if (delete) {
@@ -536,8 +571,9 @@ public class UIController {
      * @return l'affichage du résultat dans un string.
      * @throws ServiceException
      *             exception service exception de service
+     * @throws DaoException erreur de reqûete.
      */
-    private String updateComputer() throws ServiceException {
+    private String updateComputer() throws ServiceException, DaoException {
         long id = -1;
         if (inter.getCompany() != null) {
             id = inter.getCompany().getId();
@@ -558,8 +594,9 @@ public class UIController {
      *            la page demandé
      * @return l'affichage du résultat dans un string.
      * @throws ServiceException exception service
+     * @throws DaoException erreur de reqûete.
      */
-    private String pageurComputerShow(final int page) throws ServiceException {
+    private String pageurComputerShow(final int page) throws ServiceException, DaoException {
         Page<Computer> pageComputer = service.getPageComputer(page);
         int taille = (int) service.countComputers();
         int limit = pageComputer.getLimit();
@@ -577,8 +614,9 @@ public class UIController {
      *            la page demandé
      * @return l'affichage du résultat dans un string.
      * @throws ServiceException exception service
+     * @throws DaoException erreur de reqûete.
      */
-    private String pageurCompanyShow(final int page) throws ServiceException {
+    private String pageurCompanyShow(final int page) throws ServiceException, DaoException {
         Page<Company> pageCompany = service.getPageCompany(page);
         int taille = (int) service.countCompanies();
         int limit = pageCompany.getLimit();
@@ -613,6 +651,20 @@ public class UIController {
             affichage += c.getCompany().getName() + "\n ";
         }
         return affichage;
+    }
+
+    /**
+     * Main.
+     * @param args arguments
+     */
+    public static void main(final String[] args) {
+        try {
+            ComputerService service = ComputerService.getInstance();
+            UIController controller = new UIController(service);
+            controller.run();
+        } catch (DAOConfigurationException e) {
+            System.out.println(e);
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.excilys.cdb.persistence;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
@@ -28,7 +29,7 @@ public interface Dao<T> {
      * @return l'objet résultant
      * @throws DaoException exception de requête
      */
-    T getById(long id) throws DaoException;
+    Optional<T> getById(long id) throws DaoException;
 
     /**
      * Retourne tous les objets d'un certain type de la bdd.

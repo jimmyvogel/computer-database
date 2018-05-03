@@ -1,4 +1,4 @@
-package com.excilys.cdb.validation;
+package com.excilys.cdb.validator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +28,21 @@ public class DateValidation {
             return null;
         }
         return dateTime;
+    }
+
+    /**
+     * Return if a date is strictly between two others.
+     * @param ldt la date à valider
+     * @param first la première date not included
+     * @param last la seconde date not included
+     * @return un boolean définissant la validité de la date
+     */
+    public static boolean validDateInBetween(LocalDateTime ldt, LocalDateTime first, LocalDateTime last) {
+        if (ldt.isAfter(first)
+                && ldt.isBefore(last)) {
+            return true;
+        }
+        return false;
     }
 
 }

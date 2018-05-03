@@ -2,6 +2,7 @@ package com.excilys.cdb.daos;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,10 +61,10 @@ public class ComputerDaoTest {
      * Test de getById.
      * @throws DaoException erreur de requête.
      */
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testGetById() throws DaoException {
         Assert.assertTrue(dao.getById(computerValid.getId()) != null);
-        Assert.assertFalse(dao.getById(-1) != null);
+        dao.getById(-1).get();
     }
 
     /**
@@ -95,7 +96,7 @@ public class ComputerDaoTest {
         LocalDateTime introduced = computerValid.getIntroduced();
         computerValid.setIntroduced(null);
         Assert.assertTrue(dao.update(computerValid));
-        Assert.assertTrue(dao.getById(computerValid.getId())
+        Assert.assertTrue(dao.getById(computerValid.getId()).get()
                 .getIntroduced().equals(introduced));
     }
 
@@ -108,7 +109,7 @@ public class ComputerDaoTest {
         LocalDateTime discontinued = computerValid.getDiscontinued();
         computerValid.setDiscontinued(null);
         Assert.assertTrue(dao.update(computerValid));
-        Assert.assertTrue(dao.getById(computerValid.getId())
+        Assert.assertTrue(dao.getById(computerValid.getId()).get()
                 .getDiscontinued().equals(discontinued));
     }
 
@@ -120,7 +121,7 @@ public class ComputerDaoTest {
     public void testUpdateCompanyNullDoChange() throws DaoException {
         computerValid.setCompany(null);
         Assert.assertTrue(dao.update(computerValid));
-        Assert.assertNull(dao.getById(computerValid.getId()).getCompany());
+        Assert.assertNull(dao.getById(computerValid.getId()).get().getCompany());
     }
 
     /**

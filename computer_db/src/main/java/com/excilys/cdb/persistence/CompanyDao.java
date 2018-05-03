@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class CompanyDao implements Dao<Company> {
      * @throws DaoException
      *             exception sur la requête
      */
-    public Company getById(final long id) throws DaoException {
+    public Optional<Company> getById(final long id) throws DaoException {
         Company company = null;
         try {
             Connection c = factory.getConnection();
@@ -106,7 +107,7 @@ public class CompanyDao implements Dao<Company> {
             throw new DaoException("Requête exception", e);
         }
 
-        return company;
+        return Optional.ofNullable(company);
     }
 
     /**

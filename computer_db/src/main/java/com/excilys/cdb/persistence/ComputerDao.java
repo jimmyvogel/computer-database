@@ -8,11 +8,13 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
@@ -87,8 +89,8 @@ public class ComputerDao implements Dao<Computer> {
      * @return un objet Computer
      * @throws DaoException erreur de reqûete.
      */
-    public Computer getById(long id) throws DaoException {
-        Computer computer = null;
+    public Optional<Computer> getById(long id) throws DaoException {
+        Computer inter = null;
         try {
             Connection c = factory.getConnection();
             PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPUTER);
@@ -97,7 +99,7 @@ public class ComputerDao implements Dao<Computer> {
             ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
-                computer = MapperDao.mapComputer(result);
+                inter = MapperDao.mapComputer(result);
             }
 
             stmt.close();
@@ -105,7 +107,7 @@ public class ComputerDao implements Dao<Computer> {
             throw new DaoException("Requête exception", e);
         }
 
-        return computer;
+        return Optional.ofNullable(inter);
     }
 
     /**
@@ -162,10 +164,11 @@ public class ComputerDao implements Dao<Computer> {
      * @return le résultat en booléan.
      * @throws DaoException exception sur la requête
      */
-    public boolean update(final Computer computer) throws DaoException {
+    public boolean update(Computer computer) throws DaoException {
         int result = 0;
         try {
-            Computer before = this.getById(computer.getId());
+            Computer before = this.getById(
+                    computer.getId()).orElseThrow(() -> new ComputerNotFoundException(computer.getId()));
 
             Connection c = factory.getConnection();
             PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER);

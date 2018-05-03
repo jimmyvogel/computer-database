@@ -1,5 +1,7 @@
 package com.excilys.cdb.daos;
 
+import java.util.NoSuchElementException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,10 +45,10 @@ public class CompanyDaoTest {
      * Test sur la méthode getById.
      * @throws DaoException erreur de requête
      */
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testGetById() throws DaoException {
         Assert.assertTrue(dao.getById(companyValid.getId()) != null);
-        Assert.assertFalse(dao.getById(-1) != null);
+        dao.getById(-1).get();
     }
 
     /**

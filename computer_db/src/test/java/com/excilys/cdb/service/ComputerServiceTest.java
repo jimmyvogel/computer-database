@@ -14,12 +14,18 @@ import org.mockito.MockitoAnnotations;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
+import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.exceptions.DateInvalidException;
+import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validator.ComputerValidator;
 
-public class ComputerServiceImplTest {
+public class ComputerServiceTest {
 
-    private IComputerService service;
+    private ComputerService service;
     private long nbComputers;
     private long nbCompany;
 
@@ -51,13 +57,14 @@ public class ComputerServiceImplTest {
      * Initialisation des données avant les tests.
      * @throws DAOConfigurationException erreur de configuration.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
     @Before
     public void initialisation()
-            throws DAOConfigurationException, ServiceException {
+            throws DAOConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
 
-        service = ComputerServiceImpl.getInstance();
+        service = ComputerService.getInstance();
         nbComputers = service.countComputers();
         nbCompany = service.countCompanies();
 
@@ -65,6 +72,7 @@ public class ComputerServiceImplTest {
 
         companyValid = service.getPageCompany(1).getObjects().get(0);
         computerValid = service.getPageComputer(1).getObjects().get(0);
+        computerValid.setCompany(companyValid);
     }
 
     /**
@@ -121,31 +129,34 @@ public class ComputerServiceImplTest {
     /**
      * Test de createComputer.
      * @throws ServiceException erreur de service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testCreateComputerString() throws ServiceException {
-
-        // Valid
+    public void testCreateComputerStringOk() throws ServiceException, DaoException {
         boolean create = service.createComputer(NAME_VALID) > 0;
         Assert.assertTrue(create);
         long count = service.countComputers();
         Assert.assertTrue(count == nbComputers + 1);
+    }
 
-        // Invalid
-        create = service.createComputer(NAME_INVALID) > 0;
-        Assert.assertFalse(create);
-        count = service.countComputers();
-        Assert.assertTrue(count == nbComputers + 1);
-
+    /**
+     * Test de createComputer.
+     * @throws ServiceException erreur de service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = NameInvalidException.class)
+    public void testCreateComputerStringFailNameInvalid() throws ServiceException, DaoException {
+        service.createComputer(NAME_INVALID);
     }
 
     /**
      * Test de createComputer.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
     @Test
     public void testCreateComputerStringLocalDateTimeLocalDateTimeLong()
-            throws ServiceException {
+            throws ServiceException, DaoException {
         Assert.assertTrue(nbCompany > 0);
 
         // Insertion valid
@@ -156,29 +167,50 @@ public class ComputerServiceImplTest {
         long count = service.countComputers();
         Assert.assertTrue(count == nbComputers + 1);
 
-        // Insertion invalid à cause du null
-        create = service.createComputer(NAME_VALID, null,
-                DATE_DISCONTINUED_VALID, companyValid.getId()) > 0;
-        Assert.assertFalse(create);
+    }
 
-        // Insertion invalid à cause du manque de tout
-        create = service.createComputer(null, null, null, -1) > 0;
-        Assert.assertFalse(create);
+    /**
+     * Test de createComputer.
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = DateInvalidException.class)
+    public void testCreateComputerFailDateDiscontinuedBeforeIntroduced()
+            throws ServiceException, DaoException {
+        service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID,
+                DD_INVALID_BEFORE_DI, companyValid.getId());
+    }
 
-        // Insertion invalid à cause de la date discontinued avant la date
-        // introduced.
-        create = service.createComputer(NAME_VALID, DATE_INTRODUCED_VALID,
-                DD_INVALID_BEFORE_DI, companyValid.getId()) > 0;
-        Assert.assertFalse(create);
+    /**
+     * Test de createComputer.
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = NameInvalidException.class)
+    public void testCreateComputerNameEmpty()
+            throws ServiceException, DaoException {
+        service.createComputer(null, null, null, -1);
+    }
 
+    /**
+     * Test de createComputer.
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = DateInvalidException.class)
+    public void testCreateComputerFailDiscontinuedWithoutIntroduced()
+            throws ServiceException, DaoException {
+        service.createComputer(NAME_VALID, null,
+                DATE_DISCONTINUED_VALID, companyValid.getId());
     }
 
     /**
      * Test de la méthode deleteComputer.
      * @throws ServiceException erreur du service.
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testDeleteComputer() throws ServiceException {
+    public void testDeleteComputer() throws ServiceException, DaoException {
         Assert.assertTrue(nbComputers > 0);
 
         boolean delete = service.deleteComputer(computerValid.getId());
@@ -190,18 +222,15 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testUpdateComputer() throws ServiceException {
+    public void testUpdateComputer() throws ServiceException, DaoException {
 
         // Valid
         boolean update = service.updateComputer(computerValid.getId(),
                 NAME_VALID);
         Assert.assertTrue(update);
-
-        // Invalid
-        update = service.updateComputer(computerValid.getId(), NAME_INVALID);
-        Assert.assertFalse(update);
 
         // Reinitialisation
         service.updateComputer(computerValid.getId(), computerValid.getName());
@@ -210,24 +239,32 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
-    @Test
-    public void testUpdateComputerWithNameNull() throws ServiceException {
+    @Test(expected = NameInvalidException.class)
+    public void testUpdateComputerNameTooLong() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), NAME_INVALID);
+    }
 
-        // Valid
-        boolean update = service.updateComputer(computerValid.getId(),
-                null);
-        Assert.assertFalse(update);
+    /**
+     * Méthode de test du updateComputer.
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = NameInvalidException.class)
+    public void testUpdateComputerWithNameNull() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), null);
     }
 
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
     public void testUpdateComputerLongStringLocalDateTimeLocalDateTimeLong()
-            throws ServiceException {
+            throws ServiceException, DaoException {
 
         // Valid
         boolean update = service.updateComputer(computerValid.getId(),
@@ -254,20 +291,22 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
     public void testUpdateComputerInvalidName()
-            throws ServiceException {
+            throws ServiceException, DaoException {
         service.updateComputer(computerValid.getId(), NAME_INVALID, null, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
     public void testUpdateComputerInvalidIdCompany()
-            throws ServiceException {
+            throws ServiceException, DaoException {
         service.updateComputer(-1, null, null, null, -1);
     }
 
@@ -275,45 +314,50 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateInvalidDateIntroducedMinDate() throws ServiceException {
-        service.updateComputer(computerValid.getId(), null, Computer.BEGIN_DATE_VALID, null, -1);
+    public void testUpdateInvalidDateIntroducedMinDate() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), null, ComputerValidator.BEGIN_DATE_VALID, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateInvalidDateIntroducedMaxDate() throws ServiceException {
-        service.updateComputer(computerValid.getId(), null, Computer.END_DATE_VALID, null, -1);
+    public void testUpdateInvalidDateIntroducedMaxDate() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), null, ComputerValidator.END_DATE_VALID, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateInvalidDateDiscontinuedMinDate() throws ServiceException {
-        service.updateComputer(computerValid.getId(), null, null, Computer.BEGIN_DATE_VALID, -1);
+    public void testUpdateInvalidDateDiscontinuedMinDate() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), null, null, ComputerValidator.BEGIN_DATE_VALID, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateInvalidDateDiscontinuedMaxDate() throws ServiceException {
-        service.updateComputer(computerValid.getId(), null, null, Computer.END_DATE_VALID, -1);
+    public void testUpdateInvalidDateDiscontinuedMaxDate() throws ServiceException, DaoException {
+        service.updateComputer(computerValid.getId(), null, null, ComputerValidator.END_DATE_VALID, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateDiscontinuedWithoutIntroduced() throws ServiceException {
+    public void testUpdateDiscontinuedWithoutIntroduced() throws ServiceException, DaoException {
 
         long id = service.createComputer("nouveau");
         assertTrue(id > 0);
@@ -326,9 +370,10 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateDiscontinuedBeforeIntroduced() throws ServiceException {
+    public void testUpdateDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
 
         long id = service.createComputer("nouveau");
         assertTrue(id > 0);
@@ -340,9 +385,10 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateDiscontinuedBeforeInitialIntroduced() throws ServiceException {
+    public void testUpdateDiscontinuedBeforeInitialIntroduced() throws ServiceException, DaoException {
 
         long id = service.createComputer("nouveau");
         assertTrue(id > 0);
@@ -356,9 +402,10 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testUpdateIntroducedNotNecessary() throws ServiceException {
+    public void testUpdateIntroducedNotNecessary() throws ServiceException, DaoException {
 
         long id = service.createComputer("nouveau");
         assertTrue(id > 0);
@@ -373,18 +420,20 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateWithoutArguments() throws ServiceException {
+    public void testUpdateWithoutArguments() throws ServiceException, DaoException {
         service.updateComputer(computerValid.getId(), null, null, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testUpdateWithCompany0() throws ServiceException {
+    public void testUpdateWithCompany0() throws ServiceException, DaoException {
 
         boolean update = service.updateComputer(computerValid.getId(), null, null, null,
                 0);
@@ -395,19 +444,20 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = ServiceException.class)
-    public void testUpdateFailWithCompanyMaxInexistant() throws ServiceException {
+    @Test(expected = CompanyNotFoundException.class)
+    public void testUpdateFailWithCompanyMaxInexistant() throws ServiceException, DaoException {
         service.updateComputer(computerValid.getId(), null, null, null, Long.MAX_VALUE);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testUpdateNoModifCompanyWithMoinsUn() throws ServiceException {
-
+    public void testUpdateNoModifCompanyWithMoinsUn() throws ServiceException, DaoException {
         boolean update = service.updateComputer(computerValid.getId(), computerValid.getName(), null, null,
                 -1);
         Assert.assertTrue(update);
@@ -417,18 +467,20 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test(expected = ServiceException.class)
-    public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException {
+    public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException, DaoException {
         service.updateComputer(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
     }
 
     /**
      * Méthode de test du updateComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = ServiceException.class)
-    public void testUpdateFailWithBadId() throws ServiceException {
+    @Test(expected = ComputerNotFoundException.class)
+    public void testUpdateFailWithBadId() throws ServiceException, DaoException {
 
         service.updateComputer(-1, computerValid.getName(), null, null, -1);
     }
@@ -436,9 +488,10 @@ public class ComputerServiceImplTest {
     /**
      * Méthode de test du deleteComputer.
      * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testDeleteWithBadId() throws ServiceException {
+    public void testDeleteWithBadId() throws ServiceException, DaoException {
         assertFalse(service.deleteComputer(-1));
         assertFalse(service.deleteComputer(Long.MAX_VALUE));
     }

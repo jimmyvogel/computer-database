@@ -1,7 +1,6 @@
 package com.excilys.cdb.model;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 
 /**
  * Class représentant un computer avec un lien unidirectionnel vers la compagnie
@@ -10,14 +9,6 @@ import java.time.Month;
  *
  */
 public class Computer {
-
-    public static final int TAILLE_MAX_NAME = 60;
-
-    public static final LocalDateTime BEGIN_DATE_VALID = LocalDateTime.of(1949,
-            Month.DECEMBER, 31, 23, 59);
-
-    public static final LocalDateTime END_DATE_VALID = LocalDateTime.of(2100,
-            Month.JANUARY, 1, 0, 0);
 
     private long id;
     private String name;
@@ -183,34 +174,6 @@ public class Computer {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Validate une date pour un Computer valide.
-     * @param ldt la date a validé
-     * @return un boolean résultat
-     */
-    public static boolean validDate(LocalDateTime ldt) {
-        if (ldt.isAfter(Computer.BEGIN_DATE_VALID)
-                && ldt.isBefore(Computer.END_DATE_VALID)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Validate un nom pour un Computer valide.
-     * @param name
-     *            nom a vérifier
-     * @return un boolean résultat.
-     */
-    public static boolean validName(String name) {
-        if (name != null && name.length() > 3
-                && name.length() < TAILLE_MAX_NAME) {
-            return true;
-        }
-
-        return false;
     }
 
 }

@@ -20,9 +20,10 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Dao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
-import com.excilys.cdb.service.ComputerServiceImpl;
+import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.validation.DateValidation;
+import com.excilys.cdb.validator.DateValidation;
 
 /**
  * Class du composant Servlet.
@@ -33,7 +34,7 @@ public class ComputerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8303946492164443679L;
 
-    private ComputerServiceImpl service;
+    private ComputerService service;
 
     public enum Action {
         HOME(CHEMIN_ACCUEIL),
@@ -80,7 +81,7 @@ public class ComputerServlet extends HttpServlet {
         logger.info("Configuration de la servlet ComputerServlet en cours.");
         super.init(config);
         try {
-            service = ComputerServiceImpl.getInstance();
+            service = ComputerService.getInstance();
         } catch (DAOConfigurationException e) {
             throw new ServletException("Instanciation du service fail", e);
         }
@@ -158,7 +159,7 @@ public class ComputerServlet extends HttpServlet {
                 }
                 dispatch(request, response, action.getVue());
 
-            } catch (ServiceException e) {
+            } catch (ServiceException | DaoException e) {
                 System.out.println(e.getMessage());
                 dispatch(request, response, CHEMIN_ACCUEIL);
             }
@@ -172,8 +173,9 @@ public class ComputerServlet extends HttpServlet {
      * Modification d'un computer, injection et redirection.
      * @param request injections et parametres
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de requête.
      */
-    private void editComputer(HttpServletRequest request) throws ServiceException {
+    private void editComputer(HttpServletRequest request) throws ServiceException, DaoException {
         long id = Long.valueOf(request.getParameter("id"));
 
         String name = null;
@@ -211,8 +213,9 @@ public class ComputerServlet extends HttpServlet {
      * Ajout d'un computer, injection et redirection.
      * @param request injections et parametres
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
-    private void addComputer(HttpServletRequest request) throws ServiceException {
+    private void addComputer(HttpServletRequest request) throws ServiceException, DaoException {
         String name = request.getParameter("computerName").trim();
         long id = -1;
         LocalDateTime introduced = null;
