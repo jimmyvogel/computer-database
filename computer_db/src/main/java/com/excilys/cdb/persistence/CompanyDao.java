@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
@@ -23,7 +24,7 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
  */
 public class CompanyDao implements Dao<Company> {
 
-    private DaoFactory factory;
+    private DaoFactory daoFactory;
     private static CompanyDao dao;
 
     private static final String SQL_ALL_COMPANIES = "SELECT `id`,`name` FROM `company`";
@@ -40,12 +41,12 @@ public class CompanyDao implements Dao<Company> {
      */
     public static CompanyDao getInstance(final DaoFactory factory) {
         if (dao == null) {
-
             Logger logger = LoggerFactory.getLogger(CompanyDao.class);
             logger.info("Initialisation du singleton de type CompanyDao");
 
             dao = new CompanyDao();
-            dao.factory = factory;
+            dao.daoFactory = factory;
+            logger.info("Singleton companyDao intialisé");
         }
         return dao;
     }
@@ -58,21 +59,16 @@ public class CompanyDao implements Dao<Company> {
      */
     public List<Company> getAll() throws DaoException {
         List<Company> companies = new ArrayList<Company>();
-        try {
-            Connection c = factory.getConnection();
-            Statement stmt = c.createStatement();
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
             ResultSet result = stmt.executeQuery(SQL_ALL_COMPANIES);
-
-            /*
-             * Parcours de la ligne de données de l'éventuel ResulSet retourné
-             */
             while (result.next()) {
                 companies.add(MapperDao.mapCompany(result));
             }
 
-            stmt.close();
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
+        } catch (DAOConfigurationException e1) {
+            throw new DaoException("Config exception", e1);
         }
 
         return companies;
@@ -87,9 +83,7 @@ public class CompanyDao implements Dao<Company> {
      */
     public Optional<Company> getById(final long id) throws DaoException {
         Company company = null;
-        try {
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPANY);
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPANY)) {
             stmt.setLong(1, id);
 
             ResultSet result = stmt.executeQuery();
@@ -100,8 +94,6 @@ public class CompanyDao implements Dao<Company> {
             if (result.next()) {
                 company = MapperDao.mapCompany(result);
             }
-
-            stmt.close();
 
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
@@ -118,16 +110,12 @@ public class CompanyDao implements Dao<Company> {
      */
     public long getCount() throws DaoException {
         long count = 0;
-        try {
-            Connection c = factory.getConnection();
-            Statement stmt = c.createStatement();
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
             String query = SQL_COUNT_COMPANY;
             ResultSet result = stmt.executeQuery(query);
             if (result.next()) {
                 count = result.getLong("total");
             }
-            stmt.close();
-
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -154,21 +142,15 @@ public class CompanyDao implements Dao<Company> {
      */
     public Page<Company> getPage(final int numeroPage, final int limit) throws DaoException {
         Page<Company> page = new Page<Company>(limit, (int) this.getCount());
-        try {
-            List<Company> companies = new ArrayList<Company>();
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPANY);
+        List<Company> companies = new ArrayList<Company>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPANY)) {
             stmt.setInt(1, page.getLimit());
             stmt.setInt(2, page.offset(numeroPage));
-
             ResultSet result = stmt.executeQuery();
-
             while (result.next()) {
                 companies.add(MapperDao.mapCompany(result));
             }
             page.charge(companies, numeroPage);
-            stmt.close();
-
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }

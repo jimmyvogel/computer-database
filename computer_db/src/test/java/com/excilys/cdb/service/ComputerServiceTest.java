@@ -73,6 +73,11 @@ public class ComputerServiceTest {
         companyValid = service.getPageCompany(1).getObjects().get(0);
         computerValid = service.getPageComputer(1).getObjects().get(0);
         computerValid.setCompany(companyValid);
+        service.updateComputer(computerValid.getId(),
+                computerValid.getName(),
+                computerValid.getIntroduced(),
+                computerValid.getDiscontinued(),
+                computerValid.getCompany().getId());
     }
 
     /**

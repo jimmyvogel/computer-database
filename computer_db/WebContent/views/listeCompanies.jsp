@@ -4,6 +4,13 @@
     ${ page.count } Companies
 </h1>
 <div class="container" style="margin-top: 10px;">
+	
+    <form id="searchForm" action="computer" method="GET" class="form-inline">
+    	<input type="hidden" value="${applicationScope.actions.SEARCH_COMPANY}" name="action"/>
+        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
+        <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
+    </form>
+    
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>

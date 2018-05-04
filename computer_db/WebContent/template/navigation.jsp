@@ -25,14 +25,6 @@
  				<c:param name="page" value="1"/>
 	  </c:url>
       <li><a href="${urlListCompanies}">Companies</a></li>
-      <li>
-         <form id="searchForm" action="#" method="GET" class="form-inline">
-
-             <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
-             <input type="submit" id="searchsubmit" value="Search"
-             class="btn btn-primary" />
-         </form>
-       </li>
     </ul>
   </div>
 </nav>

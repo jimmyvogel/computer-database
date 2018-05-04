@@ -32,7 +32,10 @@ version="3.0">
 	        <page-encoding>UTF-8</page-encoding>
 	        <include-prelude>/template/prelude.jsp</include-prelude>
 	        <include-prelude>/template/navigation.jsp</include-prelude>
-	        <include-coda>/template/coda.jsp</include-coda>
+	        <include-prelude>/template/alerts.jsp</include-prelude>
+	        <include-coda>/template/footer.jsp</include-coda>
+   	        <include-coda>/template/scripts.jsp</include-coda>
+   	        <include-coda>/template/coda.jsp</include-coda>
 	    </jsp-property-group>
 	</jsp-config>
 

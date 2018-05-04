@@ -3,7 +3,6 @@ package com.excilys.cdb.persistence;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -11,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Factory pour la création des daos gérant les requêtes sur la base de donnée.
@@ -25,12 +26,12 @@ public class DaoFactory {
     private static final String PROPERTY_NOM_UTILISATEUR = "username";
     private static final String PROPERTY_MOT_DE_PASSE = "password";
 
+    private static HikariConfig config = new HikariConfig();
+    private static HikariDataSource ds;
+
     // Variables pour récupérer les id max à l'initialisation pour gérer
     // l'auto-incrémentation en manuelle.
     private static boolean initialized = false;
-
-    // Connexion unique
-    private static Connection connection;
 
     // DaoFactory unique
     private static DaoFactory dao;
@@ -48,11 +49,6 @@ public class DaoFactory {
         Logger logger = LoggerFactory.getLogger(DaoFactory.class);
         logger.info("Initialisation du singleton dao factory");
 
-        String url;
-        String username;
-        String password;
-
-        // Single dao;
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -60,7 +56,6 @@ public class DaoFactory {
         }
         dao = new DaoFactory();
 
-        // Initialise la connection unique.
         Properties properties = new Properties();
         ClassLoader classLoader = Thread.currentThread()
                 .getContextClassLoader();
@@ -72,20 +67,16 @@ public class DaoFactory {
         }
         try {
             properties.load(fichierProperties);
-            url = properties.getProperty(PROPERTY_URL);
-            username = properties.getProperty(PROPERTY_NOM_UTILISATEUR);
-            password = properties.getProperty(PROPERTY_MOT_DE_PASSE);
-
+            config.setJdbcUrl(properties.getProperty(PROPERTY_URL));
+            config.setUsername(properties.getProperty(PROPERTY_NOM_UTILISATEUR));
+            config.setPassword(properties.getProperty(PROPERTY_MOT_DE_PASSE));
+            //config.addDataSourceProperty( "cachePrepStmts" , "true" );
+            //config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+            //config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+            ds = new HikariDataSource(config);
         } catch (IOException e) {
             throw new DAOConfigurationException(
-                    "Impossible de charger le fichier properties "
-                            + FICHIER_PROPERTIES,
-                    e);
-        }
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            throw new DAOConfigurationException("Connection impossible", e);
+                    "Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
         }
 
         initialized = true;
@@ -108,9 +99,16 @@ public class DaoFactory {
     /**
      * Retourne une connection à la base de donnée.
      * @return an object of class Connection
+     * @throws DAOConfigurationException configuration hikari exception
      */
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws DAOConfigurationException {
+        Connection c = null;
+        try {
+            c = ds.getConnection();
+        } catch (SQLException e) {
+            throw new DAOConfigurationException("Connection impossible", e);
+        }
+        return c;
     }
 
     /**
@@ -129,11 +127,6 @@ public class DaoFactory {
             break;
         }
         return res;
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-        connection.close();
     }
 
 }

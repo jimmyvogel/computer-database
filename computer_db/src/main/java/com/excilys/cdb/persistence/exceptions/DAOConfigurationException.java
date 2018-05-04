@@ -1,6 +1,6 @@
 package com.excilys.cdb.persistence.exceptions;
 
-public class DAOConfigurationException extends Exception {
+public class DAOConfigurationException extends DaoException {
 
     /**
      */

@@ -1,5 +1,10 @@
 package com.excilys.cdb.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.NoSuchElementException;
@@ -7,6 +12,12 @@ import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -18,7 +29,21 @@ import com.excilys.cdb.persistence.DaoFactory.DaoType;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ComputerDaoTest {
+
+    @Mock
+    private DaoFactory daoFactory;
+    @Mock
+    private ResultSet mockResultSet;
+    @Mock
+    private Statement mockS;
+    @Mock
+    private PreparedStatement mockPS;
+    @Mock
+    private Connection connection;
+    @InjectMocks
+    private ComputerDao mockDao;
 
     private ComputerDao dao;
     private Computer computerValid;
@@ -38,6 +63,8 @@ public class ComputerDaoTest {
     @Before
     public void initialisation()
             throws DAOConfigurationException, DaoException {
+        MockitoAnnotations.initMocks(this);
+
         dao = (ComputerDao) DaoFactory.getInstance().getDao(DaoType.COMPUTER);
         computerValid = dao.getPage(1).getObjects().get(0);
         CompanyDao daoCompany = (CompanyDao) DaoFactory.getInstance().getDao(DaoType.COMPANY);
@@ -58,6 +85,22 @@ public class ComputerDaoTest {
     }
 
     /**
+     * Test de getAll.
+     * @throws DaoException erreur de requête.
+     * @throws SQLException sql exception
+     */
+    @Test(expected = DaoException.class)
+    public void testGetAllRequeteSQLException() throws DaoException, SQLException {
+        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connection.createStatement()).thenReturn(mockS);
+        Mockito.when(mockS.executeQuery(Mockito.anyString())).thenThrow(new SQLException());
+        mockDao.getAll();
+        Mockito.verify(daoFactory.getConnection());
+        Mockito.verify(connection.createStatement());
+        Mockito.verify(mockS).executeQuery(Mockito.anyString());
+    }
+
+    /**
      * Test de getById.
      * @throws DaoException erreur de requête.
      */
@@ -68,6 +111,22 @@ public class ComputerDaoTest {
     }
 
     /**
+     * Test de getById.
+     * @throws DaoException erreur de requête.
+     * @throws SQLException sql exception
+     */
+    @Test(expected = DaoException.class)
+    public void testGetByIdRequeteSQLException() throws DaoException, SQLException {
+        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connection.prepareStatement(Mockito.anyString())).thenReturn(mockPS);
+        Mockito.when(mockPS.executeQuery()).thenThrow(new SQLException());
+        mockDao.getById(1);
+        Mockito.verify(daoFactory.getConnection());
+        Mockito.verify(connection.prepareStatement(Mockito.anyString()));
+        Mockito.verify(mockPS.executeQuery());
+    }
+
+    /**
      * Test de create.
      * @throws DaoException erreur de requête.
      */
@@ -75,6 +134,22 @@ public class ComputerDaoTest {
     public void testCreate() throws DaoException {
         long id = dao.create(computerValid);
         Assert.assertTrue(dao.getById(id) != null);
+    }
+
+    /**
+     * Test de create.
+     * @throws DaoException erreur de requête.
+     * @throws SQLException sql exception
+     */
+    @Test(expected = DaoException.class)
+    public void testCreateRequeteSQLException() throws DaoException, SQLException {
+        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connection.prepareStatement(Mockito.anyString(), Mockito.anyInt())).thenReturn(mockPS);
+        Mockito.when(mockPS.execute()).thenThrow(new SQLException());
+        mockDao.create(computerValid);
+        Mockito.verify(daoFactory.getConnection());
+        Mockito.verify(connection.prepareStatement(Mockito.anyString(), Mockito.anyInt()));
+        Mockito.verify(mockPS.execute());
     }
 
     /**
@@ -90,27 +165,17 @@ public class ComputerDaoTest {
     /**
      * Test de update.
      * @throws DaoException erreur de requête.
+     * @throws SQLException sql exception
      */
-    @Test
-    public void testUpdateIntroducedNullDoNotChange() throws DaoException {
-        LocalDateTime introduced = computerValid.getIntroduced();
-        computerValid.setIntroduced(null);
-        Assert.assertTrue(dao.update(computerValid));
-        Assert.assertTrue(dao.getById(computerValid.getId()).get()
-                .getIntroduced().equals(introduced));
-    }
-
-    /**
-     * Test de update.
-     * @throws DaoException erreur de requête.
-     */
-    @Test
-    public void testUpdateDiscontinuedNullDoNotChange() throws DaoException {
-        LocalDateTime discontinued = computerValid.getDiscontinued();
-        computerValid.setDiscontinued(null);
-        Assert.assertTrue(dao.update(computerValid));
-        Assert.assertTrue(dao.getById(computerValid.getId()).get()
-                .getDiscontinued().equals(discontinued));
+    @Test(expected = DaoException.class)
+    public void testUpdateRequeteSQLException() throws DaoException, SQLException {
+        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connection.prepareStatement(Mockito.anyString())).thenReturn(mockPS);
+        Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
+        mockDao.update(computerValid);
+        Mockito.verify(daoFactory.getConnection());
+        Mockito.verify(connection.prepareStatement(Mockito.anyString()));
+        Mockito.verify(mockPS.executeUpdate());
     }
 
     /**

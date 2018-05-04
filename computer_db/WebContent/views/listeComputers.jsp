@@ -4,17 +4,28 @@
 <h1 id="homeTitle">
     ${ page.count } Computers
 </h1>
+
+<form id="deleteForm" action="computer" method="POST">
+    <input type="hidden" value="${applicationScope.actions.DELETE_COMPUTER}" name="action"/>
+    <input type="hidden" name="selection" value="">
+</form>
+        
 <div class="container" style="margin-top: 10px;">
+
+    <form id="searchForm" action="computer" method="GET" class="form-inline">
+    	<input type="hidden" value="${applicationScope.actions.SEARCH_COMPUTER}" name="action"/>
+        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
+        <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
+    </form>
+         
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th class="editMode" style="width: 60px; height: 22px;"><input
-					type="checkbox" id="selectall" /> <span
-					style="vertical-align: top;"> - <a href="#"
-						id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-							class="fa fa-trash-o fa-lg"></i>
+				<th> 
+					<a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
+						<i class="fa fa-trash-o fa-lg"></i>
 					</a>
-				</span></th>
+				</th>
 				<th>Computer name</th>
 				<th>Introduced date</th>
 				<th>Discontinued date</th>
@@ -25,7 +36,7 @@
 		<tbody id="results">
 		    <c:forEach items="${page.objects}" var="computer">
 				<tr>
-					<td class="editMode">
+					<td>
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
 					</td>
 					<c:url value="computer" var="urlEditFormComputer">

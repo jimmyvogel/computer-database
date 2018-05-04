@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
@@ -25,7 +24,7 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
  */
 public class ComputerDao implements Dao<Computer> {
 
-    private DaoFactory factory;
+    private DaoFactory daoFactory;
     private static ComputerDao dao;
 
     private static final String SQL_ALL_COMPUTERS = "SELECT company.id,company.name, computer.id, "
@@ -45,17 +44,17 @@ public class ComputerDao implements Dao<Computer> {
 
     /**
      * Méthode de fabrique de computer dao.
-     * @param daoFactory la factory de fabrication de composants daos.
+     * @param factory la factory de fabrication de composants daos.
      * @return une référence sur le singleton computer dao
      */
-    public static ComputerDao getInstance(DaoFactory daoFactory) {
+    public static ComputerDao getInstance(DaoFactory factory) {
         if (dao == null) {
 
             Logger logger = LoggerFactory.getLogger(ComputerDao.class);
             logger.info("Initialisation du singleton de type ComputerDao");
 
             dao = new ComputerDao();
-            dao.factory = daoFactory;
+            dao.daoFactory = factory;
         }
         return dao;
     }
@@ -67,16 +66,12 @@ public class ComputerDao implements Dao<Computer> {
      */
     public List<Computer> getAll() throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
-        try {
-            Connection c = factory.getConnection();
-            Statement stmt = c.createStatement();
-            ResultSet result = stmt.executeQuery(SQL_ALL_COMPUTERS);
-
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
+            ResultSet result = null;
+            result = stmt.executeQuery(SQL_ALL_COMPUTERS);
             while (result.next()) {
                 computers.add(MapperDao.mapComputer(result));
             }
-
-            stmt.close();
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -91,9 +86,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public Optional<Computer> getById(long id) throws DaoException {
         Computer inter = null;
-        try {
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPUTER);
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPUTER)) {
             stmt.setLong(1, id);
 
             ResultSet result = stmt.executeQuery();
@@ -101,8 +94,6 @@ public class ComputerDao implements Dao<Computer> {
             if (result.next()) {
                 inter = MapperDao.mapComputer(result);
             }
-
-            stmt.close();
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -118,10 +109,8 @@ public class ComputerDao implements Dao<Computer> {
      */
     public long create(final Computer computer) throws DaoException {
         long id = -1;
-        try {
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER,
-                    Statement.RETURN_GENERATED_KEYS);
+        try (Connection c = daoFactory.getConnection();
+                PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
@@ -150,8 +139,6 @@ public class ComputerDao implements Dao<Computer> {
             if (rs != null && rs.first()) {
                 id = rs.getLong(1);
             }
-
-            stmt.close();
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -166,48 +153,27 @@ public class ComputerDao implements Dao<Computer> {
      */
     public boolean update(Computer computer) throws DaoException {
         int result = 0;
-        try {
-            Computer before = this.getById(
-                    computer.getId()).orElseThrow(() -> new ComputerNotFoundException(computer.getId()));
-
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER);
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER)) {
             stmt.setString(1, computer.getName());
-
             if (computer.getIntroduced() != null) {
                 stmt.setTimestamp(2,
                         Timestamp.valueOf(computer.getIntroduced()));
-            } else if (before.getIntroduced() != null) {
-                stmt.setTimestamp(2,
-                        Timestamp.valueOf(before.getIntroduced()));
             } else {
                 stmt.setString(2, null);
             }
-
             if (computer.getDiscontinued() != null) {
                 stmt.setTimestamp(3,
                         Timestamp.valueOf(computer.getDiscontinued()));
-            } else if (before.getDiscontinued() != null) {
-                    stmt.setTimestamp(3,
-                            Timestamp.valueOf(before.getDiscontinued()));
             } else {
                 stmt.setString(3, null);
             }
-
-
-            //Si on veut garder le même il faut le garder en paramètre.
             if (computer.getCompany() == null) {
                 stmt.setString(4, null);
             } else {
                 stmt.setLong(4, computer.getCompany().getId());
             }
-
             stmt.setLong(5, computer.getId());
-
             result = stmt.executeUpdate();
-
-            stmt.close();
-
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -221,21 +187,13 @@ public class ComputerDao implements Dao<Computer> {
      * @throws DaoException exception sur la requête
      */
     public boolean deleteComputer(final long id) throws DaoException {
-
         int result = 0;
-        try {
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER);
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER)) {
             stmt.setLong(1, id);
-
             result = stmt.executeUpdate();
-
-            stmt.close();
-
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
-
         return (result > 0) ? true : false;
     }
 
@@ -247,15 +205,11 @@ public class ComputerDao implements Dao<Computer> {
      */
     public long getCount() throws DaoException {
         long count = 0;
-        try {
-            Connection c = factory.getConnection();
-            Statement stmt = c.createStatement();
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
             ResultSet result = stmt.executeQuery(SQL_COUNT_COMPUTER);
             if (result.next()) {
                 count = result.getLong("total");
             }
-            stmt.close();
-
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
@@ -280,10 +234,8 @@ public class ComputerDao implements Dao<Computer> {
      */
     public Page<Computer> getPage(final int numeroPage, final int limit) throws DaoException {
         Page<Computer> page = new Page<Computer>(limit, (int) this.getCount());
-        try {
-            List<Computer> computers = new ArrayList<Computer>();
-            Connection c = factory.getConnection();
-            PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER);
+        List<Computer> computers = new ArrayList<Computer>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER)) {
             stmt.setInt(1, page.getLimit());
             stmt.setInt(2, page.offset(numeroPage));
 
@@ -293,8 +245,6 @@ public class ComputerDao implements Dao<Computer> {
                 computers.add(MapperDao.mapComputer(result));
             }
             page.charge(computers, numeroPage);
-
-            stmt.close();
         } catch (SQLException e) {
             throw new DaoException("Requête exception", e);
         }
