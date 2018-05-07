@@ -275,7 +275,7 @@ public class ComputerService {
         if (id < 1) {
             return false;
         }
-        return computerDao.delete(id);
+        return companyDao.delete(id);
     }
 
     /** Détruire plusieurs compagnies.

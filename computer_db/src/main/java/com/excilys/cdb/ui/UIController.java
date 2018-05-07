@@ -28,7 +28,7 @@ public class UIController {
 
     // Les énumérations permettant la gestion comme un automate du processus.
     private enum State {
-        INITIAL(0), LIST_COMPANY(2), LIST_COMPUTER(1), FORM_UPDATE(5), FORM_AJOUT(4), DELETE(6), SHOW(3), RETOUR(0);
+        INITIAL(0), LIST_COMPANY(2), LIST_COMPUTER(1), FORM_UPDATE(5), FORM_AJOUT(4), DELETE_COMPUTER(6), DELETE_COMPANY(7), SHOW(3), RETOUR(0);
         private Integer value;
         /**
          * Constructor.
@@ -153,7 +153,8 @@ public class UIController {
             // Si on est pas sur un retour pour l'ajout ou l'update, rafficher
             // le menu principal.
             if (state == State.RETOUR || state == State.LIST_COMPANY
-                    || state == State.LIST_COMPUTER || state == State.DELETE
+                    || state == State.LIST_COMPUTER || state == State.DELETE_COMPUTER
+                    || state == State.DELETE_COMPANY
                     || state == State.SHOW || stateAjout == Ajout.NONE
                     || stateUpdate == Update.NONE) {
                 view.setAffichage(UITextes.MENU_INITIAL + " \n[stop->quit]");
@@ -207,9 +208,13 @@ public class UIController {
 
             // Gestion des choix si onest dans l'affichage des détails d'une
             // compagnie.
-            case DELETE:
+            case DELETE_COMPUTER:
                 value = Long.valueOf(ligne);
                 view.setAffichage(supprimerComputer(value));
+                break;
+            case DELETE_COMPANY:
+                value = Long.valueOf(ligne);
+                view.setAffichage(supprimerCompany(value));
                 break;
             default:
                 break;
@@ -225,7 +230,7 @@ public class UIController {
             view.setAffichage(
                     view.getAffichage() + " [" + UITextes.RETOUR + "]");
         }
-        view.setAffichage(view.getAffichage() + " \n[stop->quit]");
+        view.setAffichage(view.getAffichage());
 
     }
 
@@ -385,9 +390,13 @@ public class UIController {
                     state = State.FORM_UPDATE;
                     view.setAffichage(UITextes.UPDATE_ID);
                     break;
-                case DELETE:
+                case DELETE_COMPUTER:
                     view.setAffichage("Choissisez l'id:");
-                    state = State.DELETE;
+                    state = State.DELETE_COMPUTER;
+                    break;
+                case DELETE_COMPANY:
+                    view.setAffichage("Choissisez l'id:");
+                    state = State.DELETE_COMPANY;
                     break;
                 default:
                     break;
@@ -558,6 +567,22 @@ public class UIController {
      */
     private String supprimerComputer(final long id) throws ServiceException, DaoException {
         boolean delete = service.deleteComputer(id);
+
+        if (delete) {
+            return "Suppression réussi\n";
+        }
+
+        return "Suppression fail\n";
+    }
+
+    /** Supprimer une company dans la bdd.
+     * @param id l'id du computer a supprimé
+     * @return l'affichage du résultat dans un string.
+     * @throws ServiceException exception de service
+     * @throws DaoException erreur de reqûete.
+     */
+    private String supprimerCompany(final long id) throws ServiceException, DaoException {
+        boolean delete = service.deleteCompany(id);
 
         if (delete) {
             return "Suppression réussi\n";

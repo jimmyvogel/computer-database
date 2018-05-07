@@ -546,6 +546,22 @@ public class ComputerServiceTest {
     }
 
     /**
+     * Méthode de test du deleteCompanies.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = ComputerNotFoundException.class)
+    public void testDeleteOneCompanyWithLinkedComputersOk() throws ServiceException, DaoException {
+        long count = service.countCompanies();
+        long id = service.createCompany(NAME_VALID);
+        assertTrue(count + 1 == service.countCompanies());
+        long idC = service.createComputer(NAME_VALID, null, null, id);
+        Assert.assertNotNull(service.getComputer(idC));
+        assertTrue(service.deleteCompany(id));
+        service.getComputer(idC);
+    }
+
+    /**
      * Méthode de test du deleteComputer.
      * @throws ServiceException erreur sur le service
      * @throws DaoException erreur de reqûete.

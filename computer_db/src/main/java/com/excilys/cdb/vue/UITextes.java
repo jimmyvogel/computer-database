@@ -10,7 +10,8 @@ public class UITextes {
     public static final String MENU_INITIAL = "Choisir Action \n"
             + "1-List computers\n" + "2-List companies\n"
             + "3-Show computer details \n" + "4-Create a computer\n"
-            + "5-Update a computer\n" + "6-Delete a computer";
+            + "5-Update a computer\n" + "6-Delete a computer\n"
+            + "7-Delete company";
 
     public static final String RETOUR = "Pour revenir, tappez r";
 

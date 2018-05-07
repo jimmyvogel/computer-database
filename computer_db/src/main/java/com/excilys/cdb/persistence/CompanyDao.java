@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -168,33 +169,7 @@ public class CompanyDao implements Dao<Company> {
      * @throws DaoException exception sur la requête.
      */
     public boolean delete(long id) throws DaoException {
-        int resultCompany = 0;
-        boolean deleteOk = true;
-        Connection c = daoFactory.getConnection();
-        try (PreparedStatement stmtCompany = c.prepareStatement(SQL_DELETE_COMPANY);
-                PreparedStatement stmtComputer = c.prepareStatement(SQL_DELETE_LINKED_COMPUTER)) {
-
-            Transaction.beginTransaction(c);
-            stmtCompany.setLong(1, id);
-            stmtComputer.setLong(1, id);
-            resultCompany = stmtCompany.executeUpdate();
-            stmtComputer.executeUpdate();
-            if (resultCompany <= 0) {
-                deleteOk = false;
-            }
-        } catch (SQLException e) {
-            try {
-                c.rollback();
-            } catch (SQLException e1) {
-                LOGGER.error("Rollback fail.");
-                throw new DaoException("Requête fail.", e);
-            }
-            throw new DaoException("Requête exception", e);
-        }
-
-        Transaction.endTransaction(c, deleteOk);
-
-        return deleteOk;
+        return delete(Collections.singleton(id));
     }
 
     /**

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -195,10 +197,8 @@ public class ComputerServlet extends HttpServlet {
      */
     private void deleteComputer(HttpServletRequest request) throws DaoException, ServiceException {
         String[] selections = request.getParameter("selection").split(",");
-        for (String s : selections) {
-            Integer value = Integer.valueOf(s);
-            service.deleteComputer(value);
-        }
+        Set<Long> set = Arrays.stream(selections).map(l -> Long.valueOf(l)).collect(Collectors.toSet());
+        service.deleteComputers(set);
         request.setAttribute(SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
         addParamsListComputers(request);
     }
