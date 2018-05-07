@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +25,15 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
  */
 public class CompanyDao implements Dao<Company> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
     private DaoFactory daoFactory;
     private static CompanyDao dao;
 
+    private static final String SQL_AJOUT_COMPANY = "INSERT into `company` (name) VALUES (?)";
     private static final String SQL_ALL_COMPANIES = "SELECT `id`,`name` FROM `company`";
     private static final String SQL_ONE_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `id`=?";
+    private static final String SQL_DELETE_LINKED_COMPUTER = "DELETE FROM `computer` WHERE `company_id`=?";
+    private static final String SQL_DELETE_COMPANY = "DELETE FROM `company` WHERE `id`=?";
     private static final String SQL_COUNT_COMPANY = "SELECT COUNT(`id`) AS `total` FROM `company`";
     private static final String SQL_PAGE_COMPANY = SQL_ALL_COMPANIES
             + " LIMIT ? OFFSET ?";
@@ -41,12 +46,11 @@ public class CompanyDao implements Dao<Company> {
      */
     public static CompanyDao getInstance(final DaoFactory factory) {
         if (dao == null) {
-            Logger logger = LoggerFactory.getLogger(CompanyDao.class);
-            logger.info("Initialisation du singleton de type CompanyDao");
+            LOGGER.info("Initialisation du singleton de type CompanyDao");
 
             dao = new CompanyDao();
             dao.daoFactory = factory;
-            logger.info("Singleton companyDao intialisé");
+            LOGGER.info("Singleton companyDao intialisé");
         }
         return dao;
     }
@@ -155,6 +159,109 @@ public class CompanyDao implements Dao<Company> {
             throw new DaoException("Requête exception", e);
         }
         return page;
+    }
+
+    /**
+     * Delete a company.
+     * @param id id of the company to delete.
+     * @return résultat
+     * @throws DaoException exception sur la requête.
+     */
+    public boolean delete(long id) throws DaoException {
+        int resultCompany = 0;
+        boolean deleteOk = true;
+        Connection c = daoFactory.getConnection();
+        try (PreparedStatement stmtCompany = c.prepareStatement(SQL_DELETE_COMPANY);
+                PreparedStatement stmtComputer = c.prepareStatement(SQL_DELETE_LINKED_COMPUTER)) {
+
+            Transaction.beginTransaction(c);
+            stmtCompany.setLong(1, id);
+            stmtComputer.setLong(1, id);
+            resultCompany = stmtCompany.executeUpdate();
+            stmtComputer.executeUpdate();
+            if (resultCompany <= 0) {
+                deleteOk = false;
+            }
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                LOGGER.error("Rollback fail.");
+                throw new DaoException("Requête fail.", e);
+            }
+            throw new DaoException("Requête exception", e);
+        }
+
+        Transaction.endTransaction(c, deleteOk);
+
+        return deleteOk;
+    }
+
+    /**
+     * Supprimer une liste de company.
+     * @param companies les ids des company à supprimer.
+     * @return résultat.
+     * @throws DaoException exception sur la requête.
+     */
+    public boolean delete(Set<Long> companies) throws DaoException {
+        int resultCompany = 0;
+        boolean deleteOk = true;
+        Connection c = daoFactory.getConnection();
+        try (PreparedStatement stmtCompany = c.prepareStatement(SQL_DELETE_COMPANY);
+                PreparedStatement stmtComputer = c.prepareStatement(SQL_DELETE_LINKED_COMPUTER)) {
+
+            Transaction.beginTransaction(c);
+            for (Long id : companies) {
+                stmtCompany.setLong(1, id);
+                stmtComputer.setLong(1, id);
+                stmtComputer.executeUpdate();
+                resultCompany = stmtCompany.executeUpdate();
+                if (resultCompany <= 0) {
+                    deleteOk = false;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                LOGGER.error("Rollback fail.");
+                throw new DaoException("Requête fail.", e);
+            }
+            throw new DaoException("Requête exception", e);
+        }
+
+        Transaction.endTransaction(c, deleteOk);
+
+        return deleteOk;
+    }
+
+    /**
+     * Créer un objet de type company.
+     * @param company Un objet complet en argument
+     * @return l'id de l'objet crée ou -1 si la création a échoué
+     * @throws DaoException erreur sur la reqûete
+     */
+    public long create(final Company company) throws DaoException {
+        long id = -1;
+
+        if (company.getName() == null) {
+            throw new DaoException("Argument (name) requête création company null");
+        }
+        try (Connection c = daoFactory.getConnection();
+                PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPANY, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, company.getName());
+            stmt.execute();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs != null && rs.first()) {
+                id = rs.getLong(1);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Requête exception", e);
+        }
+
+        return id;
     }
 
 }

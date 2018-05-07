@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
  */
 public class ComputerDao implements Dao<Computer> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
     private DaoFactory daoFactory;
     private static ComputerDao dao;
 
@@ -50,8 +52,7 @@ public class ComputerDao implements Dao<Computer> {
     public static ComputerDao getInstance(DaoFactory factory) {
         if (dao == null) {
 
-            Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-            logger.info("Initialisation du singleton de type ComputerDao");
+            LOGGER.info("Initialisation du singleton de type ComputerDao");
 
             dao = new ComputerDao();
             dao.daoFactory = factory;
@@ -186,7 +187,7 @@ public class ComputerDao implements Dao<Computer> {
      * @return un boolean pour connaitre le résultat
      * @throws DaoException exception sur la requête
      */
-    public boolean deleteComputer(final long id) throws DaoException {
+    public boolean delete(final long id) throws DaoException {
         int result = 0;
         try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER)) {
             stmt.setLong(1, id);
@@ -195,6 +196,42 @@ public class ComputerDao implements Dao<Computer> {
             throw new DaoException("Requête exception", e);
         }
         return (result > 0) ? true : false;
+    }
+
+    /**
+     * Supprimer une liste de computers.
+     * @param computers les ids des computers à supprimer.
+     * @return résultat.
+     * @throws DaoException exception sur la requête.
+     */
+    public boolean delete(Set<Long> computers) throws DaoException {
+        int result = 0;
+        boolean deleteOk = true;
+        Connection c = daoFactory.getConnection();
+        try (PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER)) {
+
+            Transaction.beginTransaction(c);
+            for (Long id : computers) {
+                stmt.setLong(1, id);
+                result = stmt.executeUpdate();
+                if (result <= 0) {
+                    deleteOk = false;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                LOGGER.error("Rollback fail.");
+                throw new DaoException("Requête fail.", e);
+            }
+            throw new DaoException("Requête exception", e);
+        }
+
+        Transaction.endTransaction(c, deleteOk);
+
+        return deleteOk;
     }
 
     /**

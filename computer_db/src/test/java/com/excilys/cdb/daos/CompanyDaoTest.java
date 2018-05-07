@@ -1,5 +1,8 @@
 package com.excilys.cdb.daos;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.Assert;
@@ -60,6 +63,53 @@ public class CompanyDaoTest {
         Page<Company> page = dao.getPage(1);
         Assert.assertTrue(page.getObjects().size() == page.getLimit());
         dao.getPage(-1);
+    }
+
+    /**
+     * Test sur la méthode create.
+     * @throws DaoException erreur de requête
+     */
+    @Test
+    public void testCreateOk() throws DaoException {
+        long count = dao.getCount();
+        dao.create(new Company("nomValid"));
+        Assert.assertTrue(count + 1 == dao.getCount());
+    }
+
+    /**
+     * Test sur la méthode create.
+     * @throws DaoException erreur de requête
+     */
+    @Test(expected = DaoException.class)
+    public void testCreateNameNull() throws DaoException {
+        dao.create(new Company(null));
+    }
+
+    /**
+     * Test sur la méthode delete.
+     * @throws DaoException erreur de requête
+     */
+    @Test
+    public void testDeleteOneElement() throws DaoException {
+        long count = dao.getCount();
+        long id = dao.create(new Company("nameValid"));
+        Assert.assertTrue(count + 1 == dao.getCount());
+        Assert.assertTrue(dao.delete(id));
+    }
+
+    /**
+     * Test sur la méthode delete.
+     * @throws DaoException erreur de requête
+     */
+    @Test
+    public void testDeleteManyElement() throws DaoException {
+        long count = dao.getCount();
+        long id = dao.create(new Company("nameValid"));
+        long id2 = dao.create(new Company("nameValid2"));
+        long id3 = dao.create(new Company("nameValid3"));
+        Assert.assertTrue(count + 3 == dao.getCount());
+        List<Long> list = Arrays.asList(id, id2, id3);
+        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
     }
 
 }

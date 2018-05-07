@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Assert;
@@ -83,9 +85,10 @@ public class ComputerServiceTest {
     /**
      * Test getAllComputer.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de requête.
      */
     @Test
-    public void testGetAllComputer() throws ServiceException {
+    public void testGetAllComputer() throws ServiceException, DaoException {
 
         List<Computer> computers = service.getAllComputer();
         Assert.assertEquals(computers.size(), nbComputers);
@@ -106,9 +109,10 @@ public class ComputerServiceTest {
     /**
      * Test de getCompany.
      * @throws ServiceException erreur du service
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testGetCompany() throws ServiceException {
+    public void testGetCompany() throws ServiceException, DaoException {
         List<Company> companies = service.getAllCompany();
         Company comp;
         for (Company c : companies) {
@@ -120,9 +124,10 @@ public class ComputerServiceTest {
     /**
      * Test de getComputer.
      * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void testGetComputer() throws ServiceException {
+    public void testGetComputer() throws ServiceException, DaoException {
         List<Computer> computers = service.getAllComputer();
         Computer comp;
         for (Computer c : computers) {
@@ -142,6 +147,29 @@ public class ComputerServiceTest {
         Assert.assertTrue(create);
         long count = service.countComputers();
         Assert.assertTrue(count == nbComputers + 1);
+    }
+
+    /**
+     * Test de createCompany.
+     * @throws ServiceException erreur de service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test
+    public void testCreateCompanyStringOk() throws ServiceException, DaoException {
+        boolean create = service.createCompany(NAME_VALID) > 0;
+        Assert.assertTrue(create);
+        long count = service.countCompanies();
+        Assert.assertTrue(count == nbCompany + 1);
+    }
+
+    /**
+     * Test de createComputer.
+     * @throws ServiceException erreur de service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = NameInvalidException.class)
+    public void testCreateCompanyStringFailNameInvalid() throws ServiceException, DaoException {
+        service.createCompany(NAME_INVALID);
     }
 
     /**
@@ -500,4 +528,75 @@ public class ComputerServiceTest {
         assertFalse(service.deleteComputer(-1));
         assertFalse(service.deleteComputer(Long.MAX_VALUE));
     }
+
+    /**
+     * Méthode de test du deleteComputer.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test
+    public void testDeleteManyComputerOk() throws ServiceException, DaoException {
+        long count = service.countComputers();
+        long id = service.createComputer(NAME_VALID);
+        long id2 = service.createComputer(NAME_VALID);
+        long id3 = service.createComputer(NAME_VALID);
+        assertTrue(count + 3 == service.countComputers());
+        assertTrue(service.deleteComputers(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        assertTrue(count == service.countComputers());
+    }
+
+    /**
+     * Méthode de test du deleteComputer.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test
+    public void testDeleteManyCompaniesWithoutLinkedComputersOk() throws ServiceException, DaoException {
+        long count = service.countCompanies();
+        long id = service.createCompany(NAME_VALID);
+        long id2 = service.createCompany(NAME_VALID);
+        long id3 = service.createCompany(NAME_VALID);
+        assertTrue(count + 3 == service.countCompanies());
+        assertTrue(service.deleteCompanies(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        assertTrue(count == service.countCompanies());
+    }
+
+    /**
+     * Méthode de test du deleteCompanies.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = ComputerNotFoundException.class)
+    public void testDeleteManyCompaniesWithLinkedComputersOk() throws ServiceException, DaoException {
+        long count = service.countCompanies();
+        long id = service.createCompany(NAME_VALID);
+        assertTrue(count + 1 == service.countCompanies());
+        long idC = service.createComputer(NAME_VALID, null, null, id);
+        Assert.assertNotNull(service.getComputer(idC));
+        assertTrue(service.deleteCompanies(new HashSet<Long>(Arrays.asList(id))));
+        service.getComputer(idC);
+    }
+
+    /**
+     * Méthode de test du deleteComputers.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test
+    public void testDeleteManyComputerWithBadList() throws ServiceException, DaoException {
+        assertFalse(service.deleteComputers(null));
+        assertFalse(service.deleteComputers(new HashSet<Long>()));
+    }
+
+    /**
+     * Méthode de test du deleteCompanies.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test
+    public void testDeleteManyCompanyWithBadList() throws ServiceException, DaoException {
+        assertFalse(service.deleteCompanies(null));
+        assertFalse(service.deleteCompanies(new HashSet<Long>()));
+    }
+
 }

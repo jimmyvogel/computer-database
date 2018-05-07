@@ -135,7 +135,8 @@ public class ComputerServlet extends HttpServlet {
                 }
                 dispatch(request, response, action.getVue());
 
-            } catch (ServiceException e) {
+            } catch (ServiceException | DaoException e) {
+                request.setAttribute(ERROR, e.getMessage());
                 dispatch(request, response, CHEMIN_ACCUEIL);
             }
 
@@ -284,9 +285,10 @@ public class ComputerServlet extends HttpServlet {
      *            injections et parametres
      * @throws ServiceException
      *             erreur de service.
+     * @throws DaoException erreur de requête.
      */
     private void addParamsEditComputer(HttpServletRequest request)
-            throws ServiceException {
+            throws ServiceException, DaoException {
         long id = Long.valueOf(request.getParameter("id"));
         request.setAttribute("computer",
                 new ComputerDTO(service.getComputer(id)));

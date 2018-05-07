@@ -632,8 +632,9 @@ public class UIController {
      * @param id l'id du computer a affiché
      * @return les résultats dans un String.
      * @throws ServiceException exception de service
+     * @throws DaoException erreur de requête.
      */
-    private String detailComputer(final long id) throws ServiceException {
+    private String detailComputer(final long id) throws ServiceException, DaoException {
         Computer c = service.getComputer(id);
         if (c == null) {
             return "Erreur d'id";

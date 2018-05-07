@@ -3,6 +3,7 @@ package com.excilys.cdb.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validator.CompanyValidator;
 import com.excilys.cdb.validator.ComputerValidator;
 import com.excilys.cdb.validator.TextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
@@ -157,14 +159,10 @@ public class ComputerService {
      * @param id l'id de l'élément à récupérer
      * @return la Company résultant
      * @throws ServiceException erreur de paramètres
+     * @throws DaoException erreur de reqûete.
      */
-    public Company getCompany(long id) throws ServiceException {
-        Company company = null;
-        try {
-            company = companyDao.getById(id).orElseThrow(() -> new CompanyNotFoundException(id));
-        } catch (DaoException e) {
-            throw new ServiceException("Méthode dao fail", e);
-        }
+    public Company getCompany(long id) throws ServiceException, DaoException {
+        Company company = companyDao.getById(id).orElseThrow(() -> new CompanyNotFoundException(id));
         return company;
     }
 
@@ -173,19 +171,15 @@ public class ComputerService {
      * @param id l'id de l'élément à récupérer
      * @return le Computer résultant
      * @throws ServiceException erreur de paramètres
+     * @throws DaoException erreur de reqûete.
      */
-    public Computer getComputer(long id) throws ServiceException {
-        Computer computer = null;
-        try {
-            computer = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
-        } catch (DaoException e) {
-            throw new ServiceException("Méthode dao fail", e);
-        }
+    public Computer getComputer(long id) throws ServiceException, DaoException {
+        Computer computer = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
         return computer;
     }
 
     /** Créer un computer.
-     * @param name le nom de la compagnie
+     * @param name le nom du computer
      * @return boolean le résultat
      * @throws ServiceException erreur de paramètres.
      * @throws DaoException erreur de requête.
@@ -203,6 +197,27 @@ public class ComputerService {
         }
         return result;
     }
+
+    /** Créer une company.
+     * @param name le nom de la compagnie
+     * @return boolean le résultat
+     * @throws ServiceException erreur de paramètres.
+     * @throws DaoException erreur de requête.
+     */
+    public long createCompany(final String name) throws ServiceException, DaoException {
+        long result = -1;
+
+        String nameTraiter = TextValidation.traitementString(name);
+        try {
+            CompanyValidator.validName(nameTraiter);
+            Company c = new Company(nameTraiter);
+            result = companyDao.create(c);
+        } catch (ValidatorStringException e) {
+            throw new NameInvalidException(nameTraiter, e.getReason());
+        }
+        return result;
+    }
+
 
     /** Créer un computer.
      * @param name le nom de la compagnie ou null
@@ -248,7 +263,43 @@ public class ComputerService {
         if (id < 1) {
             return false;
         }
-        return computerDao.deleteComputer(id);
+        return computerDao.delete(id);
+    }
+
+    /** Détruire une compagnie.
+     * @param id l'id du computer à supprimer
+     * @return un boolean représentant le résultat
+     * @throws DaoException erreur de requête
+     */
+    public boolean deleteCompany(long id) throws DaoException {
+        if (id < 1) {
+            return false;
+        }
+        return computerDao.delete(id);
+    }
+
+    /** Détruire plusieurs compagnies.
+     * @param ids id(s) des compagnies à supprimer
+     * @return un boolean représentant le résultat
+     * @throws DaoException erreur de requête
+     */
+    public boolean deleteCompanies(Set<Long> ids) throws DaoException {
+        if (ids == null || ids.size() == 0) {
+            return false;
+        }
+        return companyDao.delete(ids);
+    }
+
+    /** Détruire plusieurs computers.
+     * @param ids id(s) des computers à supprimer
+     * @return un boolean représentant le résultat
+     * @throws DaoException erreur de requête
+     */
+    public boolean deleteComputers(Set<Long> ids) throws DaoException {
+        if (ids == null || ids.size() == 0) {
+            return false;
+        }
+        return computerDao.delete(ids);
     }
 
     /** Modifié un computer.

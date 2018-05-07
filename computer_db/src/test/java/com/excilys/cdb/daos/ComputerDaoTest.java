@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.Assert;
@@ -206,7 +209,7 @@ public class ComputerDaoTest {
     @Test
     public void testDeleteComputer() throws DaoException {
         long id = dao.create(computerValid);
-        Assert.assertTrue(dao.deleteComputer(id));
+        Assert.assertTrue(dao.delete(id));
     }
 
     /**
@@ -215,7 +218,7 @@ public class ComputerDaoTest {
      */
     @Test
     public void testDeleteComputerFailId() throws DaoException {
-        Assert.assertFalse(dao.deleteComputer(Integer.MAX_VALUE));
+        Assert.assertFalse(dao.delete(Integer.MAX_VALUE));
     }
 
     /**
@@ -224,7 +227,22 @@ public class ComputerDaoTest {
      */
     @Test
     public void testDeleteComputerFailIdMoinsUn() throws DaoException {
-        Assert.assertFalse(dao.deleteComputer(-1));
+        Assert.assertFalse(dao.delete(-1));
+    }
+
+    /**
+     * Test de deleteComputer.
+     * @throws DaoException erreur de requête.
+     */
+    @Test
+    public void testDeleteListComputer() throws DaoException {
+        long count = dao.getCount();
+        long id = dao.create(new Computer("nameValid"));
+        long id2 = dao.create(new Computer("nameValid2"));
+        long id3 = dao.create(new Computer("nameValid3"));
+        Assert.assertTrue(count + 3 == dao.getCount());
+        List<Long> list = Arrays.asList(id, id2, id3);
+        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
     }
 
     /**
