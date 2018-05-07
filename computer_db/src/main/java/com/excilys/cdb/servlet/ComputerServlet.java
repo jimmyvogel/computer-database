@@ -81,6 +81,7 @@ public class ComputerServlet extends HttpServlet {
     private static final String AFTER_DELETE_COMPUTER = "/views/listeComputers.jsp";
     private static final String AFTER_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
 
+    private static final String SESSION_ETAT = "etat";
     private static final String SESSION_LIMIT_COMPUTERS_ID = "LimitComputers";
     private static final String SESSION_LIMIT_COMPANIES_ID = "LimitCompanies";
     private static final Integer DEFAULT_LIMIT = Dao.LIMIT_DEFAULT;
@@ -392,8 +393,8 @@ public class ComputerServlet extends HttpServlet {
     private void dispatch(HttpServletRequest request,
             HttpServletResponse response, String chemin)
             throws ServletException, IOException {
-        this.getServletContext().getRequestDispatcher(chemin).forward(request,
-                response);
+        request.setAttribute(SESSION_ETAT, request.getParameter("action"));
+        this.getServletContext().getRequestDispatcher(chemin).forward(request, response);
     }
 
 }
