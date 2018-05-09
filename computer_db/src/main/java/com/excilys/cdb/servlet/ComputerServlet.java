@@ -2,9 +2,7 @@ package com.excilys.cdb.servlet;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.Dao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
@@ -80,9 +78,7 @@ public class ComputerServlet extends HttpServlet {
 
     private static final String SESSION_ETAT = "etat";
     private static final String SESSION_SEARCH = "search";
-    private static final String SESSION_LIMIT_COMPUTERS_ID = "LimitComputers";
-    private static final String SESSION_LIMIT_COMPANIES_ID = "LimitCompanies";
-    private static final Integer DEFAULT_LIMIT = Dao.LIMIT_DEFAULT;
+    private static final String SESSION_LIMIT_ID = "LimitCompanies";
 
     private static final String ERROR = "error";
     private static final String SUCCESS = "success";
@@ -112,7 +108,7 @@ public class ComputerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (request.getParameter("action") != null) {
-            Action action = Action.valueOf(request.getParameter("action"));
+            Action action = Action.valueOf(request.getParameter("action").toUpperCase());
             try {
                 switch (action) {
                 case ADD_FORM_COMPUTER:
@@ -160,7 +156,7 @@ public class ComputerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (request.getParameter("action") != null) {
-            Action action = Action.valueOf(request.getParameter("action"));
+            Action action = Action.valueOf(request.getParameter("action").toUpperCase());
             try {
                 switch (action) {
                 case ADD_COMPUTER:
@@ -192,16 +188,16 @@ public class ComputerServlet extends HttpServlet {
      */
     private int getLimitPagination(HttpServletRequest request) {
         // Valeur par défaut si rien de spécifié.
-        Integer limit = DEFAULT_LIMIT;
+        Integer limit = null;
 
         // Modification de la limite
         if (request.getParameter("limit") != null) {
             limit = Integer.valueOf(request.getParameter("limit"));
-            request.getSession().setAttribute(SESSION_LIMIT_COMPANIES_ID, limit);
+            request.getSession().setAttribute(SESSION_LIMIT_ID, limit);
 
         // Verification de la limite en session.
-        } else if (request.getSession().getAttribute(SESSION_LIMIT_COMPANIES_ID) != null) {
-            limit = (Integer) request.getSession() .getAttribute(SESSION_LIMIT_COMPANIES_ID);
+        } else if (request.getSession().getAttribute(SESSION_LIMIT_ID) != null) {
+            limit = (Integer) request.getSession() .getAttribute(SESSION_LIMIT_ID);
         }
         return limit;
     }
@@ -240,9 +236,7 @@ public class ComputerServlet extends HttpServlet {
         }
         Integer limit = getLimitPagination(request);
 
-        List<Company> list = service.getCompanyByName(this.getSearch(request));
-        Page<Company> page = new Page<Company>(limit, list.size());
-        page.charge(list.subList(page.offset(value), list.size()), value);
+        Page<Company> page = service.getPageSearchCompany(this.getSearch(request), value, limit);
         request.setAttribute("actionPagination", Action.SEARCH_COMPANY.toString());
         request.setAttribute("page", page);
     }
@@ -261,11 +255,11 @@ public class ComputerServlet extends HttpServlet {
 
         Integer limit = getLimitPagination(request);
 
-        List<Computer> list = service.getComputerByName(this.getSearch(request));
-        Page<Computer> page = new Page<Computer>(limit, list.size());
-        page.charge(list.subList(page.offset(value), list.size()), value);
+        Page<Computer> page = service.getPageSearchComputer(this.getSearch(request), value, limit);
+        Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
+
         request.setAttribute("actionPagination", Action.SEARCH_COMPUTER.toString());
-        request.setAttribute("page", page);
+        request.setAttribute("page", newpage);
     }
 
     /**
@@ -316,7 +310,7 @@ public class ComputerServlet extends HttpServlet {
         }
         service.updateComputer(id, name, introduced, discontinued, idCompany);
 
-        request.setAttribute(SUCCESS, "Update Computer " + name + " success.");
+        request.setAttribute(SUCCESS, "Update Computer success.");
         addParamsEditComputer(request);
     }
 
@@ -395,16 +389,9 @@ public class ComputerServlet extends HttpServlet {
         if (request.getParameter("page") != null) {
             value = Integer.valueOf(request.getParameter("page"));
         }
-
         Integer limit = getLimitPagination(request);
-        List<ComputerDTO> computersDtos = new ArrayList<>();
         Page<Computer> page = service.getPageComputer(value, limit);
-        for (Computer c : page.getObjects()) {
-            computersDtos.add(new ComputerDTO(c));
-        }
-        Page<ComputerDTO> newpage = new Page<>(page.getLimit(),
-                page.getCount());
-        newpage.charge(computersDtos, page.getPageCourante());
+        Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
 
         request.setAttribute("actionPagination", Action.LIST_COMPUTERS.toString());
         request.setAttribute("page", newpage);

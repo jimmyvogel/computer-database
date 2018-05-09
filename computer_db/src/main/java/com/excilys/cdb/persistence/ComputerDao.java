@@ -30,7 +30,7 @@ public class ComputerDao implements Dao<Computer> {
     private DaoFactory daoFactory;
     private static ComputerDao dao;
 
-    private static final String SQL_SEARCH_COMPUTER = "SELECT company.id,company.name, computer.id, "
+    private static final String SQL_SEARCH_ALL_COMPUTER = "SELECT company.id,company.name, computer.id, "
             + "computer.name, computer.introduced, computer.discontinued FROM company "
             + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER by computer.name";
     private static final String SQL_ALL_COMPUTERS = "SELECT company.id,company.name, computer.id, "
@@ -45,8 +45,10 @@ public class ComputerDao implements Dao<Computer> {
             + "company_id=? WHERE id=? ";
     private static final String SQL_DELETE_COMPUTER = "DELETE FROM `computer` WHERE `id`=?";
     private static final String SQL_COUNT_COMPUTER = "SELECT COUNT(`id`) AS `total` FROM `computer`";
-    private static final String SQL_PAGE_COMPUTER = SQL_ALL_COMPUTERS
-            + " LIMIT ? OFFSET ?";
+    private static final String SQL_PAGE_COMPUTER = SQL_ALL_COMPUTERS + " LIMIT ? OFFSET ?";
+    private static final String SQL_SEARCH_PAGE_COMPUTER = SQL_SEARCH_ALL_COMPUTER + " LIMIT ? OFFSET ?";
+    private static final String SQL_SEARCH_COUNT = "SELECT COUNT(computer.id) AS `total` FROM company "
+            + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ?";
 
     public static final String MESS_REQUEST_EXCEPTION = "Requête exception";
 
@@ -115,7 +117,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public List<Computer> getByName(String name) throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
-        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_ALL_COMPUTER)) {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, "%" + name + "%");
             ResultSet result = null;
@@ -275,6 +277,29 @@ public class ComputerDao implements Dao<Computer> {
         return count;
     }
 
+    /**
+     * Méthode pour récupérer le nombre d'objets résultats d'une recherche par nom.
+     * @param search le nom de la recherche
+     * @return le nombre d'instances
+     * @throws DaoException exception sur la requête
+     */
+    public long getSearchCount(final String search) throws DaoException {
+        long count = 0;
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_COUNT)) {
+            stmt.setString(1, "%" + search + "%");
+            stmt.setString(2, "%" + search + "%");
+
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                count = result.getLong("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
+        }
+
+        return count;
+    }
+
     /** Méthode pour récupérer les objets d'une certaine page de computer.
      * @param numeroPage le numéro de la page a récupérer
      * @return une liste de computers dans une page
@@ -296,6 +321,44 @@ public class ComputerDao implements Dao<Computer> {
         try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER)) {
             stmt.setInt(1, page.getLimit());
             stmt.setInt(2, page.offset(numeroPage));
+
+            ResultSet result = stmt.executeQuery();
+
+            while (result.next()) {
+                computers.add(MapperDao.mapComputer(result));
+            }
+            page.charge(computers, numeroPage);
+        } catch (SQLException e) {
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
+        }
+        return page;
+    }
+
+    /** Méthode pour récupérer les résultats d'une recherche sur le nom de computer et de compagnie.
+     * @param search le nom de recherche
+     * @param numeroPage le numéro de la page a récupérer
+     * @return une liste de computers dans une page
+     * @throws DaoException exception sur la requête
+     */
+    public Page<Computer> getPageSearch(final String search, final int numeroPage) throws DaoException {
+        return getPageSearch(search, numeroPage, LIMIT_DEFAULT);
+    }
+
+    /** Méthode pour récupérer les résultats d'une recherche sur le nom de computer et de compagnie.
+     * @param search le nom de recherche
+     * @param numeroPage le numéro de la page a récupérer
+     * @param limit le nombre d'objets a instancier
+     * @return une liste de computers dans une page
+     * @throws DaoException exception sur la requête
+     */
+    public Page<Computer> getPageSearch(final String search, final int numeroPage, final int limit) throws DaoException {
+        Page<Computer> page = new Page<Computer>(limit, (int) this.getSearchCount(search));
+        List<Computer> computers = new ArrayList<Computer>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_PAGE_COMPUTER)) {
+            stmt.setString(1, "%" + search + "%");
+            stmt.setString(2, "%" + search + "%");
+            stmt.setInt(3, page.getLimit());
+            stmt.setInt(4, page.offset(numeroPage));
 
             ResultSet result = stmt.executeQuery();
 

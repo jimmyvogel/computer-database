@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -353,10 +354,37 @@ public class ComputerDaoTest {
      * @throws DaoException erreur de requête
      */
     @Test(expected = DaoException.class)
-    public void testGetPage() throws DaoException {
+    public void testGetPageException() throws DaoException {
         Page<Computer> page = dao.getPage(1);
         Assert.assertTrue(page.getObjects().size() == page.getLimit());
         dao.getPage(-1);
+    }
+
+    /**
+     * Test de getPageSearch.
+     * @throws DaoException erreur de requête
+     */
+    @Test
+    public void testGetPageSearchOk() throws DaoException {
+        String search = "NomComputerPourTestGetPageSearch";
+        Integer nbElements = 23;
+        Set<Long> ids = new HashSet<Long>();
+        for (int i = 0; i < nbElements; i++) {
+            ids.add(dao.create(new Computer(search)));
+        }
+        Page<Computer> page = dao.getPageSearch(search, 1);
+        Assert.assertTrue(page.getCount() == nbElements);
+
+        dao.delete(ids);
+    }
+
+    /**
+     * Test de getPageSearch.
+     * @throws DaoException erreur de requête
+     */
+    @Test(expected = DaoException.class)
+    public void testGetPageSearchIndexException() throws DaoException {
+        dao.getPageSearch("nomauhasard", -1);
     }
 
     /**

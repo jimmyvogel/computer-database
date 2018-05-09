@@ -179,6 +179,53 @@ public class ComputerService {
     }
 
     /**
+     * Recherche de computer par nom.
+     * @param search le nom a chercher
+     * @param page le numero de la page
+     * @param limit le nombre d'éléments à récupérer, si null: valeur default.
+     * @return une page chargé.
+     * @throws ServiceException erreur de paramètres
+     */
+    public Page<Computer> getPageSearchComputer(final String search, final int page, final Integer limit) throws ServiceException {
+        Page<Computer> pageComputer = null;
+        try {
+            if (limit == null) {
+                pageComputer = computerDao.getPageSearch(search, page);
+            } else {
+                pageComputer = computerDao.getPageSearch(search, page, limit);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("Méthode dao fail", e);
+        }
+        return pageComputer;
+    }
+
+    /**
+     * Recherche de compagnie par nom.
+     * @param search le nom à chercher.
+     * @param page le numero de la page
+     * @param limit le nombre d'éléments à récupérer, si null: valeur default.
+     * @return une page chargé.
+     * @throws ServiceException erreur de paramètres
+     */
+    public Page<Company> getPageSearchCompany(final String search, final int page, final Integer limit) throws ServiceException {
+        Page<Company> pageComputer = new Page<Company>(0, 0);
+        String searchTraiter = TextValidation.traitementString(search);
+        if (search != null) {
+            try {
+                if (limit == null) {
+                    pageComputer = companyDao.getPageSearch(searchTraiter, page);
+                } else {
+                    pageComputer = companyDao.getPageSearch(searchTraiter, page, limit);
+                }
+            } catch (DaoException e) {
+                throw new ServiceException("Méthode dao fail", e);
+            }
+        }
+        return pageComputer;
+    }
+
+    /**
      * Retourne une company de la bdd.
      * @param id l'id de l'élément à récupérer
      * @return la Company résultant

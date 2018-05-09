@@ -23,9 +23,9 @@ public class AppServletContextConfig implements ServletContextListener {
     // Run this before web application is started
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        Map<String, Action> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (Action action : ComputerServlet.Action.values()) {
-            map.put(action.toString(), action);
+            map.put(action.toString(), action.toString().toLowerCase());
         }
         event.getServletContext().setAttribute(ACTIONS, map);
 

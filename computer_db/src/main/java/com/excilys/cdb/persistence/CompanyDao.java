@@ -29,15 +29,16 @@ public class CompanyDao implements Dao<Company> {
     private DaoFactory daoFactory;
     private static CompanyDao dao;
 
-    private static final String SQL_SEARCH_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ? ORDER by `name`";
+    private static final String SQL_SEARCH_ALL_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ? ORDER by `name`";
     private static final String SQL_AJOUT_COMPANY = "INSERT into `company` (name) VALUES (?)";
     private static final String SQL_ALL_COMPANIES = "SELECT `id`,`name` FROM `company`";
     private static final String SQL_ONE_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `id`=?";
     private static final String SQL_DELETE_LINKED_COMPUTER = "DELETE FROM `computer` WHERE `company_id`=?";
     private static final String SQL_DELETE_COMPANY = "DELETE FROM `company` WHERE `id`=?";
     private static final String SQL_COUNT_COMPANY = "SELECT COUNT(`id`) AS `total` FROM `company`";
-    private static final String SQL_PAGE_COMPANY = SQL_ALL_COMPANIES
-            + " LIMIT ? OFFSET ?";
+    private static final String SQL_PAGE_COMPANY = SQL_ALL_COMPANIES + " LIMIT ? OFFSET ?";
+    private static final String SQL_SEARCH_PAGE_COMPANY = SQL_SEARCH_ALL_COMPANY + " LIMIT ? OFFSET ?";
+    private static final String SQL_SEARCH_COUNT = "SELECT COUNT(`id`) AS `total` FROM `company` WHERE `name` LIKE ?";
 
     public static final String MESS_REQUEST_EXCEPTION = "Reqûete exception";
 
@@ -114,7 +115,7 @@ public class CompanyDao implements Dao<Company> {
      */
     public List<Company> getByName(final String name) throws DaoException {
         List<Company> companies = new ArrayList<Company>();
-        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_COMPANY)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_ALL_COMPANY)) {
             stmt.setString(1, "%" + name + "%");
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
@@ -148,6 +149,28 @@ public class CompanyDao implements Dao<Company> {
         return count;
     }
 
+    /**
+     * Méthode pour récupérer le nombre d'objets résultats d'une recherche par nom.
+     * @param search le nom de la recherche
+     * @return le nombre d'instances
+     * @throws DaoException exception sur la requête
+     */
+    public long getSearchCount(final String search) throws DaoException {
+        long count = 0;
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_COUNT)) {
+            stmt.setString(1, "%" + search + "%");
+
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                count = result.getLong("total");
+            }
+        } catch (SQLException e) {
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
+        }
+
+        return count;
+    }
+
     /** Méthode pour récupérer les objets d'une certaine page.
      * @param numeroPage le numéro de la page a récupérer
      * @return une liste d'objets dans une page
@@ -171,6 +194,42 @@ public class CompanyDao implements Dao<Company> {
         try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPANY)) {
             stmt.setInt(1, page.getLimit());
             stmt.setInt(2, page.offset(numeroPage));
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
+                companies.add(MapperDao.mapCompany(result));
+            }
+            page.charge(companies, numeroPage);
+        } catch (SQLException e) {
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
+        }
+        return page;
+    }
+
+    /** Méthode pour récupérer les résultats d'une recherche sur le nom de compagnie.
+     * @param search le nom de recherche
+     * @param numeroPage le numéro de la page a récupérer
+     * @return une liste de computers dans une page
+     * @throws DaoException exception sur la requête
+     */
+    public Page<Company> getPageSearch(final String search, final int numeroPage) throws DaoException {
+        return getPageSearch(search, numeroPage, LIMIT_DEFAULT);
+    }
+
+    /** Méthode pour récupérer des compagnies de nom le paramètre donné.
+     * @param search le nom à chercher
+     * @param numeroPage le numéro de la page a récupérer
+     * @param limit nombre d'objets à récupérer
+     * @return une liste d'objets dans une page
+     * @throws DaoException
+     *             exception sur la requête
+     */
+    public Page<Company> getPageSearch(final String search, final int numeroPage, final int limit) throws DaoException {
+        Page<Company> page = new Page<Company>(limit, (int) this.getSearchCount(search));
+        List<Company> companies = new ArrayList<Company>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_PAGE_COMPANY)) {
+            stmt.setString(1, "%" + search + "%");
+            stmt.setInt(2, page.getLimit());
+            stmt.setInt(3, page.offset(numeroPage));
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 companies.add(MapperDao.mapCompany(result));
