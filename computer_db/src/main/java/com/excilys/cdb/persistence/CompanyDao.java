@@ -30,6 +30,7 @@ public class CompanyDao implements Dao<Company> {
     private DaoFactory daoFactory;
     private static CompanyDao dao;
 
+    private static final String SQL_SEARCH_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ?";
     private static final String SQL_AJOUT_COMPANY = "INSERT into `company` (name) VALUES (?)";
     private static final String SQL_ALL_COMPANIES = "SELECT `id`,`name` FROM `company`";
     private static final String SQL_ONE_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `id`=?";
@@ -82,9 +83,8 @@ public class CompanyDao implements Dao<Company> {
     /**
      * Méthode pour récupérer une entreprise.
      * @param id l'élément à récupérer
-     * @return une référence sur le singleton company dao
-     * @throws DaoException
-     *             exception sur la requête
+     * @return un optional objet company
+     * @throws DaoException exception sur la requête
      */
     public Optional<Company> getById(final long id) throws DaoException {
         Company company = null;
@@ -108,10 +108,33 @@ public class CompanyDao implements Dao<Company> {
     }
 
     /**
+     * Méthode pour récupérer les entreprises par name.
+     * @param name nom des éléments à récupérer
+     * @return une liste de Company
+     * @throws DaoException exception sur la requête
+     */
+    public List<Company> getByName(final String name) throws DaoException {
+        List<Company> companies = new ArrayList<Company>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_COMPANY)) {
+            stmt.setString(1, "%" + name + "%");
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
+                companies.add(MapperDao.mapCompany(result));
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Requête exception", e);
+        } catch (DAOConfigurationException e1) {
+            throw new DaoException("Config exception", e1);
+        }
+
+        return companies;
+    }
+
+    /**
      * Méthode pour récupérer le nombre d'objets de type entreprise en bdd.
      * @return le nombre d'instances
-     * @throws DaoException
-     *             exception sur la requête
+     * @throws DaoException exception sur la requête
      */
     public long getCount() throws DaoException {
         long count = 0;

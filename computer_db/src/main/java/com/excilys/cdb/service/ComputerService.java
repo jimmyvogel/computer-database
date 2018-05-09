@@ -92,6 +92,30 @@ public class ComputerService {
     }
 
     /**
+     * Retourne toutes les companies comprenant name.
+     * @param name le nom de la(les) company(ies).
+     * @return une liste de company
+     * @throws ServiceException erreur de paramètres
+     * @throws DaoException erreur de reqûete.
+     */
+    public List<Company> getCompanyByName(String name) throws ServiceException, DaoException {
+        String nameTraiter = TextValidation.traitementString(name);
+        return companyDao.getByName(nameTraiter);
+    }
+
+    /**
+     * Retourne tous les computer de nom : name.
+     * @param name le nom du(des) computer(s).
+     * @return une liste de computers
+     * @throws ServiceException erreur de paramètres
+     * @throws DaoException erreur de reqûete.
+     */
+    public List<Computer> getComputerByName(String name) throws ServiceException, DaoException {
+        String nameTraiter = TextValidation.traitementString(name);
+        return computerDao.getByName(nameTraiter);
+    }
+
+    /**
      * Optenir une page de company.
      * @param page le numero de la page
      * @return une page chargé.

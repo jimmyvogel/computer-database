@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="../WEB-INF/tags.tld" prefix="pg" %> 
-<h1 id="homeTitle">
+<h1 id="homeTitle" class="text-center">
     ${ page.count } Companies
 </h1>
 <div class="container" style="margin-top: 10px;">
@@ -31,6 +31,6 @@
 </div>
 
 <div class="navbar">
-	<pg:pager target="computer" action="${applicationScope.actions.LIST_COMPANIES}" page="${page}"> </pg:pager>
+	<pg:pager target="computer" action="${actionPagination}" page="${page}"> </pg:pager>
 </div>
 

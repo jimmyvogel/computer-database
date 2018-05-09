@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
     
 <footer>
-    <div class="container text-center">
+    <div class="text-center">
     	<p>
     		2018 - computerdatabase - Excilys
     	</p>

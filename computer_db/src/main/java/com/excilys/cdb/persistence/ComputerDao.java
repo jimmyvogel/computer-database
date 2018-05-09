@@ -29,6 +29,9 @@ public class ComputerDao implements Dao<Computer> {
     private DaoFactory daoFactory;
     private static ComputerDao dao;
 
+    private static final String SQL_SEARCH_COMPUTER = "SELECT company.id,company.name, computer.id, "
+            + "computer.name, computer.introduced, computer.discontinued FROM company "
+            + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ?";
     private static final String SQL_ALL_COMPUTERS = "SELECT company.id,company.name, computer.id, "
             + "computer.name, computer.introduced, computer.discontinued FROM company "
             + "RIGHT JOIN computer ON company.id = computer.company_id";
@@ -100,6 +103,27 @@ public class ComputerDao implements Dao<Computer> {
         }
 
         return Optional.ofNullable(inter);
+    }
+
+    /** Récupérer des computers par nom.
+     * @param name le nom des computers cherchés
+     * @return une liste de computer
+     * @throws DaoException erreur de reqûete.
+     */
+    public List<Computer> getByName(String name) throws DaoException {
+        List<Computer> computers = new ArrayList<Computer>();
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_COMPUTER)) {
+            stmt.setString(1, "%" + name + "%");
+            ResultSet result = null;
+            result = stmt.executeQuery();
+            while (result.next()) {
+                computers.add(MapperDao.mapComputer(result));
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Requête exception", e);
+        }
+
+        return computers;
     }
 
     /**

@@ -88,6 +88,24 @@ public class ComputerDaoTest {
     }
 
     /**
+     * Test de getByName.
+     * @throws DaoException erreur de requête.
+     */
+    @Test
+    public void testGetByName() throws DaoException {
+        String nameTest = "nameValidTestGetByName";
+        long count = dao.getCount();
+        long id = dao.create(new Computer(nameTest));
+        long id2 = dao.create(new Computer(nameTest));
+        long id3 = dao.create(new Computer(nameTest));
+        Assert.assertTrue(count + 3 == dao.getCount());
+        Assert.assertTrue(dao.getByName(nameTest).size() == 3);
+        //Suppression
+        List<Long> list = Arrays.asList(id, id2, id3);
+        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
+    }
+
+    /**
      * Test de getAll.
      * @throws DaoException erreur de requête.
      * @throws SQLException sql exception

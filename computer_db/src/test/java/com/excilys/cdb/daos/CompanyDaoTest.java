@@ -45,6 +45,24 @@ public class CompanyDaoTest {
     }
 
     /**
+     * Test de getByName.
+     * @throws DaoException erreur de requête.
+     */
+    @Test
+    public void testGetByName() throws DaoException {
+        String nameTest = "nameValidTestCompanyGetByName";
+        long count = dao.getCount();
+        long id = dao.create(new Company(nameTest));
+        long id2 = dao.create(new Company(nameTest));
+        long id3 = dao.create(new Company(nameTest));
+        Assert.assertTrue(count + 3 == dao.getCount());
+        Assert.assertTrue(dao.getByName(nameTest).size() == 3);
+        //Suppression
+        List<Long> list = Arrays.asList(id, id2, id3);
+        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
+    }
+
+    /**
      * Test sur la méthode getById.
      * @throws DaoException erreur de requête
      */

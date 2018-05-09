@@ -41,9 +41,11 @@ public class ComputerServlet extends HttpServlet {
 
     public enum Action {
         HOME(CHEMIN_ACCUEIL),
-        ADD_COMPUTER(AFTER_ADD_COMPUTER),
-        EDIT_COMPUTER(AFTER_EDIT_COMPUTER),
-        DELETE_COMPUTER(AFTER_DELETE_COMPUTER),
+        ADD_COMPUTER(CHEMIN_FORM_ADD_COMPUTER),
+        EDIT_COMPUTER(CHEMIN_FORM_EDIT_COMPUTER),
+        SEARCH_COMPUTER(CHEMIN_LIST_COMPUTERS),
+        SEARCH_COMPANY(CHEMIN_LIST_COMPANIES),
+        DELETE_COMPUTER(CHEMIN_LIST_COMPUTERS),
         ADD_FORM_COMPUTER(CHEMIN_FORM_ADD_COMPUTER),
         EDIT_FORM_COMPUTER(CHEMIN_FORM_EDIT_COMPUTER),
         LIST_COMPUTERS(CHEMIN_LIST_COMPUTERS),
@@ -76,12 +78,8 @@ public class ComputerServlet extends HttpServlet {
     private static final String CHEMIN_LIST_COMPUTERS = "/views/listeComputers.jsp";
     private static final String CHEMIN_LIST_COMPANIES = "/views/listeCompanies.jsp";
 
-    //Actions
-    private static final String AFTER_ADD_COMPUTER = "/forms/formAjoutComputer.jsp";
-    private static final String AFTER_DELETE_COMPUTER = "/views/listeComputers.jsp";
-    private static final String AFTER_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
-
     private static final String SESSION_ETAT = "etat";
+    private static final String SESSION_SEARCH = "search";
     private static final String SESSION_LIMIT_COMPUTERS_ID = "LimitComputers";
     private static final String SESSION_LIMIT_COMPANIES_ID = "LimitCompanies";
     private static final Integer DEFAULT_LIMIT = Dao.LIMIT_DEFAULT;
@@ -105,14 +103,10 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Récupération des requêtes en GET.
-     * @param request
-     *            la requête
-     * @param response
-     *            la reponse
-     * @throws ServletException
-     *             exception de réception
-     * @throws IOException
-     *             exception de lecture
+     * @param request la requête
+     * @param response la reponse
+     * @throws ServletException exception de réception
+     * @throws IOException exception de lecture
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -126,6 +120,13 @@ public class ComputerServlet extends HttpServlet {
                     break;
                 case EDIT_FORM_COMPUTER:
                     addParamsEditComputer(request);
+                    break;
+                case SEARCH_COMPUTER:
+                    addParamsSearchComputer(request);
+                    break;
+                case SEARCH_COMPANY:
+                    addParamsSearchCompany(request);
+                    break;
                 case LIST_COMPUTERS:
                     addParamsListComputers(request);
                     break;
@@ -150,14 +151,10 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Récupération des requêtes en POST.
-     * @param request
-     *            la requête
-     * @param response
-     *            la reponse
-     * @throws ServletException
-     *             exception de réception
-     * @throws IOException
-     *             exception de lecture
+     * @param request la requête
+     * @param response la reponse
+     * @throws ServletException exception de réception
+     * @throws IOException exception de lecture
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -189,11 +186,92 @@ public class ComputerServlet extends HttpServlet {
     }
 
     /**
+     * Méthode utile pour récupérer la limit de pagination spécifier dans la request.
+     * @param request requête.
+     * @return la limit en format primitive int.
+     */
+    private int getLimitPagination(HttpServletRequest request) {
+        // Valeur par défaut si rien de spécifié.
+        Integer limit = DEFAULT_LIMIT;
+
+        // Modification de la limite
+        if (request.getParameter("limit") != null) {
+            limit = Integer.valueOf(request.getParameter("limit"));
+            request.getSession().setAttribute(SESSION_LIMIT_COMPANIES_ID, limit);
+
+        // Verification de la limite en session.
+        } else if (request.getSession().getAttribute(SESSION_LIMIT_COMPANIES_ID) != null) {
+            limit = (Integer) request.getSession() .getAttribute(SESSION_LIMIT_COMPANIES_ID);
+        }
+        return limit;
+    }
+
+    /**
+     * Méthode utile pour récupérer le paramètre search possiblement en session.
+     * @param request requête.
+     * @return un string représentant la recherche.
+     */
+    private String getSearch(HttpServletRequest request) {
+        // Valeur par défaut si rien de spécifié.
+        String search = "";
+
+        // Modification du search
+        if (request.getParameter("search") != null) {
+            search = request.getParameter("search");
+            request.getSession().setAttribute(SESSION_SEARCH, search);
+
+        // Verification de la recherche en session.
+        } else if (request.getSession().getAttribute(SESSION_SEARCH) != null) {
+            search = (String) request.getSession() .getAttribute(SESSION_SEARCH);
+        }
+        return search;
+    }
+
+    /**
+     * Affichage de la recherche des companies.
+     * @param request injections et parametres
+     * @throws DaoException erreur de requête.
+     * @throws ServiceException erreur de service.
+     */
+    private void addParamsSearchCompany(HttpServletRequest request) throws ServiceException, DaoException {
+        int value = 1;
+        if (request.getParameter("page") != null) {
+            value = Integer.valueOf(request.getParameter("page"));
+        }
+        Integer limit = getLimitPagination(request);
+
+        List<Company> list = service.getCompanyByName(this.getSearch(request));
+        Page<Company> page = new Page<Company>(limit, list.size());
+        page.charge(list.subList(page.offset(value), list.size()), value);
+        request.setAttribute("actionPagination", Action.SEARCH_COMPANY.toString());
+        request.setAttribute("page", page);
+    }
+
+    /**
+     * Affichage de la recherche des computers.
+     * @param request injections et parametres
+     * @throws DaoException erreur de requête.
+     * @throws ServiceException erreur de service.
+     */
+    private void addParamsSearchComputer(HttpServletRequest request) throws ServiceException, DaoException {
+        int value = 1;
+        if (request.getParameter("page") != null) {
+            value = Integer.valueOf(request.getParameter("page"));
+        }
+
+        Integer limit = getLimitPagination(request);
+
+        List<Computer> list = service.getComputerByName(this.getSearch(request));
+        Page<Computer> page = new Page<Computer>(limit, list.size());
+        page.charge(list.subList(page.offset(value), list.size()), value);
+        request.setAttribute("actionPagination", Action.SEARCH_COMPUTER.toString());
+        request.setAttribute("page", page);
+    }
+
+    /**
      * Suppression d'un computer et injection.
-     * @param request
-     *            injections et parametres
-     * @throws DaoException
-     *             erreur de requête.
+     * @param request injections et parametres
+     * @throws DaoException erreur de requête.
      * @throws ServiceException erreur de service.
      */
     private void deleteComputer(HttpServletRequest request) throws DaoException, ServiceException {
@@ -206,12 +284,9 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Modification d'un computer et injection.
-     * @param request
-     *            injections et parametres
-     * @throws ServiceException
-     *             erreur de service.
-     * @throws DaoException
-     *             erreur de requête.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de requête.
      */
     private void editComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
@@ -247,12 +322,9 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Ajout d'un computer, injection et redirection.
-     * @param request
-     *            injections et parametres
-     * @throws ServiceException
-     *             erreur de service.
-     * @throws DaoException
-     *             erreur de reqûete.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
+     * @throws DaoException erreur de reqûete.
      */
     private void addComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
@@ -282,10 +354,8 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Gestion d'injection avant redirection pour la page editComputer.
-     * @param request
-     *            injections et parametres
-     * @throws ServiceException
-     *             erreur de service.
+     * @param request injections et parametres
+     * @throws ServiceException erreur de service.
      * @throws DaoException erreur de requête.
      */
     private void addParamsEditComputer(HttpServletRequest request)
@@ -298,10 +368,8 @@ public class ComputerServlet extends HttpServlet {
 
     /**
      * Gestion d'injection avant redirection pour la page listCompanies.
-     * @param request
-     *            modification des injections
-     * @throws ServiceException
-     *             erreur de service.
+     * @param request modification des injections
+     * @throws ServiceException erreur de service.
      */
     private void addParamsListCompanies(HttpServletRequest request)
             throws ServiceException {
@@ -310,32 +378,16 @@ public class ComputerServlet extends HttpServlet {
             value = Integer.valueOf(request.getParameter("page"));
         }
 
-        // Valeur par défaut si rien de spécifié.
-        Integer limit = DEFAULT_LIMIT;
-
-        // Modification de la limite
-        if (request.getParameter("limit") != null) {
-            limit = Integer.valueOf(request.getParameter("limit"));
-            request.getSession().setAttribute(SESSION_LIMIT_COMPANIES_ID,
-                    limit);
-            value = Integer.valueOf(request.getParameter("page"));
-
-            // Verification de la limite en session.
-        } else if (request.getSession()
-                .getAttribute(SESSION_LIMIT_COMPANIES_ID) != null) {
-            limit = (Integer) request.getSession()
-                    .getAttribute(SESSION_LIMIT_COMPANIES_ID);
-        }
+        Integer limit = getLimitPagination(request);
         Page<Company> page = service.getPageCompany(value, limit);
+        request.setAttribute("actionPagination", Action.LIST_COMPANIES.toString());
         request.setAttribute("page", page);
     }
 
     /**
-     * Gestion d'injection avant redirection pour la page listComputers.
-     * @param request
-     *            modification des injections
-     * @throws ServiceException
-     *             erreur de service.
+     * Gestion d'injection des dtos computers avant redirection pour la page listComputers.
+     * @param request modification des injections
+     * @throws ServiceException erreur de service.
      */
     private void addParamsListComputers(HttpServletRequest request)
             throws ServiceException {
@@ -344,51 +396,27 @@ public class ComputerServlet extends HttpServlet {
             value = Integer.valueOf(request.getParameter("page"));
         }
 
-        // Valeur par défaut si rien de spécifié.
-        Integer limit = DEFAULT_LIMIT;
-
-        // Modification de la limite
-        if (request.getParameter("limit") != null) {
-            limit = Integer.valueOf(request.getParameter("limit"));
-            request.getSession().setAttribute(SESSION_LIMIT_COMPUTERS_ID,
-                    limit);
-            value = Integer.valueOf(request.getParameter("page"));
-
-            // Verification de la limite en session.
-        } else if (request.getSession()
-                .getAttribute(SESSION_LIMIT_COMPUTERS_ID) != null) {
-            limit = (Integer) request.getSession()
-                    .getAttribute(SESSION_LIMIT_COMPUTERS_ID);
-        }
-
-        // Recuperation des computers et transformation en dtos.
+        Integer limit = getLimitPagination(request);
         List<ComputerDTO> computersDtos = new ArrayList<>();
         Page<Computer> page = service.getPageComputer(value, limit);
         for (Computer c : page.getObjects()) {
             computersDtos.add(new ComputerDTO(c));
         }
-
-        // Creation de la copie de la page avec chargement des dtos plutôt que
-        // des entities.
         Page<ComputerDTO> newpage = new Page<>(page.getLimit(),
                 page.getCount());
         newpage.charge(computersDtos, page.getPageCourante());
 
+        request.setAttribute("actionPagination", Action.LIST_COMPUTERS.toString());
         request.setAttribute("page", newpage);
     }
 
     /**
      * Redirection vers la page avec insertion d'un fragment.
-     * @param request
-     *            la requête
-     * @param response
-     *            la reponse
-     * @param chemin
-     *            chemin vers le contenu
-     * @throws ServletException
-     *             exception de réception
-     * @throws IOException
-     *             exception de lecture
+     * @param request la requête
+     * @param response la reponse
+     * @param chemin chemin vers le contenu
+     * @throws ServletException exception de réception
+     * @throws IOException exception de lecture
      */
     private void dispatch(HttpServletRequest request,
             HttpServletResponse response, String chemin)
