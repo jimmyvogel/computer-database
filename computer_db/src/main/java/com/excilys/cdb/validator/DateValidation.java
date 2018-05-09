@@ -38,11 +38,7 @@ public class DateValidation {
      * @return un boolean définissant la validité de la date
      */
     public static boolean validDateInBetween(LocalDateTime ldt, LocalDateTime first, LocalDateTime last) {
-        if (ldt.isAfter(first)
-                && ldt.isBefore(last)) {
-            return true;
-        }
-        return false;
+        return ldt.isAfter(first) && ldt.isBefore(last);
     }
 
 }

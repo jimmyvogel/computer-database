@@ -12,6 +12,7 @@ public class Transaction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Transaction.class);
 
+    public static final String MESS_TRANSACTION_EXCEPTION = "Transaction exception";
     /**
      * Manage the start of a transaction.
      * @param c the connection.
@@ -21,7 +22,7 @@ public class Transaction {
         try {
             c.setAutoCommit(false);
         } catch (SQLException e) {
-            throw new DaoException("Connection auto-commit fail", e);
+            throw new DaoException(MESS_TRANSACTION_EXCEPTION, e);
         }
     }
 
@@ -44,16 +45,16 @@ public class Transaction {
                 c.rollback();
             } catch (SQLException e1) {
                 LOGGER.error("Rollback fail.");
-                throw new DaoException("Requête fail.", e);
+                throw new DaoException(MESS_TRANSACTION_EXCEPTION, e);
             }
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_TRANSACTION_EXCEPTION, e);
         } finally {
             try {
                 c.setAutoCommit(true);
                 c.close();
             } catch (SQLException e) {
                 LOGGER.error("Connection fail.");
-                throw new DaoException("Requête fail.", e);
+                throw new DaoException(MESS_TRANSACTION_EXCEPTION, e);
             }
         }
     }

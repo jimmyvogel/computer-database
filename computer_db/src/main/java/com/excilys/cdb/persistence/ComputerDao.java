@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class ComputerDao implements Dao<Computer> {
 
     private static final String SQL_SEARCH_COMPUTER = "SELECT company.id,company.name, computer.id, "
             + "computer.name, computer.introduced, computer.discontinued FROM company "
-            + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ?";
+            + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER by computer.name";
     private static final String SQL_ALL_COMPUTERS = "SELECT company.id,company.name, computer.id, "
             + "computer.name, computer.introduced, computer.discontinued FROM company "
             + "RIGHT JOIN computer ON company.id = computer.company_id";
@@ -46,6 +47,8 @@ public class ComputerDao implements Dao<Computer> {
     private static final String SQL_COUNT_COMPUTER = "SELECT COUNT(`id`) AS `total` FROM `computer`";
     private static final String SQL_PAGE_COMPUTER = SQL_ALL_COMPUTERS
             + " LIMIT ? OFFSET ?";
+
+    public static final String MESS_REQUEST_EXCEPTION = "Requête exception";
 
     /**
      * Méthode de fabrique de computer dao.
@@ -77,7 +80,7 @@ public class ComputerDao implements Dao<Computer> {
                 computers.add(MapperDao.mapComputer(result));
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return computers;
@@ -99,7 +102,7 @@ public class ComputerDao implements Dao<Computer> {
                 inter = MapperDao.mapComputer(result);
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return Optional.ofNullable(inter);
@@ -114,13 +117,14 @@ public class ComputerDao implements Dao<Computer> {
         List<Computer> computers = new ArrayList<Computer>();
         try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_COMPUTER)) {
             stmt.setString(1, "%" + name + "%");
+            stmt.setString(2, "%" + name + "%");
             ResultSet result = null;
             result = stmt.executeQuery();
             while (result.next()) {
                 computers.add(MapperDao.mapComputer(result));
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return computers;
@@ -165,7 +169,7 @@ public class ComputerDao implements Dao<Computer> {
                 id = rs.getLong(1);
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return id;
@@ -200,7 +204,7 @@ public class ComputerDao implements Dao<Computer> {
             stmt.setLong(5, computer.getId());
             result = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return (result > 0) ? true : false;
@@ -212,14 +216,7 @@ public class ComputerDao implements Dao<Computer> {
      * @throws DaoException exception sur la requête
      */
     public boolean delete(final long id) throws DaoException {
-        int result = 0;
-        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER)) {
-            stmt.setLong(1, id);
-            result = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
-        }
-        return (result > 0) ? true : false;
+        return delete(Collections.singleton(id));
     }
 
     /**
@@ -248,9 +245,9 @@ public class ComputerDao implements Dao<Computer> {
                 c.rollback();
             } catch (SQLException e1) {
                 LOGGER.error("Rollback fail.");
-                throw new DaoException("Requête fail.", e);
+                throw new DaoException(MESS_REQUEST_EXCEPTION, e);
             }
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         Transaction.endTransaction(c, deleteOk);
@@ -272,7 +269,7 @@ public class ComputerDao implements Dao<Computer> {
                 count = result.getLong("total");
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return count;
@@ -307,7 +304,7 @@ public class ComputerDao implements Dao<Computer> {
             }
             page.charge(computers, numeroPage);
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
         return page;
     }

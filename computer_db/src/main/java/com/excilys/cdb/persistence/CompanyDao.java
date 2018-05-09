@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 
 /**
@@ -30,7 +29,7 @@ public class CompanyDao implements Dao<Company> {
     private DaoFactory daoFactory;
     private static CompanyDao dao;
 
-    private static final String SQL_SEARCH_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ?";
+    private static final String SQL_SEARCH_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ? ORDER by `name`";
     private static final String SQL_AJOUT_COMPANY = "INSERT into `company` (name) VALUES (?)";
     private static final String SQL_ALL_COMPANIES = "SELECT `id`,`name` FROM `company`";
     private static final String SQL_ONE_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `id`=?";
@@ -39,6 +38,8 @@ public class CompanyDao implements Dao<Company> {
     private static final String SQL_COUNT_COMPANY = "SELECT COUNT(`id`) AS `total` FROM `company`";
     private static final String SQL_PAGE_COMPANY = SQL_ALL_COMPANIES
             + " LIMIT ? OFFSET ?";
+
+    public static final String MESS_REQUEST_EXCEPTION = "Reqûete exception";
 
     /**
      * Méthode de fabrique de company dao.
@@ -72,9 +73,7 @@ public class CompanyDao implements Dao<Company> {
             }
 
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
-        } catch (DAOConfigurationException e1) {
-            throw new DaoException("Config exception", e1);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return companies;
@@ -101,7 +100,7 @@ public class CompanyDao implements Dao<Company> {
             }
 
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return Optional.ofNullable(company);
@@ -123,9 +122,7 @@ public class CompanyDao implements Dao<Company> {
             }
 
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
-        } catch (DAOConfigurationException e1) {
-            throw new DaoException("Config exception", e1);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return companies;
@@ -145,7 +142,7 @@ public class CompanyDao implements Dao<Company> {
                 count = result.getLong("total");
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return count;
@@ -180,7 +177,7 @@ public class CompanyDao implements Dao<Company> {
             }
             page.charge(companies, numeroPage);
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
         return page;
     }
@@ -224,9 +221,9 @@ public class CompanyDao implements Dao<Company> {
                 c.rollback();
             } catch (SQLException e1) {
                 LOGGER.error("Rollback fail.");
-                throw new DaoException("Requête fail.", e);
+                throw new DaoException(MESS_REQUEST_EXCEPTION, e);
             }
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         Transaction.endTransaction(c, deleteOk);
@@ -256,7 +253,7 @@ public class CompanyDao implements Dao<Company> {
                 id = rs.getLong(1);
             }
         } catch (SQLException e) {
-            throw new DaoException("Requête exception", e);
+            throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 
         return id;

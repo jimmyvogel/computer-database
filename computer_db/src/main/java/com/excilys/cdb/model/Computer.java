@@ -23,16 +23,6 @@ public class Computer {
     }
 
     /**
-     * Constructor computer.
-     * @param id id de type long
-     * @param name nom du computer
-     */
-    public Computer(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    /**
      * Constructor sans id.
      * @param name nom du computer.
      */
