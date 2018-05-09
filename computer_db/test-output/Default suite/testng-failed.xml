@@ -3,13 +3,17 @@
 <suite name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="com.excilys.cdb.selenium.NewTest">
+      <class name="com.excilys.cdb.selenium.AjouterComputerIT">
         <methods>
           <include name="afterClass"/>
-          <include name="verifySearchButton"/>
+          <include name="ajoutTextComputerName"/>
           <include name="beforeClass"/>
+          <include name="ajoutTextCompanyIdName"/>
+          <include name="ajoutTextIntroduced"/>
+          <include name="ajoutTextDiscontinued"/>
+          <include name="verifyAjouterButton"/>
         </methods>
-      </class> <!-- com.excilys.cdb.selenium.NewTest -->
+      </class> <!-- com.excilys.cdb.selenium.AjouterComputerIT -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

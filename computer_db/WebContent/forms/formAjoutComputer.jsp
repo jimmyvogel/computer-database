@@ -33,7 +33,7 @@
                 
                 <div class="actions pull-right">
                     <input type="hidden" value="${applicationScope.actions.ADD_COMPUTER}" name="action"/>
-                    <input type="submit" value="Ajouter" class="btn btn-primary" name="buttonAjout">
+                    <input type="submit" value="Ajouter" class="btn btn-primary" id="buttonAjout" name="buttonAjout">
                 </div>
             </form>
         </div>

@@ -2,16 +2,14 @@
     pageEncoding="UTF-8"%>
     
 <c:if test="${not empty error}">
-	<div class="alert-warning">
+	<div class="alert-warning" id="error">
 		<p>
 			${error}
 		</p>
 	</div>
 </c:if>
 <c:if test="${not empty success}">
-	<div class="alert-success">
-		<p>
-			${success}
-		</p>
+	<div class="alert-success" id="success">
+		${success}
 	</div>
 </c:if>

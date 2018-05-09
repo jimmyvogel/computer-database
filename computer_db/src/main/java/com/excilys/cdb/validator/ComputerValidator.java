@@ -17,10 +17,10 @@ public class ComputerValidator {
     public static final int TAILLE_MIN_NAME = 3;
     public static final int TAILLE_MAX_NAME = 60;
 
-    public static final LocalDateTime BEGIN_DATE_VALID = LocalDateTime.of(1949,
+    public static final LocalDateTime BEGIN_DATE_VALID = LocalDateTime.of(1972,
             Month.DECEMBER, 31, 23, 59);
 
-    public static final LocalDateTime END_DATE_VALID = LocalDateTime.of(2100,
+    public static final LocalDateTime END_DATE_VALID = LocalDateTime.of(2030,
             Month.JANUARY, 1, 0, 0);
 
     /**

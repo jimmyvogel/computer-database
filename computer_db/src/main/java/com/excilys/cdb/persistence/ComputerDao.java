@@ -157,20 +157,18 @@ public class ComputerDao implements Dao<Computer> {
             } else {
                 stmt.setTimestamp(3, null);
             }
-
             if (computer.getCompany() != null) {
                 stmt.setLong(4, computer.getCompany().getId());
             } else {
                 stmt.setString(4, null);
             }
-
             stmt.execute();
-
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs != null && rs.first()) {
                 id = rs.getLong(1);
             }
         } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
             throw new DaoException(MESS_REQUEST_EXCEPTION, e);
         }
 

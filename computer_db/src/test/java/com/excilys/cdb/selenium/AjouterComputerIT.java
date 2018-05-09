@@ -2,15 +2,17 @@ package com.excilys.cdb.selenium;
 
 import static org.testng.Assert.assertEquals;
 
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -20,6 +22,7 @@ import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validator.ComputerValidator;
 
 public class AjouterComputerIT {
 
@@ -33,11 +36,14 @@ public class AjouterComputerIT {
      */
     @BeforeClass
     public void beforeClass() throws DAOConfigurationException, ServiceException {
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("webdriver.firefox.port", 9090);
         driver = new FirefoxDriver();
         service = ComputerService.getInstance();
-        ajout = service.getPageComputer(1).getObjects().get(1);
+        ajout = new Computer("nameValid",
+                ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
+                ComputerValidator.END_DATE_VALID.minus(Period.ofDays(1)),
+                service.getAllCompany().get(1));
+        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
+        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
     }
 
     /**
@@ -47,67 +53,39 @@ public class AjouterComputerIT {
         driver.quit();
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
-     * @throws ServiceException fesf
+    /** Method used in ajoutComputer.
      */
-    @Test
-    public void ajoutTextComputerName() throws ServiceException {
-
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
+    private void ajoutTextComputerName() {
         driver.findElement(By.id("computerName")).sendKeys(ajout.getName());
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        System.out.println(driver.findElement(By.id("computerName")).getAttribute("value"));
         assertEquals(ajout.getName(), driver.findElement(By.id("computerName")).getAttribute("value"));
 
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
-     * @throws ServiceException fesf
+    /** Method used in ajoutComputer.
+     * @param je javascript executor
      */
-    @Test
-    public void ajoutTextIntroduced() throws ServiceException {
-
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
-
-        if (ajout.getIntroduced() != null) {
-            System.out.println(ajout.getIntroduced());
-            driver.findElement(By.id("introduced")).sendKeys(ajout.getIntroduced().toString());
-            driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-            System.out.println(driver.findElement(By.id("introduced")).getAttribute("value"));
-            assertEquals(ajout.getIntroduced().toString(), driver.findElement(By.id("introduced")).getAttribute("value"));
-        }
-
+    private void ajoutTextIntroduced(JavascriptExecutor je) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String date = ajout.getIntroduced().format(formatter);
+        je.executeScript("return document.getElementById('introduced').value = '" + date + "';");
+        Assert.assertEquals((String) je.executeScript("return document.getElementById('introduced').value;"), date);
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
-     * @throws ServiceException fesf
+    /** Method used in ajoutComputer.
+     * @param je javascript executor
      */
-    @Test
-    public void ajoutTextDiscontinued() throws ServiceException {
-
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
-
-        if (ajout.getDiscontinued() != null) {
-            System.out.println(ajout.getDiscontinued());
-            driver.findElement(By.id("discontinued")).sendKeys(ajout.getDiscontinued().toString());
-            driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-            System.out.println(driver.findElement(By.id("discontinued")).getAttribute("value"));
-            assertEquals(ajout.getDiscontinued().toString(), driver.findElement(By.id("discontinued")).getAttribute("value"));
-        }
-
+    public void ajoutTextDiscontinued(JavascriptExecutor je) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String date = ajout.getDiscontinued().format(formatter);
+        je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");
+        Assert.assertEquals((String) je.executeScript("return document.getElementById('discontinued').value;"), date);
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
-     * @throws ServiceException fesf
+    /** Method used in ajoutComputer.
      */
-    @Test
-    public void ajoutTextCompanyIdName() throws ServiceException {
+    private void ajoutTextCompanyIdName() {
 
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
         if (ajout.getCompany() != null) {
             WebElement select = driver.findElement(By.id("companyId"));
             List<WebElement> options = select.findElements(By.tagName("option"));
@@ -133,18 +111,20 @@ public class AjouterComputerIT {
      */
     @Test
     public void verifyAjouterButton() throws ServiceException, DaoException {
-
-        int nombres = (int) service.countComputers();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=ADD_FORM_COMPUTER");
-
-        driver.findElement(By.id("computerName")).sendKeys(ajout.getName());
-        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-
-        driver.findElement(By.name("buttonAjout")).click();
-
-        assertEquals((int) service.countComputers(), nombres + 1);
-
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        this.ajoutTextComputerName();
+        this.ajoutTextIntroduced(je);
+        this.ajoutTextDiscontinued(je);
+        this.ajoutTextCompanyIdName();
+        driver.findElement(By.id("buttonAjout")).click();
+        String result = "";
+        try {
+            Thread.sleep(300L);
+            result = driver.findElement(By.id("success")).getText();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(result, "Create Computer " + ajout.getName() + " success.");
     }
 
 }

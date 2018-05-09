@@ -19,6 +19,7 @@ import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.Dao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
@@ -188,7 +189,7 @@ public class ComputerServlet extends HttpServlet {
      */
     private int getLimitPagination(HttpServletRequest request) {
         // Valeur par défaut si rien de spécifié.
-        Integer limit = null;
+        Integer limit = Dao.LIMIT_DEFAULT;
 
         // Modification de la limite
         if (request.getParameter("limit") != null) {
