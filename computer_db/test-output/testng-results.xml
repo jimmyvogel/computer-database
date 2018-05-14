@@ -1,312 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="5" total="5" passed="0">
+<testng-results skipped="1" failed="0" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="5591" started-at="2018-05-09T13:52:19Z" finished-at="2018-05-09T13:52:24Z">
+  <suite name="Default suite" duration-ms="3711" started-at="2018-05-14T07:38:55Z" finished-at="2018-05-14T07:38:59Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="5591" started-at="2018-05-09T13:52:19Z" finished-at="2018-05-09T13:52:24Z">
+    <test name="Default test" duration-ms="3711" started-at="2018-05-14T07:38:55Z" finished-at="2018-05-14T07:38:59Z">
       <class name="com.excilys.cdb.selenium.AjouterComputerIT">
-        <test-method status="PASS" signature="beforeClass()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="beforeClass" is-config="true" duration-ms="4323" started-at="2018-05-09T15:52:19Z" finished-at="2018-05-09T15:52:23Z">
+        <test-method status="FAIL" signature="beforeClass()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@64bfbc86]" name="beforeClass" is-config="true" duration-ms="0" started-at="2018-05-14T09:38:55Z" finished-at="2018-05-14T09:38:55Z">
+          <exception class="org.openqa.selenium.WebDriverException">
+            <message>
+              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3Dadd_form_computer&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
+Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
+System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_171'
+Driver info: org.openqa.selenium.firefox.FirefoxDriver
+Capabilities [{moz:profile=/tmp/rust_mozprofile.wSIW7yR1oq17, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=60.0, platformVersion=4.13.0-39-generic, moz:processID=30561.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
+Session ID: c68aa71f-698d-4aab-be8b-dd67b97ddb0a]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3Dadd_form_computer&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
+Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
+System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_171'
+Driver info: org.openqa.selenium.firefox.FirefoxDriver
+Capabilities [{moz:profile=/tmp/rust_mozprofile.wSIW7yR1oq17, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=60.0, platformVersion=4.13.0-39-generic, moz:processID=30561.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
+Session ID: c68aa71f-698d-4aab-be8b-dd67b97ddb0a
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
+	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
+	at com.excilys.cdb.selenium.AjouterComputerIT.beforeClass(AjouterComputerIT.java:48)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
+	at org.testng.internal.Invoker.invokeConfigurationMethod(Invoker.java:564)
+	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:213)
+	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:138)
+	at org.testng.internal.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:175)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:107)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
+	at org.testng.TestNG.run(TestNG.java:1031)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+]]>
+            </full-stacktrace>
+          </exception> <!-- org.openqa.selenium.WebDriverException -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- beforeClass -->
-        <test-method status="FAIL" signature="ajoutTextCompanyIdName()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="ajoutTextCompanyIdName" duration-ms="191" started-at="2018-05-09T15:52:23Z" finished-at="2018-05-09T15:52:23Z">
-          <exception class="org.openqa.selenium.WebDriverException">
-            <message>
-              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-	at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextCompanyIdName(AjouterComputerIT.java:110)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.WebDriverException -->
+        <test-method status="SKIP" signature="verifyAjouterButtonAjoutOk()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@64bfbc86]" name="verifyAjouterButtonAjoutOk" duration-ms="5" started-at="2018-05-14T09:38:59Z" finished-at="2018-05-14T09:38:59Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- ajoutTextCompanyIdName -->
-        <test-method status="FAIL" signature="ajoutTextComputerName()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="ajoutTextComputerName" duration-ms="101" started-at="2018-05-09T15:52:23Z" finished-at="2018-05-09T15:52:23Z">
-          <exception class="org.openqa.selenium.WebDriverException">
-            <message>
-              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-	at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextComputerName(AjouterComputerIT.java:57)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.WebDriverException -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- ajoutTextComputerName -->
-        <test-method status="FAIL" signature="ajoutTextDiscontinued()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="ajoutTextDiscontinued" duration-ms="84" started-at="2018-05-09T15:52:23Z" finished-at="2018-05-09T15:52:23Z">
-          <exception class="org.openqa.selenium.WebDriverException">
-            <message>
-              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-	at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextDiscontinued(AjouterComputerIT.java:91)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.WebDriverException -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- ajoutTextDiscontinued -->
-        <test-method status="FAIL" signature="ajoutTextIntroduced()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="ajoutTextIntroduced" duration-ms="66" started-at="2018-05-09T15:52:23Z" finished-at="2018-05-09T15:52:23Z">
-          <exception class="org.openqa.selenium.WebDriverException">
-            <message>
-              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-	at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextIntroduced(AjouterComputerIT.java:72)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.WebDriverException -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- ajoutTextIntroduced -->
-        <test-method status="FAIL" signature="verifyAjouterButton()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="verifyAjouterButton" duration-ms="64" started-at="2018-05-09T15:52:23Z" finished-at="2018-05-09T15:52:24Z">
-          <exception class="org.openqa.selenium.WebDriverException">
-            <message>
-              <![CDATA[Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.WebDriverException: Reached error page: about:neterror?e=connectionFailure&u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&c=UTF-8&f=regular&d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-System info: host: 'vogel-laptop', ip: '127.0.1.1', os.name: 'Linux', os.arch: 'amd64', os.version: '4.13.0-39-generic', java.version: '1.8.0_162'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-	at com.excilys.cdb.selenium.AjouterComputerIT.verifyAjouterButton(AjouterComputerIT.java:139)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.WebDriverException -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- verifyAjouterButton -->
-        <test-method status="PASS" signature="afterClass()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@20322d26]" name="afterClass" is-config="true" duration-ms="713" started-at="2018-05-09T15:52:24Z" finished-at="2018-05-09T15:52:24Z">
+        </test-method> <!-- verifyAjouterButtonAjoutOk -->
+        <test-method status="SKIP" signature="afterClass()[pri:0, instance:com.excilys.cdb.selenium.AjouterComputerIT@64bfbc86]" name="afterClass" is-config="true" duration-ms="0" started-at="2018-05-14T09:38:59Z" finished-at="2018-05-14T09:38:59Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- afterClass -->

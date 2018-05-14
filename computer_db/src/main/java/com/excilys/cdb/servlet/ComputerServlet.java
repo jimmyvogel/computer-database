@@ -356,8 +356,8 @@ public class ComputerServlet extends HttpServlet {
     private void addParamsEditComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
         long id = Long.valueOf(request.getParameter("id"));
-        request.setAttribute("computer",
-                new ComputerDTO(service.getComputer(id)));
+        System.out.println(service.countComputers());
+        request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
         request.setAttribute("companies", service.getAllCompany());
     }
 

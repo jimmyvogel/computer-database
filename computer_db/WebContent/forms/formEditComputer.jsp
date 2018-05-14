@@ -42,7 +42,7 @@
                 </fieldset>
                 <div class="actions pull-right">
                 	<input type="hidden" value="${applicationScope.actions.EDIT_COMPUTER}" name="action"/>
-                    <input type="submit" value="Edit" class="btn btn-primary">
+                    <input type="submit" value="Edit" id="buttonEdit" class="btn btn-primary">
                 </div>
             </form>
         </div>

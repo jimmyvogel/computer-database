@@ -18,7 +18,7 @@
         <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
     </form>
          
-	<table class="table table-striped table-bordered">
+	<table class="table table-striped table-bordered" id="tableau_computers">
 		<thead>
 			<tr>
 				<th> 

@@ -2,6 +2,7 @@ package com.excilys.cdb.validator;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
@@ -43,7 +44,8 @@ public class ComputerValidator {
         //Discontinued and introduced but discontinued before
         if (computer.getIntroduced()   != null && computer.getDiscontinued() != null
                 && computer.getIntroduced().isAfter(computer.getDiscontinued())) {
-            throw new ValidatorDateException(computer.getIntroduced(), "Computer introduced is after computer discontinued: " + computer.getDiscontinued());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            throw new ValidatorDateException(computer.getIntroduced(), "Computer introduced is after computer discontinued: " + computer.getDiscontinued().format(formatter));
         }
         return computer;
     }
@@ -78,8 +80,9 @@ public class ComputerValidator {
     public static LocalDateTime validIntroduced(final LocalDateTime introduced) throws ValidatorDateException {
         if (introduced != null) {
             if (!DateValidation.validDateInBetween(introduced, BEGIN_DATE_VALID, END_DATE_VALID)) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 throw new ValidatorDateException(introduced,
-                        "introduced date n'est pas comprise entre " + BEGIN_DATE_VALID + " et " + END_DATE_VALID);
+                        "introduced date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
             }
         }
         return introduced;
@@ -94,8 +97,9 @@ public class ComputerValidator {
     public static LocalDateTime validDiscontinued(final LocalDateTime discontinued) throws ValidatorDateException {
         if (discontinued != null) {
             if (!DateValidation.validDateInBetween(discontinued, BEGIN_DATE_VALID, END_DATE_VALID)) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 throw new ValidatorDateException(discontinued,
-                        "discontinued date n'est pas comprise entre " + BEGIN_DATE_VALID + " et " + END_DATE_VALID);
+                        "discontinued date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
             }
         }
         return discontinued;

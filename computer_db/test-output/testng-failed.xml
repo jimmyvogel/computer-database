@@ -5,13 +5,8 @@
     <classes>
       <class name="com.excilys.cdb.selenium.AjouterComputerIT">
         <methods>
-          <include name="afterClass"/>
-          <include name="ajoutTextComputerName"/>
+          <include name="verifyAjouterButtonAjoutOk"/>
           <include name="beforeClass"/>
-          <include name="ajoutTextCompanyIdName"/>
-          <include name="ajoutTextIntroduced"/>
-          <include name="ajoutTextDiscontinued"/>
-          <include name="verifyAjouterButton"/>
         </methods>
       </class> <!-- com.excilys.cdb.selenium.AjouterComputerIT -->
     </classes>

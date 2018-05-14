@@ -20,14 +20,11 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.validator.ComputerValidator;
 
-public class AjouterComputerIT extends SeleniumSuite {
+public class EditComputerIT extends SeleniumSuite {
 
-    private ComputerService service;
-    private Computer ajout;
+    private Computer edit;
 
     private static final String NAMEINVALID = "";
 
@@ -37,11 +34,16 @@ public class AjouterComputerIT extends SeleniumSuite {
      */
     @BeforeClass
     public void beforeClass() throws DAOConfigurationException, ServiceException {
-        service = ComputerService.getInstance();
-        ajout = new Computer("nameValid",
-                ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
-                ComputerValidator.END_DATE_VALID.minus(Period.ofDays(1)),
-                service.getAllCompany().get(1));
+        driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
+        driver.get("http://localhost:9090/computer_db/computer?action=list_computers&page=1");
+        List<WebElement> elem = driver.findElements(By.xpath("//table/tbody/tr/td/a"));
+        elem.get(0).click();
+        String idS = driver.getCurrentUrl().replace("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=", "");
+        Integer id = Integer.valueOf(idS.trim());
+        driver.findElement(By.id("computerName")).getAttribute("value")
+        je.executeScript("return document.getElementById('introduced').value;")
+        edit = new Computer(setId(id), );companyId
+        System.out.println("Val: " + id);
     }
 
     /**
@@ -51,45 +53,42 @@ public class AjouterComputerIT extends SeleniumSuite {
         this.closeInstance();
     }
 
-    /**
-     */
-
-    /** Method used in ajoutComputer.
+    /** Method used in editComputer.
      * @param name name à insérer
      */
-    private void ajoutTextComputerName(String name) {
+    private void editTextComputerName(String name) {
         driver.findElement(By.id("computerName")).sendKeys(name);
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         assertEquals(name, driver.findElement(By.id("computerName")).getAttribute("value"));
 
     }
 
-    /** Method used in ajoutComputer.
+    /** Method used in editComputer.
      * @param introduced la date à insérer
      * @param je javascript executor
      */
-    private void ajoutTextIntroduced(JavascriptExecutor je, LocalDateTime introduced) {
+    private void editTextIntroduced(JavascriptExecutor je, LocalDateTime introduced) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = introduced.format(formatter);
         je.executeScript("return document.getElementById('introduced').value = '" + date + "';");
         Assert.assertEquals((String) je.executeScript("return document.getElementById('introduced').value;"), date);
     }
 
-    /** Method used in ajoutComputer.
+    /** Method used in editComputer.
      * @param discontinued date discontinued à insérer.
      * @param je javascript executor
      */
-    public void ajoutTextDiscontinued(JavascriptExecutor je, LocalDateTime discontinued) {
+    public void editTextDiscontinued(JavascriptExecutor je, LocalDateTime discontinued) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = discontinued.format(formatter);
         je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");
         Assert.assertEquals((String) je.executeScript("return document.getElementById('discontinued').value;"), date);
     }
 
-    /** Method used in ajoutComputer.
+    /** Method used in editComputer.
      * @param company la company lié à choisir.
      */
-    private void ajoutTextCompanyIdName(Company company) {
+    private void editTextCompanyIdName(Company company) {
 
         if (company != null) {
             WebElement select = driver.findElement(By.id("companyId"));
@@ -110,20 +109,20 @@ public class AjouterComputerIT extends SeleniumSuite {
 
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
+    /**Verify click du bouton + edit fonctionnel.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void verifyAjouterButtonAjoutOk() throws ServiceException, DaoException {
+    public void verifyEditerbuttonEditOk() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
-        this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        this.editTextComputerName(edit.getName());
+        this.editTextIntroduced(je, edit.getIntroduced());
+        this.editTextDiscontinued(je, edit.getDiscontinued());
+        this.editTextCompanyIdName(edit.getCompany());
+        driver.findElement(By.id("buttonEdit")).click();
         String result = "";
         try {
             Thread.sleep(300L);
@@ -131,23 +130,23 @@ public class AjouterComputerIT extends SeleniumSuite {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(result, "Create Computer " + ajout.getName() + " success.");
+        Assert.assertEquals(result, "Create Computer " + edit.getName() + " success.");
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
+    /**Verify click du bouton + edit fonctionnel.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void verifyAjouterButtonAjoutFailForName() throws ServiceException, DaoException {
+    public void verifyEditerbuttonEditFailForName() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        this.ajoutTextComputerName(NAMEINVALID);
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
-        this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        this.editTextComputerName(NAMEINVALID);
+        this.editTextIntroduced(je, edit.getIntroduced());
+        this.editTextDiscontinued(je, edit.getDiscontinued());
+        this.editTextCompanyIdName(edit.getCompany());
+        driver.findElement(By.id("buttonEdit")).click();
         String result = "";
         try {
             Thread.sleep(300L);
@@ -158,20 +157,20 @@ public class AjouterComputerIT extends SeleniumSuite {
         Assert.assertEquals(result, "Le nom : " + NAMEINVALID + "est invalid car : Le nom est trop court 3 lettres minimum");
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
+    /**Verify click du bouton + edit fonctionnel.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void verifyAjouterButtonAjoutFailForIntroduced() throws ServiceException, DaoException {
+    public void verifyEditerbuttonEditFailForIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced().minus(Period.ofYears(100)));
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
-        this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        this.editTextComputerName(edit.getName());
+        this.editTextIntroduced(je, edit.getIntroduced().minus(Period.ofYears(100)));
+        this.editTextDiscontinued(je, edit.getDiscontinued());
+        this.editTextCompanyIdName(edit.getCompany());
+        driver.findElement(By.id("buttonEdit")).click();
         String result = "";
         try {
             Thread.sleep(300L);
@@ -182,20 +181,20 @@ public class AjouterComputerIT extends SeleniumSuite {
         Assert.assertEquals(result, "La date est invalid car : introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
+    /**Verify click du bouton + edit fonctionnel.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void verifyAjouterButtonAjoutFailForDiscontinued() throws ServiceException, DaoException {
+    public void verifyEditerbuttonEditFailForDiscontinued() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued().minus(Period.ofYears(100)));
-        this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        this.editTextComputerName(edit.getName());
+        this.editTextIntroduced(je, edit.getIntroduced());
+        this.editTextDiscontinued(je, edit.getDiscontinued().minus(Period.ofYears(100)));
+        this.editTextCompanyIdName(edit.getCompany());
+        driver.findElement(By.id("buttonEdit")).click();
         String result = "";
         try {
             Thread.sleep(300L);
@@ -206,20 +205,20 @@ public class AjouterComputerIT extends SeleniumSuite {
         Assert.assertEquals(result, "La date est invalid car : discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
     }
 
-    /**Verify click du bouton + ajout fonctionnel.
+    /**Verify click du bouton + edit fonctionnel.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Test
-    public void verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
+    public void verifyEditerbuttonEditFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getDiscontinued());
-        this.ajoutTextDiscontinued(je, ajout.getIntroduced());
-        this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        this.editTextComputerName(edit.getName());
+        this.editTextIntroduced(je, edit.getDiscontinued());
+        this.editTextDiscontinued(je, edit.getIntroduced());
+        this.editTextCompanyIdName(edit.getCompany());
+        driver.findElement(By.id("buttonEdit")).click();
         String result = "";
         try {
             Thread.sleep(300L);
@@ -228,7 +227,7 @@ public class AjouterComputerIT extends SeleniumSuite {
             e.printStackTrace();
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued: " + ajout.getIntroduced().format(formatter));
+        Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued: " + edit.getIntroduced().format(formatter));
     }
 
 }

@@ -31,22 +31,26 @@ div.shootout {padding:2em;border:3px #4854A8 solid}
 <body>
 <table cellspacing="0" cellpadding="0" class="result">
 <tr><th>Test</th><th class="numi">Methods<br/>Passed</th><th class="numi">Scenarios<br/>Passed</th><th class="numi"># skipped</th><th class="numi"># failed</th><th class="numi">Total<br/>Time</th><th class="numi">Included<br/>Groups</th><th class="numi">Excluded<br/>Groups</th></tr>
-<tr><td style="text-align:left;padding-right:2em">Default test</td><td class="numi">0</td><td class="numi">0</td><td class="numi">0</td><td class="numi_attn">5</td><td class="numi">5,6 seconds</td><td class="numi"></td><td class="numi"></td></tr>
+<tr><td style="text-align:left;padding-right:2em">Default test</td><td class="numi">0</td><td class="numi">0</td><td class="numi_attn">1</td><td class="numi">0</td><td class="numi">3,7 seconds</td><td class="numi"></td><td class="numi"></td></tr>
 </table>
 <table cellspacing="0" cellpadding="0" class="passed" id="summary">
 <tr><th>Class</th><th>Method</th><th># of<br/>Scenarios</th><th>Start</th><th>Time<br/>(ms)</th></tr>
-<tr><th colspan="4">Default test &#8212; failed</th></tr>
-<tr class="failedodd"><td rowspan="5">com.excilys.cdb.selenium.AjouterComputerIT</td><td><a href="#m1"><b>ajoutTextCompanyIdName</b>  </a></td><td class="numi">1</td><td>1525873943529</td><td class="numi">191</td></tr><tr class="failedodd"><td><a href="#m2"><b>ajoutTextComputerName</b>  </a></td><td class="numi">1</td><td>1525873943730</td><td class="numi">101</td></tr><tr class="failedodd"><td><a href="#m3"><b>ajoutTextDiscontinued</b>  </a></td><td class="numi">1</td><td>1525873943834</td><td class="numi">84</td></tr><tr class="failedodd"><td><a href="#m4"><b>ajoutTextIntroduced</b>  </a></td><td class="numi">1</td><td>1525873943928</td><td class="numi">66</td></tr><tr class="failedodd"><td><a href="#m5"><b>verifyAjouterButton</b>  </a></td><td class="numi">1</td><td>1525873943997</td><td class="numi">64</td></tr>
+<tr><th colspan="4">Default test &#8212; failed (configuration methods)</th></tr>
+<tr class="failedodd"><td rowspan="1">com.excilys.cdb.selenium.AjouterComputerIT</td><td><a href="#m1"><b>beforeClass</b>  </a></td><td class="numi">1</td><td>1526283535859</td><td class="numi">0</td></tr>
+<tr><th colspan="4">Default test &#8212; skipped (configuration methods)</th></tr>
+<tr class="skippedodd"><td rowspan="1">com.excilys.cdb.selenium.AjouterComputerIT</td><td><a href="#m2"><b>afterClass</b>  </a></td><td class="numi">1</td><td>1526283539555</td><td class="numi">0</td></tr>
+<tr><th colspan="4">Default test &#8212; skipped</th></tr>
+<tr class="skippedodd"><td rowspan="1">com.excilys.cdb.selenium.AjouterComputerIT</td><td><a href="#m3"><b>verifyAjouterButtonAjoutOk</b>  </a></td><td class="numi">1</td><td>1526283539548</td><td class="numi">5</td></tr>
 </table>
 <h1>Default test</h1>
-<h2 id="m1">com.excilys.cdb.selenium.AjouterComputerIT:ajoutTextDiscontinued</h2>
+<h2 id="m1">com.excilys.cdb.selenium.AjouterComputerIT:beforeClass</h2>
 <div style="padding-left:3em">
-<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
+<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3Dadd_form_computer&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
 Build info: version: &apos;3.4.0&apos;, revision: &apos;unknown&apos;, time: &apos;unknown&apos;
-System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_162&apos;
+System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_171&apos;
 Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e</p>
+Capabilities [{moz:profile=/tmp/rust_mozprofile.wSIW7yR1oq17, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=60.0, platformVersion=4.13.0-39-generic, moz:processID=30561.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
+Session ID: c68aa71f-698d-4aab-be8b-dd67b97ddb0a</p>
 sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
 <br/>at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
 <br/>at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
@@ -58,100 +62,12 @@ sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
 <br/>at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
 <br/>at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
 <br/>at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-<br/>at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextDiscontinued(AjouterComputerIT.java:91)
+<br/>at com.excilys.cdb.selenium.AjouterComputerIT.beforeClass(AjouterComputerIT.java:48)
 <br/>25 lines not shown
 </div>
 <p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m2">com.excilys.cdb.selenium.AjouterComputerIT:ajoutTextIntroduced</h2>
-<div style="padding-left:3em">
-<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: &apos;3.4.0&apos;, revision: &apos;unknown&apos;, time: &apos;unknown&apos;
-System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_162&apos;
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e</p>
-sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-<br/>at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-<br/>at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-<br/>at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-<br/>at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-<br/>at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-<br/>at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextIntroduced(AjouterComputerIT.java:72)
-<br/>25 lines not shown
-</div>
+<h2 id="m2">com.excilys.cdb.selenium.AjouterComputerIT:afterClass</h2>
 <p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m3">com.excilys.cdb.selenium.AjouterComputerIT:verifyAjouterButton</h2>
-<div style="padding-left:3em">
-<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: &apos;3.4.0&apos;, revision: &apos;unknown&apos;, time: &apos;unknown&apos;
-System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_162&apos;
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e</p>
-sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-<br/>at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-<br/>at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-<br/>at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-<br/>at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-<br/>at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-<br/>at com.excilys.cdb.selenium.AjouterComputerIT.verifyAjouterButton(AjouterComputerIT.java:139)
-<br/>25 lines not shown
-</div>
-<p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m4">com.excilys.cdb.selenium.AjouterComputerIT:ajoutTextComputerName</h2>
-<div style="padding-left:3em">
-<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: &apos;3.4.0&apos;, revision: &apos;unknown&apos;, time: &apos;unknown&apos;
-System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_162&apos;
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e</p>
-sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-<br/>at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-<br/>at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-<br/>at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-<br/>at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-<br/>at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-<br/>at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextComputerName(AjouterComputerIT.java:57)
-<br/>25 lines not shown
-</div>
-<p class="totop"><a href="#summary">back to summary</a></p>
-<h2 id="m5">com.excilys.cdb.selenium.AjouterComputerIT:ajoutTextCompanyIdName</h2>
-<div style="padding-left:3em">
-<p>Reached error page: about:neterror?e=connectionFailure&amp;u=http%3A//localhost%3A9090/computer_db/computer%3Faction%3DADD_FORM_COMPUTER&amp;c=UTF-8&amp;f=regular&amp;d=Firefox%20ne%20peut%20%C3%A9tablir%20de%20connexion%20avec%20le%20serveur%20%C3%A0%20l%E2%80%99adresse%20localhost%3A9090.
-Build info: version: &apos;3.4.0&apos;, revision: &apos;unknown&apos;, time: &apos;unknown&apos;
-System info: host: &apos;vogel-laptop&apos;, ip: &apos;127.0.1.1&apos;, os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;4.13.0-39-generic&apos;, java.version: &apos;1.8.0_162&apos;
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Capabilities [{moz:profile=/tmp/rust_mozprofile.FmiqYCeABdCS, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, moz:headless=false, platform=ANY, moz:accessibilityChecks=false, moz:useNonSpecCompliantPointerOrigin=false, acceptInsecureCerts=false, browserVersion=59.0.2, platformVersion=4.13.0-39-generic, moz:processID=1226.0, browserName=firefox, javascriptEnabled=true, platformName=linux, moz:webdriverClick=true}]
-Session ID: 0e218470-4bde-4098-ade0-1e49d1e58e9e</p>
-sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-<br/>at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-<br/>at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-<br/>at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:150)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:115)
-<br/>at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:45)
-<br/>at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:164)
-<br/>at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:637)
-<br/>at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:364)
-<br/>at com.excilys.cdb.selenium.AjouterComputerIT.ajoutTextCompanyIdName(AjouterComputerIT.java:110)
-<br/>25 lines not shown
-</div>
+<h2 id="m3">com.excilys.cdb.selenium.AjouterComputerIT:verifyAjouterButtonAjoutOk</h2>
 <p class="totop"><a href="#summary">back to summary</a></p>
 </body></html>
