@@ -1,10 +1,12 @@
 package com.excilys.cdb.selenium;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class SeleniumSuite {
 
+    protected static JavascriptExecutor je;
     protected static WebDriver driver;
     private static int nombreClients;
 
@@ -14,6 +16,7 @@ public class SeleniumSuite {
     public SeleniumSuite() {
         if (driver == null) {
             driver = new FirefoxDriver();
+            je = (JavascriptExecutor) driver;
         }
         nombreClients++;
     }

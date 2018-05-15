@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -66,9 +65,8 @@ public class AjouterComputerIT extends SeleniumSuite {
 
     /** Method used in ajoutComputer.
      * @param introduced la date à insérer
-     * @param je javascript executor
      */
-    private void ajoutTextIntroduced(JavascriptExecutor je, LocalDateTime introduced) {
+    private void ajoutTextIntroduced(LocalDateTime introduced) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = introduced.format(formatter);
         je.executeScript("return document.getElementById('introduced').value = '" + date + "';");
@@ -77,9 +75,8 @@ public class AjouterComputerIT extends SeleniumSuite {
 
     /** Method used in ajoutComputer.
      * @param discontinued date discontinued à insérer.
-     * @param je javascript executor
      */
-    public void ajoutTextDiscontinued(JavascriptExecutor je, LocalDateTime discontinued) {
+    public void ajoutTextDiscontinued(LocalDateTime discontinued) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = discontinued.format(formatter);
         je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");
@@ -118,10 +115,9 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutOk() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
-        JavascriptExecutor je = (JavascriptExecutor) driver;
         this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
+        this.ajoutTextIntroduced(ajout.getIntroduced());
+        this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
         driver.findElement(By.id("buttonAjout")).click();
         String result = "";
@@ -142,10 +138,9 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForName() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
-        JavascriptExecutor je = (JavascriptExecutor) driver;
         this.ajoutTextComputerName(NAMEINVALID);
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
+        this.ajoutTextIntroduced(ajout.getIntroduced());
+        this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
         driver.findElement(By.id("buttonAjout")).click();
         String result = "";
@@ -166,10 +161,9 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
-        JavascriptExecutor je = (JavascriptExecutor) driver;
         this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced().minus(Period.ofYears(100)));
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued());
+        this.ajoutTextIntroduced(ajout.getIntroduced().minus(Period.ofYears(100)));
+        this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
         driver.findElement(By.id("buttonAjout")).click();
         String result = "";
@@ -190,10 +184,9 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForDiscontinued() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
-        JavascriptExecutor je = (JavascriptExecutor) driver;
         this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getIntroduced());
-        this.ajoutTextDiscontinued(je, ajout.getDiscontinued().minus(Period.ofYears(100)));
+        this.ajoutTextIntroduced(ajout.getIntroduced());
+        this.ajoutTextDiscontinued(ajout.getDiscontinued().minus(Period.ofYears(100)));
         this.ajoutTextCompanyIdName(ajout.getCompany());
         driver.findElement(By.id("buttonAjout")).click();
         String result = "";
@@ -214,10 +207,9 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
         driver.get("http://localhost:9090/computer_db/computer?action=add_form_computer");
-        JavascriptExecutor je = (JavascriptExecutor) driver;
         this.ajoutTextComputerName(ajout.getName());
-        this.ajoutTextIntroduced(je, ajout.getDiscontinued());
-        this.ajoutTextDiscontinued(je, ajout.getIntroduced());
+        this.ajoutTextIntroduced(ajout.getDiscontinued());
+        this.ajoutTextDiscontinued(ajout.getIntroduced());
         this.ajoutTextCompanyIdName(ajout.getCompany());
         driver.findElement(By.id("buttonAjout")).click();
         String result = "";
