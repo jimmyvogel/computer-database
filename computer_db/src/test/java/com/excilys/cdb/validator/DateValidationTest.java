@@ -16,7 +16,6 @@ public class DateValidationTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime now = LocalDateTime.now();
         Assert.assertNotNull(DateValidation.validationDate(formatter.format(now)));
-        System.out.println(now.toString());
         Assert.assertNotNull(DateValidation.validationDate(now.toString()));
     }
 

@@ -17,12 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.PageMapper;
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.Dao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
@@ -32,58 +31,40 @@ import com.excilys.cdb.validator.DateValidation;
  * @author vogel
  *
  */
+@SuppressWarnings("serial")
 public class ComputerServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 8303946492164443679L;
-
-    private ComputerService service;
+    private ComputerService serviceComputer;
+    private CompanyService serviceCompany;
 
     public enum Action {
-        HOME(CHEMIN_ACCUEIL),
-        ADD_COMPUTER(CHEMIN_FORM_ADD_COMPUTER),
-        EDIT_COMPUTER(CHEMIN_FORM_EDIT_COMPUTER),
-        SEARCH_COMPUTER(CHEMIN_LIST_COMPUTERS),
-        SEARCH_COMPANY(CHEMIN_LIST_COMPANIES),
-        DELETE_COMPUTER(CHEMIN_LIST_COMPUTERS),
-        ADD_FORM_COMPUTER(CHEMIN_FORM_ADD_COMPUTER),
-        EDIT_FORM_COMPUTER(CHEMIN_FORM_EDIT_COMPUTER),
-        LIST_COMPUTERS(CHEMIN_LIST_COMPUTERS),
-        LIST_COMPANIES(CHEMIN_LIST_COMPANIES);
+        HOME(UrlRessources.ACCUEIL),
+        ADD_COMPUTER(UrlRessources.FORM_ADD_COMPUTER),
+        EDIT_COMPUTER(UrlRessources.FORM_EDIT_COMPUTER),
+        SEARCH_COMPUTER(UrlRessources.LIST_COMPUTERS),
+        DELETE_COMPUTER(UrlRessources.LIST_COMPUTERS),
+        ADD_FORM_COMPUTER(UrlRessources.FORM_ADD_COMPUTER),
+        EDIT_FORM_COMPUTER(UrlRessources.FORM_EDIT_COMPUTER),
+        LIST_COMPUTERS(UrlRessources.LIST_COMPUTERS);
 
-        private String vue;
-
+        private String url;
         /**
          * Constructor.
-         * @param vue
+         * @param url
          *            value de l'enum
          */
-        Action(String vue) {
-            this.vue = vue;
+        Action(String url) {
+            this.url = url;
         }
-
-        public String getVue() {
-            return vue;
+        public String getUrl() {
+            return url;
         }
-
-        public void setVue(String vue) {
-            this.vue = vue;
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
-
-    //Navigation
-    private static final String CHEMIN_ACCUEIL = "/WEB-INF/accueil.jsp";
-    private static final String CHEMIN_FORM_ADD_COMPUTER = "/forms/formAjoutComputer.jsp";
-    private static final String CHEMIN_FORM_EDIT_COMPUTER = "/forms/formEditComputer.jsp";
-    private static final String CHEMIN_LIST_COMPUTERS = "/views/listeComputers.jsp";
-    private static final String CHEMIN_LIST_COMPANIES = "/views/listeCompanies.jsp";
-
-    private static final String SESSION_ETAT = "etat";
-    private static final String SESSION_SEARCH = "search";
-    private static final String SESSION_LIMIT_ID = "LimitCompanies";
-
-    private static final String ERROR = "error";
-    private static final String SUCCESS = "success";
-
+    private static final String ALL_COMPANY = "companies";
+    private static final String COMPUTER_ID = "id";
+    private static final String COMPUTER = "computer";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -91,7 +72,8 @@ public class ComputerServlet extends HttpServlet {
         logger.info("Configuration de la servlet ComputerServlet en cours.");
         super.init(config);
         try {
-            service = ComputerService.getInstance();
+            serviceComputer = ComputerService.getInstance();
+            serviceCompany = CompanyService.getInstance();
         } catch (DAOConfigurationException e) {
             throw new ServletException("Instanciation du service fail", e);
         }
@@ -108,12 +90,12 @@ public class ComputerServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (request.getParameter("action") != null) {
-            Action action = Action.valueOf(request.getParameter("action").toUpperCase());
+        if (request.getParameter(RequestID.ACTION) != null) {
+            Action action = Action.valueOf(request.getParameter(RequestID.ACTION).toUpperCase());
             try {
                 switch (action) {
                 case ADD_FORM_COMPUTER:
-                    request.setAttribute("companies", service.getAllCompany());
+                    request.setAttribute(ALL_COMPANY, serviceCompany.getAllCompany());
                     break;
                 case EDIT_FORM_COMPUTER:
                     addParamsEditComputer(request);
@@ -121,28 +103,22 @@ public class ComputerServlet extends HttpServlet {
                 case SEARCH_COMPUTER:
                     addParamsSearchComputer(request);
                     break;
-                case SEARCH_COMPANY:
-                    addParamsSearchCompany(request);
-                    break;
                 case LIST_COMPUTERS:
                     addParamsListComputers(request);
                     break;
-                case LIST_COMPANIES:
-                    addParamsListCompanies(request);
-                    break;
                 default:
-                    dispatch(request, response, CHEMIN_ACCUEIL);
+                    dispatch(request, response, UrlRessources.ACCUEIL);
                     break;
                 }
-                dispatch(request, response, action.getVue());
+                dispatch(request, response, action.getUrl());
 
             } catch (ServiceException | DaoException e) {
-                request.setAttribute(ERROR, e.getMessage());
-                dispatch(request, response, CHEMIN_ACCUEIL);
+                request.setAttribute(JspRessources.ERROR, e.getMessage());
+                dispatch(request, response, UrlRessources.ACCUEIL);
             }
 
         } else {
-            dispatch(request, response, CHEMIN_ACCUEIL);
+            dispatch(request, response, UrlRessources.ACCUEIL);
         }
     }
 
@@ -156,8 +132,8 @@ public class ComputerServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (request.getParameter("action") != null) {
-            Action action = Action.valueOf(request.getParameter("action").toUpperCase());
+        if (request.getParameter(RequestID.ACTION) != null) {
+            Action action = Action.valueOf(request.getParameter(RequestID.ACTION).toUpperCase());
             try {
                 switch (action) {
                 case ADD_COMPUTER:
@@ -170,76 +146,16 @@ public class ComputerServlet extends HttpServlet {
                     deleteComputer(request);
                     break;
                 default:
-                    dispatch(request, response, CHEMIN_ACCUEIL);
+                    dispatch(request, response, UrlRessources.ACCUEIL);
                     break;
                 }
             } catch (ServiceException | DaoException e) {
-                request.setAttribute(ERROR, e.getMessage());
+                request.setAttribute(JspRessources.ERROR, e.getMessage());
             }
-            dispatch(request, response, action.getVue());
+            dispatch(request, response, action.getUrl());
         } else {
-            dispatch(request, response, CHEMIN_ACCUEIL);
+            dispatch(request, response, UrlRessources.ACCUEIL);
         }
-    }
-
-    /**
-     * Méthode utile pour récupérer la limit de pagination spécifier dans la request.
-     * @param request requête.
-     * @return la limit en format primitive int.
-     */
-    private int getLimitPagination(HttpServletRequest request) {
-        // Valeur par défaut si rien de spécifié.
-        Integer limit = Dao.LIMIT_DEFAULT;
-
-        // Modification de la limite
-        if (request.getParameter("limit") != null) {
-            limit = Integer.valueOf(request.getParameter("limit"));
-            request.getSession().setAttribute(SESSION_LIMIT_ID, limit);
-
-        // Verification de la limite en session.
-        } else if (request.getSession().getAttribute(SESSION_LIMIT_ID) != null) {
-            limit = (Integer) request.getSession() .getAttribute(SESSION_LIMIT_ID);
-        }
-        return limit;
-    }
-
-    /**
-     * Méthode utile pour récupérer le paramètre search possiblement en session.
-     * @param request requête.
-     * @return un string représentant la recherche.
-     */
-    private String getSearch(HttpServletRequest request) {
-        // Valeur par défaut si rien de spécifié.
-        String search = "";
-
-        // Modification du search
-        if (request.getParameter("search") != null) {
-            search = request.getParameter("search");
-            request.getSession().setAttribute(SESSION_SEARCH, search);
-
-        // Verification de la recherche en session.
-        } else if (request.getSession().getAttribute(SESSION_SEARCH) != null) {
-            search = (String) request.getSession() .getAttribute(SESSION_SEARCH);
-        }
-        return search;
-    }
-
-    /**
-     * Affichage de la recherche des companies.
-     * @param request injections et parametres
-     * @throws DaoException erreur de requête.
-     * @throws ServiceException erreur de service.
-     */
-    private void addParamsSearchCompany(HttpServletRequest request) throws ServiceException, DaoException {
-        int value = 1;
-        if (request.getParameter("page") != null) {
-            value = Integer.valueOf(request.getParameter("page"));
-        }
-        Integer limit = getLimitPagination(request);
-
-        Page<Company> page = service.getPageSearchCompany(this.getSearch(request), value, limit);
-        request.setAttribute("actionPagination", Action.SEARCH_COMPANY.toString());
-        request.setAttribute("page", page);
     }
 
     /**
@@ -250,17 +166,17 @@ public class ComputerServlet extends HttpServlet {
      */
     private void addParamsSearchComputer(HttpServletRequest request) throws ServiceException, DaoException {
         int value = 1;
-        if (request.getParameter("page") != null) {
-            value = Integer.valueOf(request.getParameter("page"));
+        if (request.getParameter(RequestID.PAGE) != null) {
+            value = Integer.valueOf(request.getParameter(RequestID.PAGE));
         }
 
-        Integer limit = getLimitPagination(request);
+        Integer limit = Session.getLimitPagination(request);
 
-        Page<Computer> page = service.getPageSearchComputer(this.getSearch(request), value, limit);
+        Page<Computer> page = serviceComputer.getPageSearchComputer(Session.getSearch(request), value, limit);
         Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
 
-        request.setAttribute("actionPagination", Action.SEARCH_COMPUTER.toString());
-        request.setAttribute("page", newpage);
+        request.setAttribute(RequestID.ACTION_PAGINATION, Action.SEARCH_COMPUTER.toString());
+        request.setAttribute(RequestID.PAGE, newpage);
     }
 
     /**
@@ -270,10 +186,10 @@ public class ComputerServlet extends HttpServlet {
      * @throws ServiceException erreur de service.
      */
     private void deleteComputer(HttpServletRequest request) throws DaoException, ServiceException {
-        String[] selections = request.getParameter("selection").split(",");
+        String[] selections = request.getParameter(RequestID.DELETE_SELECT).split(",");
         Set<Long> set = Arrays.stream(selections).map(l -> Long.valueOf(l)).collect(Collectors.toSet());
-        service.deleteComputers(set);
-        request.setAttribute(SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
+        serviceComputer.deleteComputers(set);
+        request.setAttribute(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
         addParamsListComputers(request);
     }
 
@@ -285,19 +201,19 @@ public class ComputerServlet extends HttpServlet {
      */
     private void editComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
-        long id = Long.valueOf(request.getParameter("id"));
+        long id = Long.valueOf(request.getParameter(COMPUTER_ID));
 
         String name = null;
-        String nameS = request.getParameter("computerName");
+        String nameS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_NAME);
         if (nameS != null && nameS != "") {
-            name = request.getParameter("computerName").trim();
+            name = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_NAME).trim();
         }
         long idCompany = -1;
         LocalDateTime introduced = null;
         LocalDateTime discontinued = null;
-        String introducedS = request.getParameter("introduced");
-        String discontinuedS = request.getParameter("discontinued");
-        String idS = request.getParameter("companyId");
+        String introducedS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED);
+        String discontinuedS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED);
+        String idS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY);
 
         if (introducedS != null && introducedS != "") {
             introduced = DateValidation.validationDate(introducedS);
@@ -309,9 +225,9 @@ public class ComputerServlet extends HttpServlet {
         if (idS != null && idS != "") {
             idCompany = Long.valueOf(idS);
         }
-        service.updateComputer(id, name, introduced, discontinued, idCompany);
+        serviceComputer.updateComputer(id, name, introduced, discontinued, idCompany);
 
-        request.setAttribute(SUCCESS, "Update Computer success.");
+        request.setAttribute(JspRessources.SUCCESS, "Update Computer success.");
         addParamsEditComputer(request);
     }
 
@@ -323,13 +239,13 @@ public class ComputerServlet extends HttpServlet {
      */
     private void addComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
-        String name = request.getParameter("computerName").trim();
+        String name = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_NAME).trim();
         long id = -1;
         LocalDateTime introduced = null;
         LocalDateTime discontinued = null;
-        String introducedS = request.getParameter("introduced");
-        String discontinuedS = request.getParameter("discontinued");
-        String idS = request.getParameter("companyId");
+        String introducedS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED);
+        String discontinuedS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED);
+        String idS = request.getParameter(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY);
 
         if (introducedS != null && introducedS != "") {
             introduced = DateValidation.validationDate(introducedS);
@@ -342,9 +258,9 @@ public class ComputerServlet extends HttpServlet {
         if (idS != null && idS != "") {
             id = Long.valueOf(idS);
         }
-        service.createComputer(name, introduced, discontinued, id);
+        serviceComputer.createComputer(name, introduced, discontinued, id);
 
-        request.setAttribute(SUCCESS, "Create Computer " + name + " success.");
+        request.setAttribute(JspRessources.SUCCESS, "Create Computer " + name + " success.");
     }
 
     /**
@@ -355,28 +271,10 @@ public class ComputerServlet extends HttpServlet {
      */
     private void addParamsEditComputer(HttpServletRequest request)
             throws ServiceException, DaoException {
-        long id = Long.valueOf(request.getParameter("id"));
-        System.out.println(service.countComputers());
-        request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
-        request.setAttribute("companies", service.getAllCompany());
-    }
-
-    /**
-     * Gestion d'injection avant redirection pour la page listCompanies.
-     * @param request modification des injections
-     * @throws ServiceException erreur de service.
-     */
-    private void addParamsListCompanies(HttpServletRequest request)
-            throws ServiceException {
-        int value = 1;
-        if (request.getParameter("page") != null) {
-            value = Integer.valueOf(request.getParameter("page"));
-        }
-
-        Integer limit = getLimitPagination(request);
-        Page<Company> page = service.getPageCompany(value, limit);
-        request.setAttribute("actionPagination", Action.LIST_COMPANIES.toString());
-        request.setAttribute("page", page);
+        long id = Long.valueOf(request.getParameter(COMPUTER_ID));
+        System.out.println(serviceComputer.countComputers());
+        request.setAttribute(COMPUTER, new ComputerDTO(serviceComputer.getComputer(id)));
+        request.setAttribute(ALL_COMPANY, serviceCompany.getAllCompany());
     }
 
     /**
@@ -387,15 +285,15 @@ public class ComputerServlet extends HttpServlet {
     private void addParamsListComputers(HttpServletRequest request)
             throws ServiceException {
         int value = 1;
-        if (request.getParameter("page") != null) {
-            value = Integer.valueOf(request.getParameter("page"));
+        if (request.getParameter(RequestID.PAGE) != null) {
+            value = Integer.valueOf(request.getParameter(RequestID.PAGE));
         }
-        Integer limit = getLimitPagination(request);
-        Page<Computer> page = service.getPageComputer(value, limit);
+        Integer limit = Session.getLimitPagination(request);
+        Page<Computer> page = serviceComputer.getPageComputer(value, limit);
         Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
 
-        request.setAttribute("actionPagination", Action.LIST_COMPUTERS.toString());
-        request.setAttribute("page", newpage);
+        request.setAttribute(RequestID.ACTION_PAGINATION, Action.LIST_COMPUTERS.toString());
+        request.setAttribute(RequestID.PAGE, newpage);
     }
 
     /**
@@ -409,7 +307,7 @@ public class ComputerServlet extends HttpServlet {
     private void dispatch(HttpServletRequest request,
             HttpServletResponse response, String chemin)
             throws ServletException, IOException {
-        request.setAttribute(SESSION_ETAT, request.getParameter("action"));
+        request.setAttribute(Session.SESSION_ETAT, request.getParameter(RequestID.ACTION));
         this.getServletContext().getRequestDispatcher(chemin).forward(request, response);
     }
 

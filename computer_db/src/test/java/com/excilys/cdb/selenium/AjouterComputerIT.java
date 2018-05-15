@@ -19,13 +19,13 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.ComputerValidator;
 
 public class AjouterComputerIT extends SeleniumSuite {
 
-    private ComputerService service;
+    private CompanyService serviceCompany;
     private Computer ajout;
 
     private static final String NAMEINVALID = "";
@@ -36,11 +36,11 @@ public class AjouterComputerIT extends SeleniumSuite {
      */
     @BeforeClass
     public void beforeClass() throws DAOConfigurationException, ServiceException {
-        service = ComputerService.getInstance();
+        serviceCompany = CompanyService.getInstance();
         ajout = new Computer("nameValid",
                 ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
                 ComputerValidator.END_DATE_VALID.minus(Period.ofDays(1)),
-                service.getAllCompany().get(1));
+                serviceCompany.getAllCompany().get(1));
     }
 
     /**

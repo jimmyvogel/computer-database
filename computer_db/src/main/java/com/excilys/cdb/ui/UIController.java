@@ -11,6 +11,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
@@ -24,7 +25,8 @@ import com.excilys.cdb.vue.UIView;
 public class UIController {
 
     // Le service de gestion des computers et des compagnies.
-    private ComputerService service;
+    private ComputerService serviceComputer;
+    private CompanyService serviceCompany;
 
     // Les énumérations permettant la gestion comme un automate du processus.
     private enum State {
@@ -84,13 +86,15 @@ public class UIController {
     /**
      * Constructor sans arguments initiant les variables d'états, la vue et les
      * pageurs.
-     * @param computerService le singleton service.
+     * @param computerService le singleton service computer.
+     * @param companyService le singleton service company.
      */
-    public UIController(final ComputerService computerService) {
+    public UIController(final ComputerService computerService, final CompanyService companyService) {
         Logger logger = LoggerFactory.getLogger(UIController.class);
         logger.info("Création d'un objet de type UIController");
 
-        this.service = computerService;
+        this.serviceComputer = computerService;
+        this.serviceCompany = companyService;
         initialize();
     }
 
@@ -446,7 +450,7 @@ public class UIController {
             break;
         case COMPANY_ID:
             if (!ligne.equals("no")) {
-                Company c = service.getCompany(Integer.valueOf(ligne));
+                Company c = serviceCompany.getCompany(Integer.valueOf(ligne));
                 inter.setCompany(c);
             }
             view.setAffichage(UITextes.VALIDATION);
@@ -479,7 +483,7 @@ public class UIController {
         switch (stateUpdate) {
         case ID:
             value = Long.valueOf(ligne);
-            if (service.getComputer(value) != null) {
+            if (serviceComputer.getComputer(value) != null) {
                 inter = new Computer();
                 inter.setId(value);
                 view.setAffichage(UITextes.UPDATE_NAME);
@@ -520,7 +524,7 @@ public class UIController {
             break;
         case COMPANY_ID:
             if (!ligne.equals("no")) {
-                Company c = service.getCompany(Integer.valueOf(ligne));
+                Company c = serviceCompany.getCompany(Integer.valueOf(ligne));
                 inter.setCompany(c);
             }
             view.setAffichage(UITextes.VALIDATION);
@@ -548,7 +552,7 @@ public class UIController {
         if (inter.getCompany() != null) {
             id = inter.getCompany().getId();
         }
-        boolean ajout = service.createComputer(inter.getName(),
+        boolean ajout = serviceComputer.createComputer(inter.getName(),
                 inter.getIntroduced(), inter.getDiscontinued(), id) != -1;
 
         if (ajout) {
@@ -566,7 +570,7 @@ public class UIController {
      * @throws DaoException erreur de reqûete.
      */
     private String supprimerComputer(final long id) throws ServiceException, DaoException {
-        boolean delete = service.deleteComputer(id);
+        boolean delete = serviceComputer.deleteComputer(id);
 
         if (delete) {
             return "Suppression réussi\n";
@@ -582,7 +586,7 @@ public class UIController {
      * @throws DaoException erreur de reqûete.
      */
     private String supprimerCompany(final long id) throws ServiceException, DaoException {
-        boolean delete = service.deleteCompany(id);
+        boolean delete = serviceCompany.deleteCompany(id);
 
         if (delete) {
             return "Suppression réussi\n";
@@ -604,7 +608,7 @@ public class UIController {
             id = inter.getCompany().getId();
         }
 
-        boolean update = service.updateComputer(inter.getId(), inter.getName(),
+        boolean update = serviceComputer.updateComputer(inter.getId(), inter.getName(),
                 inter.getIntroduced(), inter.getDiscontinued(), id);
         if (update) {
             return "Update réussit\n";
@@ -622,8 +626,8 @@ public class UIController {
      * @throws DaoException erreur de reqûete.
      */
     private String pageurComputerShow(final int page) throws ServiceException, DaoException {
-        Page<Computer> pageComputer = service.getPageComputer(page);
-        int taille = (int) service.countComputers();
+        Page<Computer> pageComputer = serviceComputer.getPageComputer(page);
+        int taille = (int) serviceComputer.countComputers();
         int limit = pageComputer.getLimit();
         int endBloc = taille / limit;
         if (taille % limit > 0) {
@@ -642,8 +646,8 @@ public class UIController {
      * @throws DaoException erreur de reqûete.
      */
     private String pageurCompanyShow(final int page) throws ServiceException, DaoException {
-        Page<Company> pageCompany = service.getPageCompany(page);
-        int taille = (int) service.countCompanies();
+        Page<Company> pageCompany = serviceCompany.getPageCompany(page);
+        int taille = (int) serviceCompany.countCompanies();
         int limit = pageCompany.getLimit();
         int endBloc = taille / limit;
         if (taille % limit > 0) {
@@ -660,7 +664,7 @@ public class UIController {
      * @throws DaoException erreur de requête.
      */
     private String detailComputer(final long id) throws ServiceException, DaoException {
-        Computer c = service.getComputer(id);
+        Computer c = serviceComputer.getComputer(id);
         if (c == null) {
             return "Erreur d'id";
         }
@@ -685,8 +689,9 @@ public class UIController {
      */
     public static void main(final String[] args) {
         try {
-            ComputerService service = ComputerService.getInstance();
-            UIController controller = new UIController(service);
+            ComputerService serviceComputer = ComputerService.getInstance();
+            CompanyService serviceCompany = CompanyService.getInstance();
+            UIController controller = new UIController(serviceComputer, serviceCompany);
             controller.run();
         } catch (DAOConfigurationException e) {
             System.out.println(e);

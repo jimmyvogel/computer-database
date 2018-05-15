@@ -9,8 +9,6 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.servlet.ComputerServlet.Action;
-
 public class AppServletContextConfig implements ServletContextListener {
 
     private static final String ACTIONS = "actions";
@@ -24,7 +22,10 @@ public class AppServletContextConfig implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         Map<String, String> map = new HashMap<>();
-        for (Action action : ComputerServlet.Action.values()) {
+        for (ComputerServlet.Action action : ComputerServlet.Action.values()) {
+            map.put(action.toString(), action.toString().toLowerCase());
+        }
+        for (CompanyServlet.Action action : CompanyServlet.Action.values()) {
             map.put(action.toString(), action.toString().toLowerCase());
         }
         event.getServletContext().setAttribute(ACTIONS, map);

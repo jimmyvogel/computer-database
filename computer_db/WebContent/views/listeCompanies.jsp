@@ -5,7 +5,7 @@
 </h1>
 <div class="container" style="margin-top: 10px;">
 	
-    <form id="searchForm" action="computer" method="GET" class="form-inline">
+    <form id="searchForm" action="company" method="GET" class="form-inline">
     	<input type="hidden" value="${applicationScope.actions.SEARCH_COMPANY}" name="action"/>
         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
         <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
@@ -31,6 +31,6 @@
 </div>
 
 <div class="navbar">
-	<pg:pager target="computer" action="${actionPagination}" page="${page}"> </pg:pager>
+	<pg:pager target="company" action="${actionPagination}" page="${page}"> </pg:pager>
 </div>
 

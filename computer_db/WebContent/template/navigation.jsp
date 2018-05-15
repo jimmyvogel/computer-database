@@ -47,7 +47,7 @@
 			</c:choose>
 
 			<!--  NAVIGATION LIST COMPANY -->
-			<c:url value="computer" var="urlListCompanies">
+			<c:url value="company" var="urlListCompanies">
 				<c:param name="action" value="${applicationScope.actions.LIST_COMPANIES}" />
 				<c:param name="page" value="1" />
 			</c:url>
