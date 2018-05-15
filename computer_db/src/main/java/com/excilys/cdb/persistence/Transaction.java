@@ -10,6 +10,11 @@ import com.excilys.cdb.persistence.exceptions.DaoException;
 
 public class Transaction {
 
+    /**
+     * Classe non instanciable.
+     */
+    private Transaction() { }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Transaction.class);
 
     public static final String MESS_TRANSACTION_EXCEPTION = "Transaction exception";

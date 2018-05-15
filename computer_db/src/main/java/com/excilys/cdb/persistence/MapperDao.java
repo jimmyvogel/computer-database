@@ -14,6 +14,11 @@ import com.excilys.cdb.model.Computer;
 public class MapperDao {
 
     /**
+     * Classe non instanciable.
+     */
+    private MapperDao() { }
+
+    /**
      * Mapping d'une ligne de la table company en un objet company.
      * @param result
      *            an object du type ResultSet

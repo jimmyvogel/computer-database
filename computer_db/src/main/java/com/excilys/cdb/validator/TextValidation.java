@@ -3,6 +3,11 @@ package com.excilys.cdb.validator;
 public class TextValidation {
 
     /**
+     * Classe non instanciable.
+     */
+    private TextValidation() { }
+
+    /**
      * Méthode pour modifier en valide le format d'un string.
      * @param s le string a valider
      * @return String le string possiblement modifié valide.
