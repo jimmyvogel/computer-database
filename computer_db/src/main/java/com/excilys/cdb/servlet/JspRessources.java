@@ -13,4 +13,5 @@ public class JspRessources {
     static final String FORM_COMPUTER_PARAM_INTRODUCED = "introduced";
     static final String FORM_COMPUTER_PARAM_DISCONTINUED = "discontinued";
     static final String FORM_COMPUTER_PARAM_IDCOMPANY = "companyId";
+
 }
