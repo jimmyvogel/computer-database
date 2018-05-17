@@ -8,11 +8,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.exceptions.ServiceException;
@@ -22,8 +25,9 @@ import com.excilys.cdb.service.exceptions.ServiceException;
  * @author vogel
  *
  */
+@Controller
 @SuppressWarnings("serial")
-public class CompanyServlet extends HttpServlet {
+public class CompanyServlet2 extends HttpServlet {
 
 	@Autowired
 	private CompanyService serviceCompany;
@@ -52,8 +56,16 @@ public class CompanyServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		Logger logger = LoggerFactory.getLogger(CompanyServlet2.class);
+		logger.info("Configuration de la servlet ComputerServlet en cours.");
 		super.init(config);
-		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+		try {
+			System.out.println("fjeisf");
+			throw new DAOConfigurationException("b");
+			//serviceCompany = CompanyService.getInstance();
+		} catch (DAOConfigurationException e) {
+			throw new ServletException("Instanciation du service fail", e);
+		}
 	}
 
 	/**

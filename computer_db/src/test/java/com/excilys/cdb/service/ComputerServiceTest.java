@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -27,7 +28,10 @@ import com.excilys.cdb.validator.ComputerValidator;
 
 public class ComputerServiceTest {
 
+	@Autowired
     private ComputerService serviceComputer;
+	@Autowired
+    private CompanyService serviceCompany;
 
     private long nbComputers;
     private long nbCompany;
@@ -66,9 +70,6 @@ public class ComputerServiceTest {
     public void initialisation()
             throws DAOConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
-
-        serviceComputer = ComputerService.getInstance();
-        CompanyService serviceCompany = CompanyService.getInstance();
         nbComputers = serviceComputer.countComputers();
         nbCompany = serviceCompany.countCompanies();
 

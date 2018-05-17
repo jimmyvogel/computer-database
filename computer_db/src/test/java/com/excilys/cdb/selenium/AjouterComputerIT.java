@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,6 +26,7 @@ import com.excilys.cdb.validator.ComputerValidator;
 
 public class AjouterComputerIT extends SeleniumSuite {
 
+	@Autowired
     private CompanyService serviceCompany;
     private Computer ajout;
 
@@ -36,7 +38,6 @@ public class AjouterComputerIT extends SeleniumSuite {
      */
     @BeforeClass
     public void beforeClass() throws DAOConfigurationException, ServiceException {
-        serviceCompany = CompanyService.getInstance();
         ajout = new Computer("nameValid",
                 ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
                 ComputerValidator.END_DATE_VALID.minus(Period.ofDays(1)),

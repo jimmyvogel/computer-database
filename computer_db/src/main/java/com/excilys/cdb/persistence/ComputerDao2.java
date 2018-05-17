@@ -14,12 +14,10 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Classe contenant les requêtes possibles sur la table des computer de la base
@@ -28,12 +26,11 @@ import com.zaxxer.hikari.HikariDataSource;
  *
  */
 @Repository
-public class ComputerDao implements Dao<Computer> {
+public class ComputerDao2 implements Dao<Computer> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
-
-	@Autowired
-	private HikariDataSource ds;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao2.class);
+    private DaoFactory daoFactory;
+    private static ComputerDao2 dao;
 
     private static final String SQL_SEARCH_ALL_COMPUTER = "SELECT company.id,company.name, computer.id, "
             + "computer.name, computer.introduced, computer.discontinued FROM company "
@@ -56,7 +53,22 @@ public class ComputerDao implements Dao<Computer> {
             + "RIGHT JOIN computer ON company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ?";
 
     public static final String MESS_REQUEST_EXCEPTION = "Requête exception";
-	public static final String MESS_SQL_EXCEPTION = "Erreur sql";
+
+    /**
+     * Méthode de fabrique de computer dao.
+     * @param factory la factory de fabrication de composants daos.
+     * @return une référence sur le singleton computer dao
+     */
+    public static ComputerDao2 getInstance(DaoFactory factory) {
+        if (dao == null) {
+
+            LOGGER.info("Initialisation du singleton de type ComputerDao");
+
+            dao = new ComputerDao2();
+            dao.daoFactory = factory;
+        }
+        return dao;
+    }
 
     /**
      * Retourne tous les computers de la bdd.
@@ -65,7 +77,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public List<Computer> getAll() throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
-        try (Connection c = ds.getConnection(); Statement stmt = c.createStatement()) {
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
             ResultSet result = null;
             result = stmt.executeQuery(SQL_ALL_COMPUTERS);
             while (result.next()) {
@@ -85,7 +97,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public Optional<Computer> getById(long id) throws DaoException {
         Computer inter = null;
-        try (Connection c = ds.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_ONE_COMPUTER)) {
             stmt.setLong(1, id);
 
             ResultSet result = stmt.executeQuery();
@@ -107,7 +119,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public List<Computer> getByName(String name) throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
-        try (Connection c = ds.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_ALL_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt  = c.prepareStatement(SQL_SEARCH_ALL_COMPUTER)) {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, "%" + name + "%");
             ResultSet result = null;
@@ -130,7 +142,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public long create(final Computer computer) throws DaoException {
         long id = -1;
-        try (Connection c = ds.getConnection();
+        try (Connection c = daoFactory.getConnection();
                 PreparedStatement stmt = c.prepareStatement(SQL_AJOUT_COMPUTER, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, computer.getName());
@@ -172,7 +184,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public boolean update(Computer computer) throws DaoException {
         int result = 0;
-        try (Connection c = ds.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_UPDATE_COMPUTER)) {
             stmt.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
                 stmt.setTimestamp(2,
@@ -218,12 +230,7 @@ public class ComputerDao implements Dao<Computer> {
     public boolean delete(Set<Long> computers) throws DaoException {
         int result = 0;
         boolean deleteOk = true;
-        Connection c;
-		try {
-			c = ds.getConnection();
-		} catch (SQLException e2) {
-			throw new DaoException(MESS_REQUEST_EXCEPTION, e2);
-		}
+        Connection c = daoFactory.getConnection();
         try (PreparedStatement stmt = c.prepareStatement(SQL_DELETE_COMPUTER)) {
 
             Transaction.beginTransaction(c);
@@ -258,7 +265,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public long getCount() throws DaoException {
         long count = 0;
-        try (Connection c = ds.getConnection(); Statement stmt = c.createStatement()) {
+        try (Connection c = daoFactory.getConnection(); Statement stmt = c.createStatement()) {
             ResultSet result = stmt.executeQuery(SQL_COUNT_COMPUTER);
             if (result.next()) {
                 count = result.getLong("total");
@@ -278,7 +285,7 @@ public class ComputerDao implements Dao<Computer> {
      */
     public long getSearchCount(final String search) throws DaoException {
         long count = 0;
-        try (Connection c = ds.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_COUNT)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_COUNT)) {
             stmt.setString(1, "%" + search + "%");
             stmt.setString(2, "%" + search + "%");
 
@@ -311,7 +318,7 @@ public class ComputerDao implements Dao<Computer> {
     public Page<Computer> getPage(final int numeroPage, final int limit) throws DaoException {
         Page<Computer> page = new Page<Computer>(limit, (int) this.getCount());
         List<Computer> computers = new ArrayList<Computer>();
-        try (Connection c = ds.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_PAGE_COMPUTER)) {
             stmt.setInt(1, page.getLimit());
             stmt.setInt(2, page.offset(numeroPage));
 
@@ -347,7 +354,7 @@ public class ComputerDao implements Dao<Computer> {
     public Page<Computer> getPageSearch(final String search, final int numeroPage, final int limit) throws DaoException {
         Page<Computer> page = new Page<Computer>(limit, (int) this.getSearchCount(search));
         List<Computer> computers = new ArrayList<Computer>();
-        try (Connection c = ds.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_PAGE_COMPUTER)) {
+        try (Connection c = daoFactory.getConnection(); PreparedStatement stmt = c.prepareStatement(SQL_SEARCH_PAGE_COMPUTER)) {
             stmt.setString(1, "%" + search + "%");
             stmt.setString(2, "%" + search + "%");
             stmt.setInt(3, page.getLimit());

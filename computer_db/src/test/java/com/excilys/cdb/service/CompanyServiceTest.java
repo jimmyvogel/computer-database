@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -22,7 +23,9 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 
 public class CompanyServiceTest {
 
+	@Autowired
     private ComputerService serviceComputer;
+	@Autowired
     private CompanyService serviceCompany;
     private long nbCompany;
 
@@ -48,9 +51,6 @@ public class CompanyServiceTest {
     public void initialisation()
             throws DAOConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
-
-        serviceComputer = ComputerService.getInstance();
-        serviceCompany = CompanyService.getInstance();
         nbCompany = serviceCompany.countCompanies();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";

@@ -21,7 +21,6 @@ public class Computer {
      */
     public Computer() {
     }
-
     /**
      * Constructor sans id.
      * @param name nom du computer.

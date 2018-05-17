@@ -120,10 +120,10 @@ public class DaoFactory {
         Dao<?> res = null;
         switch (daoType) {
         case COMPANY:
-            res = CompanyDao.getInstance(this);
+            res = CompanyDao2.getInstance(this);
             break;
         case COMPUTER:
-            res = ComputerDao.getInstance(this);
+            res = ComputerDao2.getInstance(this);
             break;
         }
         return res;
