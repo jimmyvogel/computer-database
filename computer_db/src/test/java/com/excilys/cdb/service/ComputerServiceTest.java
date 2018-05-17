@@ -11,10 +11,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
@@ -28,10 +29,8 @@ import com.excilys.cdb.validator.ComputerValidator;
 
 public class ComputerServiceTest {
 
-	@Autowired
-    private ComputerService serviceComputer;
-	@Autowired
-    private CompanyService serviceCompany;
+    private static ComputerService serviceComputer;
+    private static CompanyService serviceCompany;
 
     private long nbComputers;
     private long nbCompany;
@@ -59,6 +58,17 @@ public class ComputerServiceTest {
 
     private Company companyValid;
     private Computer computerValid;
+
+    private static ApplicationSpringConfig appConfig;
+
+    /**
+     */
+    @BeforeClass
+    public static void startContext() {
+    	appConfig = new ApplicationSpringConfig();
+    	serviceComputer = (ComputerService) appConfig.getAppContext().getBean("computerService");
+    	serviceCompany = (CompanyService) appConfig.getAppContext().getBean("companyService");
+    }
 
     /**
      * Initialisation des données avant les tests.

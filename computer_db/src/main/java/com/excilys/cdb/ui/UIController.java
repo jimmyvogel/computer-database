@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
@@ -25,9 +25,7 @@ import com.excilys.cdb.vue.UIView;
  */
 public class UIController {
 
-	@Autowired
 	private ComputerService serviceComputer;
-	@Autowired
 	private CompanyService serviceCompany;
 
 	// Les énumérations permettant la gestion comme un automate du processus.
@@ -35,7 +33,6 @@ public class UIController {
 		INITIAL(0), LIST_COMPANY(2), LIST_COMPUTER(1), FORM_UPDATE(5), FORM_AJOUT(4), DELETE_COMPUTER(
 				6), DELETE_COMPANY(7), SHOW(3), RETOUR(0);
 		private Integer value;
-
 		/**
 		 * Constructor.
 		 * @param value valeur correspondant à l'action.
@@ -43,11 +40,9 @@ public class UIController {
 		State(Integer value) {
 			this.value = value;
 		}
-
 		public Integer getValue() {
 			return value;
 		}
-
 		/**
 		 * Method pour passer d'une valeur demandé à un énum.
 		 * @param value un integer
@@ -88,6 +83,7 @@ public class UIController {
 
 	// Un objet de type computer pour avoir en mémoire les dernières demandes.
 	private Computer inter;
+	private static ApplicationSpringConfig appConfig;
 
 	/**
 	 * Constructor sans arguments initiant les variables d'états, la vue et les
@@ -97,6 +93,8 @@ public class UIController {
 		Logger logger = LoggerFactory.getLogger(UIController.class);
 		logger.info("Création d'un objet de type UIController");
 		initialize();
+		serviceComputer = (ComputerService) appConfig.getAppContext().getBean("computerService");
+		serviceCompany = (CompanyService) appConfig.getAppContext().getBean("companyService");
 	}
 
 	/**
@@ -117,6 +115,7 @@ public class UIController {
 		while (continu) {
 			continu = read();
 		}
+		appConfig.disuseContext();
 	}
 
 	/**
@@ -680,6 +679,7 @@ public class UIController {
 	 * @param args arguments
 	 */
 	public static void main(final String[] args) {
+		appConfig = new ApplicationSpringConfig();
 		UIController controller = new UIController();
 		controller.run();
 	}

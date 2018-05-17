@@ -13,24 +13,25 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
-import com.excilys.cdb.persistence.DaoFactory;
 import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.persistence.DaoFactory.DaoType;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class CompanyDaoTest {
 
     @Mock
-    private DaoFactory daoFactory;
+    private HikariDataSource dataSource;
     @Mock
     private ResultSet mockResultSet;
     @Mock
@@ -41,9 +42,9 @@ public class CompanyDaoTest {
     private Connection connection;
     @InjectMocks
     private CompanyDao mockDao;
-
-    private CompanyDao dao;
+    private static CompanyDao dao;
     private Company companyValid;
+    private static ApplicationSpringConfig appConfig;
 
     /**
      * Initialisation.
@@ -56,8 +57,6 @@ public class CompanyDaoTest {
     public void initialisation()
             throws DAOConfigurationException, DaoException {
         MockitoAnnotations.initMocks(this);
-
-        dao = (CompanyDao) DaoFactory.getInstance().getDao(DaoType.COMPANY);
         companyValid = dao.getPage(1).getObjects().get(0);
     }
 
@@ -73,6 +72,14 @@ public class CompanyDaoTest {
     }
 
     /**
+     */
+    @BeforeClass
+    public static void startContext() {
+    	appConfig = new ApplicationSpringConfig();
+    	dao = (CompanyDao) appConfig.getAppContext().getBean("companyDao");
+    }
+
+    /**
      * Test de getAll.
      * @throws DaoException
      *             erreur de requête.
@@ -82,7 +89,7 @@ public class CompanyDaoTest {
     @Test
     public void testGetAllRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.createStatement()).thenReturn(mockS);
         Mockito.when(mockS.executeQuery(Mockito.anyString()))
                 .thenThrow(new SQLException());
@@ -92,7 +99,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection).createStatement();
         Mockito.verify(mockS).executeQuery(Mockito.anyString());
     }
@@ -126,7 +133,7 @@ public class CompanyDaoTest {
     @Test
     public void testGetByNameRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString()))
                 .thenReturn(mockPS);
         Mockito.when(mockPS.executeQuery()).thenThrow(new SQLException());
@@ -136,7 +143,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection).prepareStatement(Mockito.anyString());
         Mockito.verify(mockPS).executeQuery();
     }
@@ -162,7 +169,7 @@ public class CompanyDaoTest {
     @Test
     public void testGetByIdRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString()))
                 .thenReturn(mockPS);
         Mockito.when(mockPS.executeQuery()).thenThrow(new SQLException());
@@ -172,7 +179,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection).prepareStatement(Mockito.anyString());
         Mockito.verify(mockPS).executeQuery();
     }
@@ -238,7 +245,7 @@ public class CompanyDaoTest {
     @Test
     public void testCreateRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString(),
                 Mockito.anyInt())).thenReturn(mockPS);
         Mockito.when(mockPS.execute()).thenThrow(new SQLException());
@@ -248,7 +255,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection).prepareStatement(Mockito.anyString(),
                 Mockito.anyInt());
         Mockito.verify(mockPS).execute();
@@ -287,7 +294,7 @@ public class CompanyDaoTest {
     @Test
     public void testDeleteRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString()))
                 .thenReturn(mockPS);
         Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
@@ -297,7 +304,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection, Mockito.atMost(2)).prepareStatement(Mockito.anyString());
         Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
     }
@@ -312,7 +319,7 @@ public class CompanyDaoTest {
     @Test
     public void testDeleteRequeteSQLExceptionWhenRollback()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString()))
                 .thenReturn(mockPS);
         Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
@@ -324,7 +331,7 @@ public class CompanyDaoTest {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
         Mockito.verify(connection).rollback();
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection, Mockito.atMost(2)).prepareStatement(Mockito.anyString());
         Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
     }
@@ -338,12 +345,12 @@ public class CompanyDaoTest {
      */
     @Test
     public void testDeleteIdAbsent() throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString()))
                 .thenReturn(mockPS);
         Mockito.when(mockPS.executeUpdate()).thenReturn(-1);
         Assert.assertFalse(mockDao.delete(1));
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection, Mockito.atMost(2))
                 .prepareStatement(Mockito.anyString());
         Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
@@ -375,14 +382,14 @@ public class CompanyDaoTest {
     @Test
     public void testCountNextFalseReturnZero()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.createStatement()).thenReturn(mockS);
         Mockito.when(mockS.executeQuery(Mockito.anyString()))
                 .thenReturn(mockResultSet);
         Mockito.when(mockResultSet.next()).thenReturn(false);
         Assert.assertEquals(mockDao.getCount(), 0);
         Mockito.verify(mockResultSet, Mockito.atLeastOnce()).next();
-        Mockito.verify(daoFactory, Mockito.atLeastOnce()).getConnection();
+        Mockito.verify(dataSource, Mockito.atLeastOnce()).getConnection();
         Mockito.verify(connection, Mockito.atLeastOnce()).createStatement();
         Mockito.verify(mockS).executeQuery(Mockito.anyString());
     }
@@ -397,7 +404,7 @@ public class CompanyDaoTest {
     @Test
     public void testCountRequeteSQLException()
             throws DaoException, SQLException {
-        Mockito.when(daoFactory.getConnection()).thenReturn(connection);
+        Mockito.when(dataSource.getConnection()).thenReturn(connection);
         Mockito.when(connection.createStatement()).thenReturn(mockS);
         Mockito.when(mockS.executeQuery(Mockito.anyString()))
                 .thenThrow(new SQLException());
@@ -407,7 +414,7 @@ public class CompanyDaoTest {
         } catch (DaoException expected) {
             Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
         }
-        Mockito.verify(daoFactory).getConnection();
+        Mockito.verify(dataSource).getConnection();
         Mockito.verify(connection).createStatement();
         Mockito.verify(mockS).executeQuery(Mockito.anyString());
     }

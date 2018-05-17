@@ -28,7 +28,7 @@ public class DataSourceConfig {
      */
     @Bean
     public HikariDataSource dataSource() throws DAOConfigurationException {
-        Logger logger = LoggerFactory.getLogger(DaoFactory.class);
+        Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
         logger.info("Initialisation du singleton dao factory");
 
         HikariConfig config = new HikariConfig();
