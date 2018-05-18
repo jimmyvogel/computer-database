@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,6 +28,7 @@ import com.excilys.cdb.validator.DateValidation;
 public class EditComputerIT extends SeleniumSuite {
 
     private Computer edit;
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditComputerIT.class);
 
     /** Beforeclass.
      * @throws DAOConfigurationException configuration exception
@@ -33,18 +36,31 @@ public class EditComputerIT extends SeleniumSuite {
      */
     @BeforeClass
     public void beforeClass() throws DAOConfigurationException, ServiceException {
+    	LOGGER.info("BeforeClass in IT ajouter computer");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=list_computers&page=1");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=list_computers&page=1");
+
+        LOGGER.info("BeforeClass click gestion start");
         List<WebElement> elem = driver.findElements(By.xpath("//table/tbody/tr/td/a"));
+        for (WebElement elems : elem) {
+        	LOGGER.info("Result by lign : " + elems.getText());
+        }
         elem.get(0).click();
-        String idS = driver.getCurrentUrl().replace("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=", "");
+        LOGGER.info("BeforeClass click effectued");
+        String idS = driver.getCurrentUrl().replace("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=", "");
         Integer id = Integer.valueOf(idS.trim());
+        LOGGER.info("BeforeClass id récupéré");
         String name = driver.findElement(By.id("computerName")).getAttribute("value");
+        LOGGER.info("BeforeClass name récupéré");
         String introduced = (String) je.executeScript("return document.getElementById('introduced').value;");
+        LOGGER.info("BeforeClass introduced récupéré");
         String discontinued = (String) je.executeScript("return document.getElementById('discontinued').value;");
+        LOGGER.info("BeforeClass discontinued récupéré");
         Long idCompany = Long.valueOf(driver.findElement(By.id("companyId")).getAttribute("value"));
+        LOGGER.info("Récupération des valeurs initiales + Creation de la company de base");
         Company c = new Company(idCompany, "Nom Company inutile");
         edit = new Computer(id, name, DateValidation.validationDate(introduced), DateValidation.validationDate(discontinued), c);
+        LOGGER.info("BeforeClass fin");
     }
 
     /**
@@ -52,7 +68,7 @@ public class EditComputerIT extends SeleniumSuite {
     @AfterClass
     public void afterClass() {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         this.editTextComputerName(edit.getName());
         if (edit.getIntroduced() != null) {
             this.editTextIntroduced(edit.getIntroduced());
@@ -126,7 +142,7 @@ public class EditComputerIT extends SeleniumSuite {
     @Test
     public void verifyEditerbuttonEditOk() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         this.editTextComputerName(edit.getName() + "modifier");
         driver.findElement(By.id("buttonEdit")).click();
         String result = "";
@@ -146,7 +162,7 @@ public class EditComputerIT extends SeleniumSuite {
     @Test
     public void verifyEditerbuttonEditFailForIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         this.editTextIntroduced(ComputerValidator.BEGIN_DATE_VALID.minus(Period.ofDays(1)));
         driver.findElement(By.id("buttonEdit")).click();
         String result = "";
@@ -166,7 +182,7 @@ public class EditComputerIT extends SeleniumSuite {
     @Test
     public void verifyEditerbuttonEditFailForDiscontinued() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         this.editTextDiscontinued(ComputerValidator.END_DATE_VALID.plus(Period.ofDays(1)));
         driver.findElement(By.id("buttonEdit")).click();
         String result = "";
@@ -186,7 +202,7 @@ public class EditComputerIT extends SeleniumSuite {
     @Test
     public void verifyEditerbuttonEditFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:9090/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
+        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=edit_form_computer&id=" + edit.getId());
         this.editTextIntroduced(ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(3)));
         this.editTextDiscontinued(ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)));
         driver.findElement(By.id("buttonEdit")).click();

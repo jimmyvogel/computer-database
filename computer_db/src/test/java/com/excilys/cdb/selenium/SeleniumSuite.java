@@ -9,7 +9,7 @@ public class SeleniumSuite {
     protected static JavascriptExecutor je;
     protected static WebDriver driver;
     private static int nombreClients;
-
+    protected static final int PORT = 8080;
     /**
      * Constructor des variables partagés des tests selenium, ici avec le singleton driver.
      */

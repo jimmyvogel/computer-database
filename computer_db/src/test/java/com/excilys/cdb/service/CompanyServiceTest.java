@@ -35,6 +35,8 @@ public class CompanyServiceTest {
             + "ffff ffff ffff ffff" + "ffff ffff ffff fffff"
             + "ffff ffff ffff ffff" + "ffff ffff ffff ffff"
             + "ffff ffff ffff ffff" + "ffff ffff ffff ffff"
+            + "ffff ffff ffff fffff" + "ffffffffffffffffffff"
+            + "ffff ffff ffff ffff" + "ffff ffff ffff ffff"
             + "ffff ffff ffff fffff" + "ffffffffffffffffffff";
 
     private Company companyValid;

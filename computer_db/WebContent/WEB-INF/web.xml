@@ -5,20 +5,32 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 version="3.0">
  <display-name>computer_db</display-name>
   
-	<listener>
+    <listener>
 		<listener-class>
              com.excilys.cdb.servlet.AppServletContextConfig
         </listener-class>
      </listener>
      
-	<context-param>
-	    <param-name>contextConfigLocation</param-name>
-	    <param-value>/WEB-INF/applicationContext.xml</param-value>
-	</context-param>
+    <!-- <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
 
-	<listener>
-	    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>-->
+    
+<!--      <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+      </context-param>
+      <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>com.excilys.cdb.config.ApplicationSpringConfig</param-value>
+      </context-param>
+      <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener> -->
    
 	 <servlet>
 	     <servlet-name>ComputerServlet</servlet-name>
@@ -43,6 +55,9 @@ version="3.0">
 	   <welcome-file>computer</welcome-file>
 	 </welcome-file-list>
    
+   <session-config>
+	<tracking-mode>COOKIE</tracking-mode>
+    </session-config>
    <jsp-config>
 	    <jsp-property-group>
 	        <description>Toutes les pages</description>

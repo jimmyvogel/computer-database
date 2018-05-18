@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.cdb.dto.ComputerDTO;
@@ -31,7 +30,6 @@ import com.excilys.cdb.validator.DateValidation;
  * @author vogel
  *
  */
-@Controller
 @SuppressWarnings("serial")
 public class ComputerServlet extends HttpServlet {
 
@@ -289,7 +287,6 @@ public class ComputerServlet extends HttpServlet {
 	 */
 	private void addParamsEditComputer(HttpServletRequest request) throws ServiceException, DaoException {
 		long id = Long.valueOf(request.getParameter(COMPUTER_ID));
-		System.out.println(serviceComputer.countComputers());
 		request.setAttribute(COMPUTER, new ComputerDTO(serviceComputer.getComputer(id)));
 		request.setAttribute(ALL_COMPANY, serviceCompany.getAllCompany());
 	}

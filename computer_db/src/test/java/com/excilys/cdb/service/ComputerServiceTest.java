@@ -105,8 +105,6 @@ public class ComputerServiceTest {
 
         List<Computer> computers = serviceComputer.getAllComputer();
         Assert.assertEquals(computers.size(), nbComputers);
-
-        Assert.assertTrue(serviceComputer.getComputer(605) != null);
     }
 
     /**
