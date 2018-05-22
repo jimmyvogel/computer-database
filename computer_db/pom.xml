@@ -101,16 +101,10 @@
 			<version>${testng.version}</version>
 			<scope>test</scope>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jsp-2.1</artifactId>
-			<version>${jetty.jsp.version}</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.mortbay.jetty</groupId> <artifactId>jetty</artifactId> 
+			<version>${jetty.version}</version> </dependency> <dependency> <groupId>org.mortbay.jetty</groupId> 
+			<artifactId>jsp-2.1</artifactId> <version>${jetty.jsp.version}</version> 
+			</dependency> -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
@@ -122,43 +116,39 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>5.0.6.RELEASE</version>
 			<exclusions>
-				<!-- Exclude Commons Logging in favor of SLF4j -->
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-test</artifactId>
-		    <version>5.0.6.RELEASE</version>
-		    <scope>test</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>5.0.6.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-jdbc</artifactId>
-		    <version>5.0.6.RELEASE</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.0.6.RELEASE</version>
 		</dependency>
 
-				
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-		        <groupId>org.slf4j</groupId>
-		        <artifactId>jcl-over-slf4j</artifactId>
-		        <version>${slf4j.version}</version>
-		        <scope>runtime</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-		        <groupId>org.slf4j</groupId>
-		        <artifactId>slf4j-api</artifactId>
-		        <version>${slf4j.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 
@@ -249,10 +239,8 @@
 					<excludes>
 						<exclude>**/*Test.java</exclude>
 					</excludes>
-<!-- 					<systemPropertyVariables>
-						<jetty.port>${jetty.port}</jetty.port>
-						<jetty.context>${artifactId}</jetty.context>
-					</systemPropertyVariables> -->
+					<!-- <systemPropertyVariables> <jetty.port>${jetty.port}</jetty.port> 
+						<jetty.context>${artifactId}</jetty.context> </systemPropertyVariables> -->
 				</configuration>
 				<executions>
 					<execution>
@@ -270,44 +258,16 @@
 				</executions>
 			</plugin>
 
-<!-- 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>${maven.jetty.plugin.version}</version>
-				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<stopKey>foo</stopKey>
-					<stopPort>9999</stopPort>
-					<webAppSourceDirectory>WebContent</webAppSourceDirectory>
-					<connectors>
-						<connector
-							implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>${jetty.port}</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>start-jetty</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<scanIntervalSeconds>0</scanIntervalSeconds>
-							<daemon>true</daemon>
-						</configuration>
-					</execution>
-					<execution>
-						<id>stop-jetty</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>maven-jetty-plugin</artifactId> 
+				<version>${maven.jetty.plugin.version}</version> <configuration> <scanIntervalSeconds>10</scanIntervalSeconds> 
+				<stopKey>foo</stopKey> <stopPort>9999</stopPort> <webAppSourceDirectory>WebContent</webAppSourceDirectory> 
+				<connectors> <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector"> 
+				<port>${jetty.port}</port> <maxIdleTime>60000</maxIdleTime> </connector> 
+				</connectors> </configuration> <executions> <execution> <id>start-jetty</id> 
+				<phase>pre-integration-test</phase> <goals> <goal>run</goal> </goals> <configuration> 
+				<scanIntervalSeconds>0</scanIntervalSeconds> <daemon>true</daemon> </configuration> 
+				</execution> <execution> <id>stop-jetty</id> <phase>post-integration-test</phase> 
+				<goals> <goal>stop</goal> </goals> </execution> </executions> </plugin> -->
 
 		</plugins>
 	</build>
