@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
@@ -28,6 +29,7 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
  *
  */
 @Service
+@Transactional
 public class CompanyService {
 
 	@Autowired
@@ -50,13 +52,9 @@ public class CompanyService {
 	 * @return une liste
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public List<Company> getAllCompany() throws ServiceException {
+	public List<Company> getAll() throws ServiceException {
 		List<Company> list = new ArrayList<Company>();
-		try {
-			list = companyDao.getAll();
-		} catch (DaoException e) {
-			throw new ServiceException("Méthode dao fail", e);
-		}
+		list = companyDao.getAll();
 		return list;
 	}
 
@@ -67,7 +65,7 @@ public class CompanyService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
-	public List<Company> getCompanyByName(String name) throws ServiceException, DaoException {
+	public List<Company> getByName(String name) throws ServiceException, DaoException {
 		String nameTraiter = TextValidation.traitementString(name);
 		return companyDao.getByName(nameTraiter);
 	}
@@ -78,8 +76,8 @@ public class CompanyService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de service
 	 */
-	public Page<Company> getPageCompany(final int page) throws ServiceException {
-		return getPageCompany(page, null);
+	public Page<Company> getPage(final int page) throws ServiceException {
+		return getPage(page, null);
 	}
 
 	/**
@@ -89,7 +87,7 @@ public class CompanyService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public Page<Company> getPageCompany(final int page, final Integer limit) throws ServiceException {
+	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
 		Page<Company> pageCompany = null;
 		try {
 			if (limit == null) {
@@ -111,7 +109,7 @@ public class CompanyService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public Page<Company> getPageSearchCompany(final String search, final int page, final Integer limit)
+	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		Page<Company> pageComputer = new Page<Company>(0, 0);
 		String searchTraiter = TextValidation.traitementString(search);
@@ -136,7 +134,7 @@ public class CompanyService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
-	public Company getCompany(long id) throws ServiceException, DaoException {
+	public Company get(long id) throws ServiceException, DaoException {
 		Company company = companyDao.getById(id).orElseThrow(() -> new CompanyNotFoundException(id));
 		return company;
 	}
@@ -148,7 +146,7 @@ public class CompanyService {
 	 * @throws ServiceException erreur de paramètres.
 	 * @throws DaoException erreur de requête.
 	 */
-	public long createCompany(final String name) throws ServiceException, DaoException {
+	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
 
 		String nameTraiter = TextValidation.traitementString(name);
@@ -168,7 +166,7 @@ public class CompanyService {
 	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
 	 */
-	public boolean deleteCompany(long id) throws DaoException {
+	public boolean delete(long id) throws DaoException {
 		if (id < 1) {
 			return false;
 		}
@@ -181,11 +179,11 @@ public class CompanyService {
 	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
 	 */
-	public boolean deleteCompanies(Set<Long> ids) throws DaoException {
+	public boolean deleteAll(Set<Long> ids) throws DaoException {
 		if (ids == null || ids.size() == 0) {
 			return false;
 		}
-		return companyDao.delete(ids);
+		return companyDao.deleteAll(ids);
 	}
 
 	/**
@@ -194,7 +192,7 @@ public class CompanyService {
 	 * @throws ServiceException erreur de service.
 	 * @throws DaoException erreur de requête.
 	 */
-	public long countCompanies() throws ServiceException, DaoException {
+	public long count() throws ServiceException, DaoException {
 		return companyDao.getCount();
 	}
 }

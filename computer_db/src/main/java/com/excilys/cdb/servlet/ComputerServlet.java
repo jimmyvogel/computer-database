@@ -95,7 +95,7 @@ public class ComputerServlet extends HttpServlet {
 			try {
 				switch (action) {
 				case ADD_FORM_COMPUTER:
-					request.setAttribute(ALL_COMPANY, serviceCompany.getAllCompany());
+					request.setAttribute(ALL_COMPANY, serviceCompany.getAll());
 					break;
 				case EDIT_FORM_COMPUTER:
 					addParamsEditComputer(request);
@@ -178,7 +178,7 @@ public class ComputerServlet extends HttpServlet {
 
 		Integer limit = Session.getLimitPagination(request);
 
-		Page<Computer> page = serviceComputer.getPageSearchComputer(Session.getSearch(request), value, limit);
+		Page<Computer> page = serviceComputer.getPageSearch(Session.getSearch(request), value, limit);
 		Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
 
 		request.setAttribute(RequestID.ACTION_PAGINATION, Action.SEARCH_COMPUTER.toString());
@@ -197,7 +197,7 @@ public class ComputerServlet extends HttpServlet {
 	private void deleteComputer(HttpServletRequest request) throws DaoException, ServiceException {
 		String[] selections = request.getParameter(RequestID.DELETE_SELECT).split(",");
 		Set<Long> set = Arrays.stream(selections).map(l -> Long.valueOf(l)).collect(Collectors.toSet());
-		serviceComputer.deleteComputers(set);
+		serviceComputer.deleteAll(set);
 		request.setAttribute(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
 		addParamsListComputers(request);
 	}
@@ -236,7 +236,7 @@ public class ComputerServlet extends HttpServlet {
 		if (idS != null && idS != "") {
 			idCompany = Long.valueOf(idS);
 		}
-		serviceComputer.updateComputer(id, name, introduced, discontinued, idCompany);
+		serviceComputer.update(id, name, introduced, discontinued, idCompany);
 
 		request.setAttribute(JspRessources.SUCCESS, "Update Computer success.");
 		addParamsEditComputer(request);
@@ -271,7 +271,7 @@ public class ComputerServlet extends HttpServlet {
 		if (idS != null && idS != "") {
 			id = Long.valueOf(idS);
 		}
-		serviceComputer.createComputer(name, introduced, discontinued, id);
+		serviceComputer.create(name, introduced, discontinued, id);
 
 		request.setAttribute(JspRessources.SUCCESS, "Create Computer " + name + " success.");
 	}
@@ -287,8 +287,8 @@ public class ComputerServlet extends HttpServlet {
 	 */
 	private void addParamsEditComputer(HttpServletRequest request) throws ServiceException, DaoException {
 		long id = Long.valueOf(request.getParameter(COMPUTER_ID));
-		request.setAttribute(COMPUTER, new ComputerDTO(serviceComputer.getComputer(id)));
-		request.setAttribute(ALL_COMPANY, serviceCompany.getAllCompany());
+		request.setAttribute(COMPUTER, new ComputerDTO(serviceComputer.get(id)));
+		request.setAttribute(ALL_COMPANY, serviceCompany.getAll());
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class ComputerServlet extends HttpServlet {
 			value = Integer.valueOf(request.getParameter(RequestID.PAGE));
 		}
 		Integer limit = Session.getLimitPagination(request);
-		Page<Computer> page = serviceComputer.getPageComputer(value, limit);
+		Page<Computer> page = serviceComputer.getPage(value, limit);
 		Page<ComputerDTO> newpage = PageMapper.mapPageComputerToDto(page);
 
 		request.setAttribute(RequestID.ACTION_PAGINATION, Action.LIST_COMPUTERS.toString());

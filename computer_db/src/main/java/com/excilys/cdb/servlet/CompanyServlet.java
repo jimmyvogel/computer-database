@@ -115,7 +115,7 @@ public class CompanyServlet extends HttpServlet {
 		}
 		Integer limit = Session.getLimitPagination(request);
 
-		Page<Company> page = serviceCompany.getPageSearchCompany(Session.getSearch(request), value, limit);
+		Page<Company> page = serviceCompany.getPageSearch(Session.getSearch(request), value, limit);
 		request.setAttribute(RequestID.ACTION_PAGINATION, Action.SEARCH_COMPANY.toString());
 		request.setAttribute(RequestID.PAGE, page);
 	}
@@ -132,7 +132,7 @@ public class CompanyServlet extends HttpServlet {
 		}
 
 		Integer limit = Session.getLimitPagination(request);
-		Page<Company> page = serviceCompany.getPageCompany(value, limit);
+		Page<Company> page = serviceCompany.getPage(value, limit);
 		request.setAttribute(RequestID.ACTION_PAGINATION, Action.LIST_COMPANIES.toString());
 		request.setAttribute(RequestID.PAGE, page);
 	}

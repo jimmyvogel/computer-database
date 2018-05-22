@@ -3,46 +3,20 @@ package com.excilys.cdb.persistence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
 /**
- * Classe gérant le mapping des résultats sql sous un format objets.
+ * Mapper pour un computer.
  * @author vogel
  *
  */
-public class MapperDao {
+public class MapperComputer implements RowMapper<Computer> {
 
-    /**
-     * Classe non instanciable.
-     */
-    private MapperDao() { }
-
-    /**
-     * Mapping d'une ligne de la table company en un objet company.
-     * @param result
-     *            an object du type ResultSet
-     * @return an object du type Company
-     */
-    public static Company mapCompany(ResultSet result) {
-        try {
-            // id and name
-            if (result.getString(1) != null && result.getString(2) != null) {
-                return new Company(result.getLong(1), result.getString(2));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Mapping d'une ligne de la table computer en un objet computer.
-     * @param result
-     *            an object du type ResultSet
-     * @return an object du type Computer
-     */
-    public static Computer mapComputer(ResultSet result) {
+	@Override
+	public Computer mapRow(ResultSet result, int rownumber) throws SQLException {
         Computer computer = new Computer();
 
         try {
@@ -69,5 +43,5 @@ public class MapperDao {
         }
 
         return null;
-    }
+	}
 }

@@ -59,13 +59,9 @@ public class ComputerService {
 	 * @return une liste
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public List<Computer> getAllComputer() throws ServiceException {
+	public List<Computer> getAll() throws ServiceException {
 		List<Computer> list = new ArrayList<Computer>();
-		try {
-			list = computerDao.getAll();
-		} catch (DaoException e) {
-			throw new ServiceException("Méthode dao fail", e);
-		}
+		list = computerDao.getAll();
 		return list;
 	}
 
@@ -76,7 +72,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
-	public List<Computer> getComputerByName(String name) throws ServiceException, DaoException {
+	public List<Computer> getByName(String name) throws ServiceException, DaoException {
 		String nameTraiter = TextValidation.traitementString(name);
 		return computerDao.getByName(nameTraiter);
 	}
@@ -87,8 +83,8 @@ public class ComputerService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public Page<Computer> getPageComputer(final int page) throws ServiceException {
-		return getPageComputer(page, null);
+	public Page<Computer> getPage(final int page) throws ServiceException {
+		return getPage(page, null);
 	}
 
 	/**
@@ -98,7 +94,7 @@ public class ComputerService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public Page<Computer> getPageComputer(final int page, final Integer limit) throws ServiceException {
+	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
 		Page<Computer> pageComputer = null;
 		try {
 			if (limit == null) {
@@ -120,7 +116,7 @@ public class ComputerService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	public Page<Computer> getPageSearchComputer(final String search, final int page, final Integer limit)
+	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		Page<Computer> pageComputer = null;
 		try {
@@ -142,7 +138,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
-	public Computer getComputer(long id) throws ServiceException, DaoException {
+	public Computer get(long id) throws ServiceException, DaoException {
 		Computer computer = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
 		return computer;
 	}
@@ -154,7 +150,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres.
 	 * @throws DaoException erreur de requête.
 	 */
-	public long createComputer(final String name) throws ServiceException, DaoException {
+	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
 
 		String nameTraiter = TextValidation.traitementString(name);
@@ -178,7 +174,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres.
 	 * @throws DaoException erreur de requête.
 	 */
-	public long createComputer(String name, LocalDateTime introduced, LocalDateTime discontinued, long companyId)
+	public long create(String name, LocalDateTime introduced, LocalDateTime discontinued, long companyId)
 			throws ServiceException, DaoException {
 		long result = -1;
 		try {
@@ -208,7 +204,7 @@ public class ComputerService {
 	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
 	 */
-	public boolean deleteComputer(long id) throws DaoException {
+	public boolean delete(long id) throws DaoException {
 		if (id < 1) {
 			return false;
 		}
@@ -221,7 +217,7 @@ public class ComputerService {
 	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
 	 */
-	public boolean deleteComputers(Set<Long> ids) throws DaoException {
+	public boolean deleteAll(Set<Long> ids) throws DaoException {
 		if (ids == null || ids.size() == 0) {
 			return false;
 		}
@@ -236,7 +232,7 @@ public class ComputerService {
 	 * @throws DaoException erreur de reqûete.
 	 * @throws ServiceException erreur de paramètres.
 	 */
-	public boolean updateComputer(long id, String name) throws ServiceException, DaoException {
+	public boolean update(long id, String name) throws ServiceException, DaoException {
 		Computer c;
 		String nameTraiter = TextValidation.traitementString(name);
 		try {
@@ -261,7 +257,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
-	public boolean updateComputer(long id, String name, LocalDateTime introduced, LocalDateTime discontinued,
+	public boolean update(long id, String name, LocalDateTime introduced, LocalDateTime discontinued,
 			long companyId) throws ServiceException, DaoException {
 		if (name == null && introduced == null && discontinued == null && companyId == -1) {
 			throw new ServiceException("Aucun éléments n'a été spécifié.");
@@ -299,7 +295,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de service.
 	 * @throws DaoException erreur de requête.
 	 */
-	public long countComputers() throws ServiceException, DaoException {
+	public long count() throws ServiceException, DaoException {
 		return computerDao.getCount();
 	}
 }

@@ -80,15 +80,15 @@ public class ComputerServiceTest {
     public void initialisation()
             throws DAOConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
-        nbComputers = serviceComputer.countComputers();
-        nbCompany = serviceCompany.countCompanies();
+        nbComputers = serviceComputer.count();
+        nbCompany = serviceCompany.count();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
 
-        companyValid = serviceCompany.getPageCompany(1).getObjects().get(0);
-        computerValid = serviceComputer.getPageComputer(1).getObjects().get(0);
+        companyValid = serviceCompany.getPage(1).getObjects().get(0);
+        computerValid = serviceComputer.getPage(1).getObjects().get(0);
         computerValid.setCompany(companyValid);
-        serviceComputer.updateComputer(computerValid.getId(),
+        serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),
                 computerValid.getIntroduced(),
                 computerValid.getDiscontinued(),
@@ -103,7 +103,7 @@ public class ComputerServiceTest {
     @Test
     public void testGetAllComputer() throws ServiceException, DaoException {
 
-        List<Computer> computers = serviceComputer.getAllComputer();
+        List<Computer> computers = serviceComputer.getAll();
         Assert.assertEquals(computers.size(), nbComputers);
     }
 
@@ -114,10 +114,10 @@ public class ComputerServiceTest {
      */
     @Test
     public void testGetComputer() throws ServiceException, DaoException {
-        List<Computer> computers = serviceComputer.getAllComputer();
+        List<Computer> computers = serviceComputer.getAll();
         Computer comp;
         for (Computer c : computers) {
-            comp = serviceComputer.getComputer(c.getId());
+            comp = serviceComputer.get(c.getId());
             Assert.assertEquals(c.getName(), comp.getName());
         }
     }
@@ -129,9 +129,9 @@ public class ComputerServiceTest {
      */
     @Test
     public void testCreateComputerStringOk() throws ServiceException, DaoException {
-        boolean create = serviceComputer.createComputer(NAME_VALID) > 0;
+        boolean create = serviceComputer.create(NAME_VALID) > 0;
         Assert.assertTrue(create);
-        long count = serviceComputer.countComputers();
+        long count = serviceComputer.count();
         Assert.assertTrue(count == nbComputers + 1);
     }
 
@@ -142,7 +142,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = NameInvalidException.class)
     public void testCreateComputerStringFailNameInvalid() throws ServiceException, DaoException {
-        serviceComputer.createComputer(NAME_INVALID);
+        serviceComputer.create(NAME_INVALID);
     }
 
     /**
@@ -156,11 +156,11 @@ public class ComputerServiceTest {
         Assert.assertTrue(nbCompany > 0);
 
         // Insertion valid
-        boolean create = serviceComputer.createComputer(NAME_VALID,
+        boolean create = serviceComputer.create(NAME_VALID,
                 DATE_INTRODUCED_VALID, DATE_DISCONTINUED_VALID,
                 companyValid.getId()) > 0;
         Assert.assertTrue(create);
-        long count = serviceComputer.countComputers();
+        long count = serviceComputer.count();
         Assert.assertTrue(count == nbComputers + 1);
 
     }
@@ -173,7 +173,7 @@ public class ComputerServiceTest {
     @Test(expected = DateInvalidException.class)
     public void testCreateComputerFailDateDiscontinuedBeforeIntroduced()
             throws ServiceException, DaoException {
-        serviceComputer.createComputer(NAME_VALID, DATE_INTRODUCED_VALID,
+        serviceComputer.create(NAME_VALID, DATE_INTRODUCED_VALID,
                 DD_INVALID_BEFORE_DI, companyValid.getId());
     }
 
@@ -185,7 +185,7 @@ public class ComputerServiceTest {
     @Test(expected = NameInvalidException.class)
     public void testCreateComputerNameEmpty()
             throws ServiceException, DaoException {
-        serviceComputer.createComputer(null, null, null, -1);
+        serviceComputer.create(null, null, null, -1);
     }
 
     /**
@@ -196,7 +196,7 @@ public class ComputerServiceTest {
     @Test(expected = DateInvalidException.class)
     public void testCreateComputerFailDiscontinuedWithoutIntroduced()
             throws ServiceException, DaoException {
-        serviceComputer.createComputer(NAME_VALID, null,
+        serviceComputer.create(NAME_VALID, null,
                 DATE_DISCONTINUED_VALID, companyValid.getId());
     }
 
@@ -209,9 +209,9 @@ public class ComputerServiceTest {
     public void testDeleteComputer() throws ServiceException, DaoException {
         Assert.assertTrue(nbComputers > 0);
 
-        boolean delete = serviceComputer.deleteComputer(computerValid.getId());
+        boolean delete = serviceComputer.delete(computerValid.getId());
         Assert.assertTrue(delete);
-        long count = serviceComputer.countComputers();
+        long count = serviceComputer.count();
         Assert.assertTrue(count == nbComputers - 1);
     }
 
@@ -224,12 +224,12 @@ public class ComputerServiceTest {
     public void testUpdateComputer() throws ServiceException, DaoException {
 
         // Valid
-        boolean update = serviceComputer.updateComputer(computerValid.getId(),
+        boolean update = serviceComputer.update(computerValid.getId(),
                 NAME_VALID);
         Assert.assertTrue(update);
 
         // Reinitialisation
-        serviceComputer.updateComputer(computerValid.getId(), computerValid.getName());
+        serviceComputer.update(computerValid.getId(), computerValid.getName());
     }
 
     /**
@@ -239,7 +239,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = NameInvalidException.class)
     public void testUpdateComputerNameTooLong() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), NAME_INVALID);
+        serviceComputer.update(computerValid.getId(), NAME_INVALID);
     }
 
     /**
@@ -249,7 +249,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = NameInvalidException.class)
     public void testUpdateComputerWithNameNull() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null);
+        serviceComputer.update(computerValid.getId(), null);
     }
 
 
@@ -263,23 +263,23 @@ public class ComputerServiceTest {
             throws ServiceException, DaoException {
 
         // Valid
-        boolean update = serviceComputer.updateComputer(computerValid.getId(),
+        boolean update = serviceComputer.update(computerValid.getId(),
                 NAME_VALID, DATE_INTRODUCED_VALID, DATE_DISCONTINUED_VALID,
                 companyValid.getId());
         Assert.assertTrue(update);
 
         // Valid
-        update = serviceComputer.updateComputer(computerValid.getId(), NAME_VALID,
+        update = serviceComputer.update(computerValid.getId(), NAME_VALID,
                 DATE_INTRODUCED_VALID, null, -1);
         Assert.assertTrue(update);
 
         // Valid
-        update = serviceComputer.updateComputer(computerValid.getId(), null,
+        update = serviceComputer.update(computerValid.getId(), null,
                 DATE_INTRODUCED_VALID, null, -1);
         Assert.assertTrue(update);
 
         // Valid
-        update = serviceComputer.updateComputer(computerValid.getId(), null,
+        update = serviceComputer.update(computerValid.getId(), null,
                 DATE_INTRODUCED_VALID, null, companyValid.getId());
         Assert.assertTrue(update);
     }
@@ -292,7 +292,7 @@ public class ComputerServiceTest {
     @Test(expected = ServiceException.class)
     public void testUpdateComputerInvalidName()
             throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), NAME_INVALID, null, null, -1);
+        serviceComputer.update(computerValid.getId(), NAME_INVALID, null, null, -1);
     }
 
     /**
@@ -303,7 +303,7 @@ public class ComputerServiceTest {
     @Test(expected = ServiceException.class)
     public void testUpdateComputerInvalidIdCompany()
             throws ServiceException, DaoException {
-        serviceComputer.updateComputer(-1, null, null, null, -1);
+        serviceComputer.update(-1, null, null, null, -1);
     }
 
 
@@ -314,7 +314,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateInvalidDateIntroducedMinDate() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, ComputerValidator.BEGIN_DATE_VALID, null, -1);
+        serviceComputer.update(computerValid.getId(), null, ComputerValidator.BEGIN_DATE_VALID, null, -1);
     }
 
     /**
@@ -324,7 +324,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateInvalidDateIntroducedMaxDate() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, ComputerValidator.END_DATE_VALID, null, -1);
+        serviceComputer.update(computerValid.getId(), null, ComputerValidator.END_DATE_VALID, null, -1);
     }
 
     /**
@@ -334,7 +334,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateInvalidDateDiscontinuedMinDate() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, null, ComputerValidator.BEGIN_DATE_VALID, -1);
+        serviceComputer.update(computerValid.getId(), null, null, ComputerValidator.BEGIN_DATE_VALID, -1);
     }
 
     /**
@@ -344,7 +344,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateInvalidDateDiscontinuedMaxDate() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, null, ComputerValidator.END_DATE_VALID, -1);
+        serviceComputer.update(computerValid.getId(), null, null, ComputerValidator.END_DATE_VALID, -1);
     }
 
     /**
@@ -355,12 +355,12 @@ public class ComputerServiceTest {
     @Test(expected = ServiceException.class)
     public void testUpdateDiscontinuedWithoutIntroduced() throws ServiceException, DaoException {
 
-        long id = serviceComputer.createComputer("nouveau");
+        long id = serviceComputer.create("nouveau");
         assertTrue(id > 0);
-        Computer c = serviceComputer.getComputer(id);
+        Computer c = serviceComputer.get(id);
         assertTrue(c != null);
 
-        assertFalse(serviceComputer.updateComputer(id, null, null, DATE_DISCONTINUED_VALID, -1));
+        assertFalse(serviceComputer.update(id, null, null, DATE_DISCONTINUED_VALID, -1));
     }
 
     /**
@@ -371,11 +371,11 @@ public class ComputerServiceTest {
     @Test(expected = ServiceException.class)
     public void testUpdateDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
 
-        long id = serviceComputer.createComputer("nouveau");
+        long id = serviceComputer.create("nouveau");
         assertTrue(id > 0);
-        Computer c = serviceComputer.getComputer(id);
+        Computer c = serviceComputer.get(id);
         assertTrue(c != null);
-        assertFalse(serviceComputer.updateComputer(id,  null, DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1));
+        assertFalse(serviceComputer.update(id,  null, DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1));
     }
 
     /**
@@ -386,13 +386,13 @@ public class ComputerServiceTest {
     @Test(expected = ServiceException.class)
     public void testUpdateDiscontinuedBeforeInitialIntroduced() throws ServiceException, DaoException {
 
-        long id = serviceComputer.createComputer("nouveau");
+        long id = serviceComputer.create("nouveau");
         assertTrue(id > 0);
-        Computer c = serviceComputer.getComputer(id);
+        Computer c = serviceComputer.get(id);
         assertTrue(c != null);
 
-        assertTrue(serviceComputer.updateComputer(id,  null, DATE_INTRODUCED_VALID, null, -1));
-        assertFalse(serviceComputer.updateComputer(id,  null, null, DD_INVALID_BEFORE_DI, -1));
+        assertTrue(serviceComputer.update(id,  null, DATE_INTRODUCED_VALID, null, -1));
+        assertFalse(serviceComputer.update(id,  null, null, DD_INVALID_BEFORE_DI, -1));
     }
 
     /**
@@ -403,14 +403,14 @@ public class ComputerServiceTest {
     @Test
     public void testUpdateIntroducedNotNecessary() throws ServiceException, DaoException {
 
-        long id = serviceComputer.createComputer("nouveau");
+        long id = serviceComputer.create("nouveau");
         assertTrue(id > 0);
-        Computer c = serviceComputer.getComputer(id);
+        Computer c = serviceComputer.get(id);
         assertTrue(c != null);
 
-        assertTrue(serviceComputer.updateComputer(id, null, null, null, companyValid.getId()));
+        assertTrue(serviceComputer.update(id, null, null, null, companyValid.getId()));
 
-        assertTrue(serviceComputer.deleteComputer(id));
+        assertTrue(serviceComputer.delete(id));
     }
 
     /**
@@ -420,7 +420,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateWithoutArguments() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, null, null, -1);
+        serviceComputer.update(computerValid.getId(), null, null, null, -1);
     }
 
     /**
@@ -431,10 +431,10 @@ public class ComputerServiceTest {
     @Test
     public void testUpdateWithCompany0() throws ServiceException, DaoException {
 
-        boolean update = serviceComputer.updateComputer(computerValid.getId(), null, null, null,
+        boolean update = serviceComputer.update(computerValid.getId(), null, null, null,
                 0);
         Assert.assertTrue(update);
-        Assert.assertNull(serviceComputer.getComputer(computerValid.getId()).getCompany());
+        Assert.assertNull(serviceComputer.get(computerValid.getId()).getCompany());
     }
 
     /**
@@ -444,7 +444,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = CompanyNotFoundException.class)
     public void testUpdateFailWithCompanyMaxInexistant() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), null, null, null, Long.MAX_VALUE);
+        serviceComputer.update(computerValid.getId(), null, null, null, Long.MAX_VALUE);
     }
 
     /**
@@ -454,10 +454,10 @@ public class ComputerServiceTest {
      */
     @Test
     public void testUpdateNoModifCompanyWithMoinsUn() throws ServiceException, DaoException {
-        boolean update = serviceComputer.updateComputer(computerValid.getId(), computerValid.getName(), null, null,
+        boolean update = serviceComputer.update(computerValid.getId(), computerValid.getName(), null, null,
                 -1);
         Assert.assertTrue(update);
-        Assert.assertTrue(serviceComputer.getComputer(computerValid.getId()).getCompany().equals(computerValid.getCompany()));
+        Assert.assertTrue(serviceComputer.get(computerValid.getId()).getCompany().equals(computerValid.getCompany()));
     }
 
     /**
@@ -467,7 +467,7 @@ public class ComputerServiceTest {
      */
     @Test(expected = ServiceException.class)
     public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException, DaoException {
-        serviceComputer.updateComputer(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
+        serviceComputer.update(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
     }
 
     /**
@@ -478,7 +478,7 @@ public class ComputerServiceTest {
     @Test(expected = ComputerNotFoundException.class)
     public void testUpdateFailWithBadId() throws ServiceException, DaoException {
 
-        serviceComputer.updateComputer(-1, computerValid.getName(), null, null, -1);
+        serviceComputer.update(-1, computerValid.getName(), null, null, -1);
     }
 
     /**
@@ -488,8 +488,8 @@ public class ComputerServiceTest {
      */
     @Test
     public void testDeleteWithBadId() throws ServiceException, DaoException {
-        assertFalse(serviceComputer.deleteComputer(-1));
-        assertFalse(serviceComputer.deleteComputer(Long.MAX_VALUE));
+        assertFalse(serviceComputer.delete(-1));
+        assertFalse(serviceComputer.delete(Long.MAX_VALUE));
     }
 
     /**
@@ -499,13 +499,13 @@ public class ComputerServiceTest {
      */
     @Test
     public void testDeleteManyComputerOk() throws ServiceException, DaoException {
-        long count = serviceComputer.countComputers();
-        long id = serviceComputer.createComputer(NAME_VALID);
-        long id2 = serviceComputer.createComputer(NAME_VALID);
-        long id3 = serviceComputer.createComputer(NAME_VALID);
-        assertTrue(count + 3 == serviceComputer.countComputers());
-        assertTrue(serviceComputer.deleteComputers(new HashSet<Long>(Arrays.asList(id, id2, id3))));
-        assertTrue(count == serviceComputer.countComputers());
+        long count = serviceComputer.count();
+        long id = serviceComputer.create(NAME_VALID);
+        long id2 = serviceComputer.create(NAME_VALID);
+        long id3 = serviceComputer.create(NAME_VALID);
+        assertTrue(count + 3 == serviceComputer.count());
+        assertTrue(serviceComputer.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        assertTrue(count == serviceComputer.count());
     }
 
     /**
@@ -515,8 +515,8 @@ public class ComputerServiceTest {
      */
     @Test
     public void testDeleteManyComputerWithBadList() throws ServiceException, DaoException {
-        assertFalse(serviceComputer.deleteComputers(null));
-        assertFalse(serviceComputer.deleteComputers(new HashSet<Long>()));
+        assertFalse(serviceComputer.deleteAll(null));
+        assertFalse(serviceComputer.deleteAll(new HashSet<Long>()));
     }
 
 }

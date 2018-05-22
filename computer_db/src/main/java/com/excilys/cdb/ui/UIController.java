@@ -446,7 +446,7 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				Company c = serviceCompany.getCompany(Integer.valueOf(ligne));
+				Company c = serviceCompany.get(Integer.valueOf(ligne));
 				inter.setCompany(c);
 			}
 			view.setAffichage(UITextes.VALIDATION);
@@ -476,7 +476,7 @@ public class UIController {
 		switch (stateUpdate) {
 		case ID:
 			value = Long.valueOf(ligne);
-			if (serviceComputer.getComputer(value) != null) {
+			if (serviceComputer.get(value) != null) {
 				inter = new Computer();
 				inter.setId(value);
 				view.setAffichage(UITextes.UPDATE_NAME);
@@ -517,7 +517,7 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				Company c = serviceCompany.getCompany(Integer.valueOf(ligne));
+				Company c = serviceCompany.get(Integer.valueOf(ligne));
 				inter.setCompany(c);
 			}
 			view.setAffichage(UITextes.VALIDATION);
@@ -545,7 +545,7 @@ public class UIController {
 		if (inter.getCompany() != null) {
 			id = inter.getCompany().getId();
 		}
-		boolean ajout = serviceComputer.createComputer(inter.getName(), inter.getIntroduced(), inter.getDiscontinued(),
+		boolean ajout = serviceComputer.create(inter.getName(), inter.getIntroduced(), inter.getDiscontinued(),
 				id) != -1;
 
 		if (ajout) {
@@ -563,7 +563,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String supprimerComputer(final long id) throws ServiceException, DaoException {
-		boolean delete = serviceComputer.deleteComputer(id);
+		boolean delete = serviceComputer.delete(id);
 
 		if (delete) {
 			return "Suppression réussi\n";
@@ -580,7 +580,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String supprimerCompany(final long id) throws ServiceException, DaoException {
-		boolean delete = serviceCompany.deleteCompany(id);
+		boolean delete = serviceCompany.delete(id);
 
 		if (delete) {
 			return "Suppression réussi\n";
@@ -601,7 +601,7 @@ public class UIController {
 			id = inter.getCompany().getId();
 		}
 
-		boolean update = serviceComputer.updateComputer(inter.getId(), inter.getName(), inter.getIntroduced(),
+		boolean update = serviceComputer.update(inter.getId(), inter.getName(), inter.getIntroduced(),
 				inter.getDiscontinued(), id);
 		if (update) {
 			return "Update réussit\n";
@@ -619,8 +619,8 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException, DaoException {
-		Page<Computer> pageComputer = serviceComputer.getPageComputer(page);
-		int taille = (int) serviceComputer.countComputers();
+		Page<Computer> pageComputer = serviceComputer.getPage(page);
+		int taille = (int) serviceComputer.count();
 		int limit = pageComputer.getLimit();
 		int endBloc = taille / limit;
 		if (taille % limit > 0) {
@@ -637,8 +637,8 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String pageurCompanyShow(final int page) throws ServiceException, DaoException {
-		Page<Company> pageCompany = serviceCompany.getPageCompany(page);
-		int taille = (int) serviceCompany.countCompanies();
+		Page<Company> pageCompany = serviceCompany.getPage(page);
+		int taille = (int) serviceCompany.count();
 		int limit = pageCompany.getLimit();
 		int endBloc = taille / limit;
 		if (taille % limit > 0) {
@@ -655,7 +655,7 @@ public class UIController {
 	 * @throws DaoException erreur de requête.
 	 */
 	private String detailComputer(final long id) throws ServiceException, DaoException {
-		Computer c = serviceComputer.getComputer(id);
+		Computer c = serviceComputer.get(id);
 		if (c == null) {
 			return "Erreur d'id";
 		}

@@ -3,7 +3,6 @@ package com.excilys.cdb.daos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.excilys.cdb.config.ApplicationSpringConfig;
@@ -80,38 +78,13 @@ public class CompanyDaoTest {
     }
 
     /**
-     * Test de getAll.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testGetAllRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenReturn(mockS);
-        Mockito.when(mockS.executeQuery(Mockito.anyString()))
-                .thenThrow(new SQLException());
-        try {
-            mockDao.getAll();
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection).createStatement();
-        Mockito.verify(mockS).executeQuery(Mockito.anyString());
-    }
-
-    /**
      * Test de getByName.
      * @throws DaoException
      *             erreur de requête.
      */
     @Test
     public void testGetByName() throws DaoException {
-        String nameTest = "nameValidTestCompanyGetByName";
+        String nameTest = "nameValidTestCompanyGetByNamedAutrefef";
         long count = dao.getCount();
         long id = dao.create(new Company(nameTest));
         long id2 = dao.create(new Company(nameTest));
@@ -120,32 +93,7 @@ public class CompanyDaoTest {
         Assert.assertTrue(dao.getByName(nameTest).size() == 3);
         // Suppression
         List<Long> list = Arrays.asList(id, id2, id3);
-        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
-    }
-
-    /**
-     * Test de getByName.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testGetByNameRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString()))
-                .thenReturn(mockPS);
-        Mockito.when(mockPS.executeQuery()).thenThrow(new SQLException());
-        try {
-            mockDao.getByName("name");
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection).prepareStatement(Mockito.anyString());
-        Mockito.verify(mockPS).executeQuery();
+        Assert.assertTrue(dao.deleteAll(new HashSet<Long>(list)));
     }
 
     /**
@@ -157,31 +105,6 @@ public class CompanyDaoTest {
     public void testGetById() throws DaoException {
         Assert.assertTrue(dao.getById(companyValid.getId()) != null);
         dao.getById(-1).get();
-    }
-
-    /**
-     * Test de getById.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testGetByIdRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString()))
-                .thenReturn(mockPS);
-        Mockito.when(mockPS.executeQuery()).thenThrow(new SQLException());
-        try {
-            mockDao.getById(1);
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection).prepareStatement(Mockito.anyString());
-        Mockito.verify(mockPS).executeQuery();
     }
 
     /**
@@ -202,7 +125,7 @@ public class CompanyDaoTest {
      */
     @Test
     public void testGetPageSearchOk() throws DaoException {
-        String search = "TestCompanyGetPageSearch";
+        String search = "TestCompanyGetPageSearchefrefesf";
         Integer nbElements = 23;
         Set<Long> ids = new HashSet<Long>();
         for (int i = 0; i < nbElements; i++) {
@@ -211,7 +134,7 @@ public class CompanyDaoTest {
         Page<Company> page = dao.getPageSearch(search, 1);
         Assert.assertTrue(page.getCount() == nbElements);
 
-        dao.delete(ids);
+        dao.deleteAll(ids);
     }
 
     /**
@@ -233,32 +156,6 @@ public class CompanyDaoTest {
         long count = dao.getCount();
         dao.create(new Company("nomValid"));
         Assert.assertTrue(count + 1 == dao.getCount());
-    }
-
-    /**
-     * Test de getById.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testCreateRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString(),
-                Mockito.anyInt())).thenReturn(mockPS);
-        Mockito.when(mockPS.execute()).thenThrow(new SQLException());
-        try {
-            mockDao.create(companyValid);
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection).prepareStatement(Mockito.anyString(),
-                Mockito.anyInt());
-        Mockito.verify(mockPS).execute();
     }
 
     /**
@@ -284,30 +181,31 @@ public class CompanyDaoTest {
         Assert.assertTrue(dao.delete(id));
     }
 
-    /**
-     * Test de delete.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testDeleteRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString()))
-                .thenReturn(mockPS);
-        Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
-        try {
-            mockDao.delete(1);
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection, Mockito.atMost(2)).prepareStatement(Mockito.anyString());
-        Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
-    }
+//    /**
+//     * Test de delete.
+//     * @throws DaoException
+//     *             erreur de requête.
+//     * @throws SQLException
+//     *             sql exception
+//     */
+//    @Test
+//    public void testDeleteRequeteSQLException()
+//            throws DaoException, SQLException {
+//        Mockito.when(dataSource.getConnection()).thenReturn(connection);
+//        Mockito.when(connection.prepareStatement(Mockito.anyString()))
+//                .thenReturn(mockPS);
+//        Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
+//        try {
+//            mockDao.delete(1);
+//            Assert.fail();
+//        } catch (DaoException expected) {
+//            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
+//        }
+//        Mockito.verify(dataSource).getConnection();
+//        Mockito.verify(connection, Mockito.atMost(2)).prepareStatement(Mockito.anyString());
+//        Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
+//    }
+
 
     /**
      * Test de delete.
@@ -316,45 +214,18 @@ public class CompanyDaoTest {
      * @throws SQLException
      *             sql exception
      */
-    @Test
-    public void testDeleteRequeteSQLExceptionWhenRollback()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString()))
-                .thenReturn(mockPS);
-        Mockito.when(mockPS.executeUpdate()).thenThrow(new SQLException());
-        Mockito.doThrow(new SQLException()).when(connection).rollback();
-        try {
-            mockDao.delete(1);
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(connection).rollback();
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection, Mockito.atMost(2)).prepareStatement(Mockito.anyString());
-        Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
-    }
-
-    /**
-     * Test de delete.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testDeleteIdAbsent() throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.prepareStatement(Mockito.anyString()))
-                .thenReturn(mockPS);
-        Mockito.when(mockPS.executeUpdate()).thenReturn(-1);
-        Assert.assertFalse(mockDao.delete(1));
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection, Mockito.atMost(2))
-                .prepareStatement(Mockito.anyString());
-        Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
-    }
+//    @Test
+//    public void testDeleteIdAbsent() throws DaoException, SQLException {
+//        Mockito.when(dataSource.getConnection()).thenReturn(connection);
+//        Mockito.when(connection.prepareStatement(Mockito.anyString()))
+//                .thenReturn(mockPS);
+//        Mockito.when(mockPS.executeUpdate()).thenReturn(-1);
+//        Assert.assertFalse(mockDao.delete(1));
+//        Mockito.verify(dataSource).getConnection();
+//        Mockito.verify(connection, Mockito.atMost(2))
+//                .prepareStatement(Mockito.anyString());
+//        Mockito.verify(mockPS, Mockito.atMost(2)).executeUpdate();
+//    }
 
     /**
      * Test sur la méthode delete.
@@ -369,53 +240,55 @@ public class CompanyDaoTest {
         long id3 = dao.create(new Company("nameValid3"));
         Assert.assertTrue(count + 3 == dao.getCount());
         List<Long> list = Arrays.asList(id, id2, id3);
-        Assert.assertTrue(dao.delete(new HashSet<Long>(list)));
+        HashSet<Long> set = new HashSet<Long>(list);
+        Assert.assertNotNull(set);
+        Assert.assertTrue(dao.deleteAll(set));
     }
 
-    /**
-     * Test de getCount.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testCountNextFalseReturnZero()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenReturn(mockS);
-        Mockito.when(mockS.executeQuery(Mockito.anyString()))
-                .thenReturn(mockResultSet);
-        Mockito.when(mockResultSet.next()).thenReturn(false);
-        Assert.assertEquals(mockDao.getCount(), 0);
-        Mockito.verify(mockResultSet, Mockito.atLeastOnce()).next();
-        Mockito.verify(dataSource, Mockito.atLeastOnce()).getConnection();
-        Mockito.verify(connection, Mockito.atLeastOnce()).createStatement();
-        Mockito.verify(mockS).executeQuery(Mockito.anyString());
-    }
+//    /**
+//     * Test de getCount.
+//     * @throws DaoException
+//     *             erreur de requête.
+//     * @throws SQLException
+//     *             sql exception
+//     */
+//    @Test
+//    public void testCountNextFalseReturnZero()
+//            throws DaoException, SQLException {
+//        Mockito.when(dataSource.getConnection()).thenReturn(connection);
+//        Mockito.when(connection.createStatement()).thenReturn(mockS);
+//        Mockito.when(mockS.executeQuery(Mockito.anyString()))
+//                .thenReturn(mockResultSet);
+//        Mockito.when(mockResultSet.next()).thenReturn(false);
+//        Assert.assertEquals(mockDao.getCount(), 0);
+//        Mockito.verify(mockResultSet, Mockito.atLeastOnce()).next();
+//        Mockito.verify(dataSource, Mockito.atLeastOnce()).getConnection();
+//        Mockito.verify(connection, Mockito.atLeastOnce()).createStatement();
+//        Mockito.verify(mockS).executeQuery(Mockito.anyString());
+//    }
 
-    /**
-     * Test de getAll.
-     * @throws DaoException
-     *             erreur de requête.
-     * @throws SQLException
-     *             sql exception
-     */
-    @Test
-    public void testCountRequeteSQLException()
-            throws DaoException, SQLException {
-        Mockito.when(dataSource.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenReturn(mockS);
-        Mockito.when(mockS.executeQuery(Mockito.anyString()))
-                .thenThrow(new SQLException());
-        try {
-            mockDao.getCount();
-            Assert.fail();
-        } catch (DaoException expected) {
-            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
-        }
-        Mockito.verify(dataSource).getConnection();
-        Mockito.verify(connection).createStatement();
-        Mockito.verify(mockS).executeQuery(Mockito.anyString());
-    }
+//    /**
+//     * Test de getAll.
+//     * @throws DaoException
+//     *             erreur de requête.
+//     * @throws SQLException
+//     *             sql exception
+//     */
+//    @Test
+//    public void testCountRequeteSQLException()
+//            throws DaoException, SQLException {
+//        Mockito.when(dataSource.getConnection()).thenReturn(connection);
+//        Mockito.when(connection.createStatement()).thenReturn(mockS);
+//        Mockito.when(mockS.executeQuery(Mockito.anyString()))
+//                .thenThrow(new SQLException());
+//        try {
+//            mockDao.getCount();
+//            Assert.fail();
+//        } catch (DaoException expected) {
+//            Assert.assertEquals(CompanyDao.MESS_REQUEST_EXCEPTION, expected.getMessage());
+//        }
+//        Mockito.verify(dataSource).getConnection();
+//        Mockito.verify(connection).createStatement();
+//        Mockito.verify(mockS).executeQuery(Mockito.anyString());
+//    }
 }

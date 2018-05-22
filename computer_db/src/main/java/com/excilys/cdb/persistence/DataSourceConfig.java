@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.zaxxer.hikari.HikariConfig;
@@ -27,7 +28,7 @@ public class DataSourceConfig {
      * @return datasource singleton.
      */
     @Bean
-    public HikariDataSource dataSource() throws DAOConfigurationException {
+    public JdbcTemplate dataSource() throws DAOConfigurationException {
         Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
         logger.info("Initialisation du singleton dao factory");
 
@@ -58,6 +59,6 @@ public class DataSourceConfig {
             throw new DAOConfigurationException(
                     "Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
         }
-        return ds;
+        return new JdbcTemplate(ds);
     }
 }

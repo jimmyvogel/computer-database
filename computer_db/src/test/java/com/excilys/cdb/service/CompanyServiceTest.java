@@ -63,14 +63,14 @@ public class CompanyServiceTest {
     public void initialisation()
             throws DAOConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
-        nbCompany = serviceCompany.countCompanies();
+        nbCompany = serviceCompany.count();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
 
-        companyValid = serviceCompany.getPageCompany(1).getObjects().get(0);
-        computerValid = serviceComputer.getPageComputer(1).getObjects().get(0);
+        companyValid = serviceCompany.getPage(1).getObjects().get(0);
+        computerValid = serviceComputer.getPage(1).getObjects().get(0);
         computerValid.setCompany(companyValid);
-        serviceComputer.updateComputer(computerValid.getId(),
+        serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),
                 computerValid.getIntroduced(),
                 computerValid.getDiscontinued(),
@@ -83,7 +83,7 @@ public class CompanyServiceTest {
      */
     @Test
     public void testGetAllCompany() throws ServiceException {
-        List<Company> companies = serviceCompany.getAllCompany();
+        List<Company> companies = serviceCompany.getAll();
         Assert.assertEquals(companies.size(), nbCompany);
     }
 
@@ -94,10 +94,10 @@ public class CompanyServiceTest {
      */
     @Test
     public void testGetCompany() throws ServiceException, DaoException {
-        List<Company> companies = serviceCompany.getAllCompany();
+        List<Company> companies = serviceCompany.getAll();
         Company comp;
         for (Company c : companies) {
-            comp = serviceCompany.getCompany(c.getId());
+            comp = serviceCompany.get(c.getId());
             Assert.assertEquals(c.getName(), comp.getName());
         }
     }
@@ -109,9 +109,9 @@ public class CompanyServiceTest {
      */
     @Test
     public void testCreateCompanyStringOk() throws ServiceException, DaoException {
-        boolean create = serviceCompany.createCompany(NAME_VALID) > 0;
+        boolean create = serviceCompany.create(NAME_VALID) > 0;
         Assert.assertTrue(create);
-        long count = serviceCompany.countCompanies();
+        long count = serviceCompany.count();
         Assert.assertTrue(count == nbCompany + 1);
     }
 
@@ -122,7 +122,7 @@ public class CompanyServiceTest {
      */
     @Test(expected = NameInvalidException.class)
     public void testCreateCompanyStringFailNameInvalid() throws ServiceException, DaoException {
-        serviceCompany.createCompany(NAME_INVALID);
+        serviceCompany.create(NAME_INVALID);
     }
 
     /**
@@ -132,13 +132,13 @@ public class CompanyServiceTest {
      */
     @Test(expected = ComputerNotFoundException.class)
     public void testDeleteOneCompanyWithLinkedComputersOk() throws ServiceException, DaoException {
-        long count = serviceCompany.countCompanies();
-        long id = serviceCompany.createCompany(NAME_VALID);
-        assertTrue(count + 1 == serviceCompany.countCompanies());
-        long idC = serviceComputer.createComputer(NAME_VALID, null, null, id);
-        Assert.assertNotNull(serviceComputer.getComputer(idC));
-        assertTrue(serviceCompany.deleteCompany(id));
-        serviceComputer.getComputer(idC);
+        long count = serviceCompany.count();
+        long id = serviceCompany.create(NAME_VALID);
+        assertTrue(count + 1 == serviceCompany.count());
+        long idC = serviceComputer.create(NAME_VALID, null, null, id);
+        Assert.assertNotNull(serviceComputer.get(idC));
+        assertTrue(serviceCompany.delete(id));
+        serviceComputer.get(idC);
     }
 
     /**
@@ -148,13 +148,13 @@ public class CompanyServiceTest {
      */
     @Test
     public void testDeleteManyCompaniesWithoutLinkedComputersOk() throws ServiceException, DaoException {
-        long count = serviceCompany.countCompanies();
-        long id = serviceCompany.createCompany(NAME_VALID);
-        long id2 = serviceCompany.createCompany(NAME_VALID);
-        long id3 = serviceCompany.createCompany(NAME_VALID);
-        assertTrue(count + 3 == serviceCompany.countCompanies());
-        assertTrue(serviceCompany.deleteCompanies(new HashSet<Long>(Arrays.asList(id, id2, id3))));
-        assertTrue(count == serviceCompany.countCompanies());
+        long count = serviceCompany.count();
+        long id = serviceCompany.create(NAME_VALID);
+        long id2 = serviceCompany.create(NAME_VALID);
+        long id3 = serviceCompany.create(NAME_VALID);
+        assertTrue(count + 3 == serviceCompany.count());
+        assertTrue(serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        assertTrue(count == serviceCompany.count());
     }
 
     /**
@@ -164,13 +164,13 @@ public class CompanyServiceTest {
      */
     @Test(expected = ComputerNotFoundException.class)
     public void testDeleteManyCompaniesWithLinkedComputersOk() throws ServiceException, DaoException {
-        long count = serviceCompany.countCompanies();
-        long id = serviceCompany.createCompany(NAME_VALID);
-        assertTrue(count + 1 == serviceCompany.countCompanies());
-        long idC = serviceComputer.createComputer(NAME_VALID, null, null, id);
-        Assert.assertNotNull(serviceComputer.getComputer(idC));
-        assertTrue(serviceCompany.deleteCompanies(new HashSet<Long>(Arrays.asList(id))));
-        serviceComputer.getComputer(idC);
+        long count = serviceCompany.count();
+        long id = serviceCompany.create(NAME_VALID);
+        assertTrue(count + 1 == serviceCompany.count());
+        long idC = serviceComputer.create(NAME_VALID, null, null, id);
+        Assert.assertNotNull(serviceComputer.get(idC));
+        assertTrue(serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id))));
+        serviceComputer.get(idC);
     }
 
     /**
@@ -180,8 +180,8 @@ public class CompanyServiceTest {
      */
     @Test
     public void testDeleteManyCompanyWithBadList() throws ServiceException, DaoException {
-        assertFalse(serviceCompany.deleteCompanies(null));
-        assertFalse(serviceCompany.deleteCompanies(new HashSet<Long>()));
+        assertFalse(serviceCompany.deleteAll(null));
+        assertFalse(serviceCompany.deleteAll(new HashSet<Long>()));
     }
 
 }
