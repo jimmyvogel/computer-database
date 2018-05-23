@@ -18,12 +18,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.webconfig.ApplicationSpringConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class CompanyDaoTest {

@@ -1,10 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <div class="container">
    <div class="row">
        <div class="col-xs-8 col-xs-offset-2 box">
            <h1>Form edit computer</h1>
 
-           <form id="formEditComputer" action="computer" method="POST">
+           <form id="formEditComputer" action="computer/${applicationScope.actions.EDIT_COMPUTER}" method="POST">
                <input type="hidden" value="${computer.id}" name="id" id="id"/>
                <fieldset>
                    <div class="form-group">
@@ -41,7 +42,6 @@
                     </div>            
                 </fieldset>
                 <div class="actions pull-right">
-                	<input type="hidden" value="${applicationScope.actions.EDIT_COMPUTER}" name="action"/>
                     <input type="submit" value="Edit" id="buttonEdit" class="btn btn-primary">
                 </div>
             </form>

@@ -47,9 +47,9 @@ public class PagerTag extends TagSupport {
             out.print("<ul class=\"pagination\">");
             //left possible
             if (page.getPageCourante() > 1) {
-                out.print("<li><a href=\"" + getUrl(1) + "\" aria-label=\"First\">");
+                out.print("<li><a href=\"" + getUrl(1, page.getLimit()) + "\" aria-label=\"First\">");
                 out.print("<span aria-hidden=\"true\">&laquo;</span></a></li>");
-                out.print("<li><a href=\"" + getUrl(page.getPageCourante() - 1) + "\" aria-label=\"Previous\">");
+                out.print("<li><a href=\"" + getUrl(page.getPageCourante() - 1, page.getLimit()) + "\" aria-label=\"Previous\">");
                 out.print("<span aria-hidden=\"true\"><</span></a></li>");
             }
 
@@ -58,17 +58,17 @@ public class PagerTag extends TagSupport {
 
             for (Integer i : list) {
                 if (i == page.getPageCourante()) {
-                    out.print("<li class=\"active\"><a href=\"" + getUrl(i) + "\">" + i + "</a></li>");
+                    out.print("<li class=\"active\"><a href=\"" + getUrl(i, page.getLimit()) + "\">" + i + "</a></li>");
                 } else {
-                    out.print("<li><a href=\"" + getUrl(i) + "\">" + i + "</a></li>");
+                    out.print("<li><a href=\"" + getUrl(i, page.getLimit()) + "\">" + i + "</a></li>");
                 }
             }
 
             //right possible
             if (page.getPageCourante() < page.getMaxPage()) {
-                out.print("<li><a href=\"" + getUrl(page.getPageCourante() + 1) + "\" aria-label=\"Next\">");
+                out.print("<li><a href=\"" + getUrl(page.getPageCourante() + 1, page.getLimit()) + "\" aria-label=\"Next\">");
                 out.print("<span aria-hidden=\"true\">></span></a></li>");
-                out.print("<li><a href=\"" + getUrl(page.getMaxPage()) + "\" aria-label=\"Last\">");
+                out.print("<li><a href=\"" + getUrl(page.getMaxPage(), page.getLimit()) + "\" aria-label=\"Last\">");
                 out.print("<span aria-hidden=\"true\">&raquo;</span></a></li>");
             }
             out.print("</ul><br>");
@@ -88,15 +88,6 @@ public class PagerTag extends TagSupport {
         }
 
         return SKIP_BODY;
-    }
-
-    /**
-     * Format de l'url en GET.
-     * @param page le numero de la page
-     * @return le format sous forme d'un string
-     */
-    private String getUrl(int page) {
-        return target + "?action=" + action + "&page=" + page;
     }
 
     /**

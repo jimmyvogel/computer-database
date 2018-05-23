@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -34,6 +35,7 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
  *
  */
 @Service
+@Transactional
 public class ComputerService {
 
 	@Autowired
@@ -166,11 +168,22 @@ public class ComputerService {
 
 	/**
 	 * Créer un computer.
+	 * @param computer computer a ajouter
+	 * @return long l'id de l'élément ou -1 si fail
+	 * @throws ServiceException erreur de paramètres.
+	 * @throws DaoException erreur de requête.
+	 */
+	public long create(final Computer computer) throws ServiceException, DaoException {
+		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompany().getId());
+	}
+
+	/**
+	 * Créer un computer.
 	 * @param name le nom de la compagnie ou null
 	 * @param introduced la date ou null
 	 * @param discontinued la date d'arret ou null
 	 * @param companyId l'id de la company ou -1.
-	 * @return boolean le résultat
+	 * @return long l'id de l'élément ou -1 si fail
 	 * @throws ServiceException erreur de paramètres.
 	 * @throws DaoException erreur de requête.
 	 */
@@ -243,6 +256,17 @@ public class ComputerService {
 			throw new NameInvalidException(nameTraiter, e.getReason());
 		}
 		return computerDao.update(c);
+	}
+
+	/**
+	 * Modifié un computer.
+	 * @param update le computer updaté
+	 * @return un boolean pour le résultat
+	 * @throws ServiceException erreur de paramètres
+	 * @throws DaoException erreur de reqûete.
+	 */
+	public boolean update(Computer update) throws ServiceException, DaoException {
+		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(), update.getCompany().getId());
 	}
 
 	/**

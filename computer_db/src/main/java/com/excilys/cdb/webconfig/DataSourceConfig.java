@@ -1,4 +1,4 @@
-package com.excilys.cdb.persistence;
+package com.excilys.cdb.webconfig;
 
 import java.io.IOException;
 import java.io.InputStream;

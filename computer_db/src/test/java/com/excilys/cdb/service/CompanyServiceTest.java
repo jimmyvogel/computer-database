@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
@@ -21,6 +20,7 @@ import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.webconfig.ApplicationSpringConfig;
 
 public class CompanyServiceTest {
 

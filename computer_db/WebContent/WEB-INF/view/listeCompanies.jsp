@@ -1,12 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="../WEB-INF/tags.tld" prefix="pg" %> 
+<%@ taglib uri="../tags.tld" prefix="pg" %> 
 <h1 id="homeTitle" class="text-center">
     ${ page.count } Companies
 </h1>
 <div class="container" style="margin-top: 10px;">
 	
-    <form id="searchForm" action="company" method="GET" class="form-inline">
-    	<input type="hidden" value="${applicationScope.actions.SEARCH_COMPANY}" name="action"/>
+    <form id="searchForm" action="company/${applicationScope.actions.SEARCH_COMPANY}" method="GET" class="form-inline">
         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
         <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
     </form>

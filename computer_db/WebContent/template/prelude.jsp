@@ -16,4 +16,4 @@
         <div class="container">
             <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
         </div>
-    </header>
+    </header>    

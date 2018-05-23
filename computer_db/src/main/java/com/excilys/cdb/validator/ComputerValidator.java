@@ -3,6 +3,7 @@ package com.excilys.cdb.validator;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
@@ -48,6 +49,18 @@ public class ComputerValidator {
             throw new ValidatorDateException(computer.getIntroduced(), "Computer introduced is after computer discontinued: " + computer.getDiscontinued().format(formatter));
         }
         return computer;
+    }
+
+    /**
+     * Validation arguments constructor.
+     * @param name name du computer
+     * @param introduced introduced en string
+     * @param discontinued discontinued en string
+     * @param idCompany l'id de la company
+     * @return renvoi le computer valide ou null.
+     */
+    public static Optional<Computer> validComputer(String name, String introduced, String discontinued, String idCompany) {
+    	return null;
     }
 
     /**

@@ -6,7 +6,6 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
@@ -17,6 +16,7 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
+import com.excilys.cdb.webconfig.ApplicationSpringConfig;
 
 /**
  * Controler de l'interface cli.

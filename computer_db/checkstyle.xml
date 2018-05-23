@@ -85,7 +85,7 @@
       <property name="allowedAnnotations" value="Override" />
       <property name="allowedAnnotations" value="RequestMapping,PostConstruct" />
     </module>
-    <module name="JavadocStyle"/>
+    <!--  <module name="JavadocStyle"/>-->
     <!--
     <module name="JavadocType"/>
     <module name="JavadocVariable"/>

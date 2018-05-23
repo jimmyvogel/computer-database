@@ -1,19 +1,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="../WEB-INF/tags.tld" prefix="pg" %> 
+<%@ taglib uri="../tags.tld" prefix="pg" %> 
  
 <h1 id="homeTitle" class="text-center">
     ${ page.count } Computers
 </h1>
 
-<form id="deleteForm" action="computer" method="POST">
-    <input type="hidden" value="${applicationScope.actions.DELETE_COMPUTER}" name="action"/>
+<form id="deleteForm/${applicationScope.actions.DELETE_COMPUTER}" action="computer" method="POST">
     <input type="hidden" name="selection" value="">
 </form>
         
 <div class="container" style="margin-top: 10px;">
 
-    <form id="searchForm" action="computer" method="GET" class="form-inline">
-    	<input type="hidden" value="${applicationScope.actions.SEARCH_COMPUTER}" name="action"/>
+    <form id="searchForm" action="computer/${applicationScope.actions.SEARCH_COMPUTER}" method="GET" class="form-inline">
         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
         <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
     </form>
@@ -42,8 +40,7 @@
 					<td>
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
 					</td>
-					<c:url value="computer" var="urlEditFormComputer">
-		 				<c:param name="action" value="${applicationScope.actions.EDIT_FORM_COMPUTER}"/>
+					<c:url value="computer/${applicationScope.actions.EDIT_FORM_COMPUTER}" var="urlEditFormComputer">
 		 				<c:param name="id" value="${computer.id}"/>
 	  				</c:url>
 					<td><a href="${urlEditFormComputer}">${computer.name}</a></td>

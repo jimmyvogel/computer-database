@@ -15,7 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import com.excilys.cdb.config.ApplicationSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
@@ -26,6 +25,7 @@ import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.ComputerValidator;
+import com.excilys.cdb.webconfig.ApplicationSpringConfig;
 
 public class ComputerServiceTest {
 
