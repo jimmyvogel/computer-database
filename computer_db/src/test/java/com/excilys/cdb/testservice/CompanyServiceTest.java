@@ -1,4 +1,4 @@
-package com.excilys.cdb.service;
+package com.excilys.cdb.testservice;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,11 +18,13 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.CompanyService;
+import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.webconfig.ApplicationSpringConfig;
+import com.excilys.cdb.testconfig.TestSuite;
 
-public class CompanyServiceTest {
+public class CompanyServiceTest extends TestSuite {
 
     private static ComputerService serviceComputer;
     private static CompanyService serviceCompany;
@@ -42,15 +44,13 @@ public class CompanyServiceTest {
     private Company companyValid;
     private Computer computerValid;
 
-    private static ApplicationSpringConfig appConfig;
 
     /**
      */
     @BeforeClass
     public static void startContext() {
-    	appConfig = new ApplicationSpringConfig();
-    	serviceComputer = (ComputerService) appConfig.getAppContext().getBean("computerService");
-    	serviceCompany = (CompanyService) appConfig.getAppContext().getBean("companyService");
+    	serviceComputer = (ComputerService) context.getBean("computerService");
+    	serviceCompany = (CompanyService) context.getBean("companyService");
     }
 
     /**

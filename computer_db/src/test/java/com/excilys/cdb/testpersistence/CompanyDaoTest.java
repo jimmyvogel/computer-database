@@ -1,4 +1,4 @@
-package com.excilys.cdb.daos;
+package com.excilys.cdb.testpersistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,10 +23,10 @@ import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.webconfig.ApplicationSpringConfig;
+import com.excilys.cdb.testconfig.TestSuite;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class CompanyDaoTest {
+public class CompanyDaoTest extends TestSuite {
 
     @Mock
     private HikariDataSource dataSource;
@@ -42,7 +42,6 @@ public class CompanyDaoTest {
     private CompanyDao mockDao;
     private static CompanyDao dao;
     private Company companyValid;
-    private static ApplicationSpringConfig appConfig;
 
     /**
      * Initialisation.
@@ -73,8 +72,7 @@ public class CompanyDaoTest {
      */
     @BeforeClass
     public static void startContext() {
-    	appConfig = new ApplicationSpringConfig();
-    	dao = (CompanyDao) appConfig.getAppContext().getBean("companyDao");
+    	dao = (CompanyDao) context.getBean("companyDao");
     }
 
     /**

@@ -7,13 +7,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Computer Database</title>
 <!-- Bootstrap -->
-<link href="static/css/bootstrap.min.css" rel="stylesheet">
-<link href="static/css/font-awesome.css" rel="stylesheet">
-<link href="static/css/main.css" rel="stylesheet">
+<link href="<c:url value="/static/css/bootstrap.min.css" />" rel="stylesheet">
+<link href="<c:url value="/static/css/font-awesome.css" />" rel="stylesheet">
+<link href="<c:url value="/static/css/main.css" />" rel="stylesheet">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
         </div>
-    </header>    
+    </header>
+    

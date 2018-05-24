@@ -1,4 +1,4 @@
-package com.excilys.cdb.daos;
+package com.excilys.cdb.testpersistence;
 
 import static org.junit.Assert.assertTrue;
 

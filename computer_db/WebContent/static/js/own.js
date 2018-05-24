@@ -70,12 +70,12 @@
 		      }
 		   })
 	});
-	$(function () {
-
-	    $('.nav li a').click(function (e) {
-	        e.preventDefault();
-	        $(this).closest('li').addClass('active').siblings().removeClass('active');
-
-	    });
-
-	});
+//	$(function () {
+//
+//	    $('.nav li a').click(function (e) {
+//	        e.preventDefault();
+//	        $(this).closest('li').addClass('active').siblings().removeClass('active');
+//
+//	    });
+//
+//	});

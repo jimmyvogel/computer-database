@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.excilys.cdb.servlet.ressources.Action;
 
 @WebListener
-public class AppServletContextConfig implements ServletContextListener {
+public class WebServletContextConfig implements ServletContextListener {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppServletContextConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebServletContextConfig.class);
     private static final String ACTIONS = "actions";
 
     @Override

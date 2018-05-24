@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,6 +30,7 @@ import com.mysql.jdbc.Statement;
 public class CompanyDao implements Dao<Company> {
 
 	@Autowired
+	private DataSource ds;
 	private JdbcTemplate jt;
 
 	private static final String SQL_SEARCH_ALL_COMPANY = "SELECT `id`,`name` FROM `company` WHERE `name` LIKE ? ORDER by `name`";
@@ -42,6 +46,11 @@ public class CompanyDao implements Dao<Company> {
 
 	public static final String MESS_REQUEST_EXCEPTION = "Reqûete exception";
 	public static final String MESS_SQL_EXCEPTION = "Erreur sql";
+
+	@PostConstruct
+	public void init() {
+		this.jt = new JdbcTemplate(ds);
+	}
 
 	/**
 	 * Méthode pour récupérer toutes les entreprises de la bdd.

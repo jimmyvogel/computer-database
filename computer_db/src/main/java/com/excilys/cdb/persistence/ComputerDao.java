@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,6 +34,7 @@ import com.mysql.jdbc.Statement;
 public class ComputerDao implements Dao<Computer> {
 
 	@Autowired
+	private DataSource ds;
 	private JdbcTemplate jt;
 
 	private static final String SQL_SEARCH_ALL_COMPUTER = "SELECT company.id,company.name, computer.id, "
@@ -55,6 +59,11 @@ public class ComputerDao implements Dao<Computer> {
 
 	public static final String MESS_REQUEST_EXCEPTION = "Requête exception";
 	public static final String MESS_SQL_EXCEPTION = "Erreur sql";
+
+	@PostConstruct
+	public void init() {
+		this.jt = new JdbcTemplate(ds);
+	}
 
 	/**
 	 * Retourne tous les computers de la bdd.

@@ -7,24 +7,11 @@
 		<ul class="nav navbar-nav">
 
 			<!--  NAVIGATION HOME -->
-			<li class="active"><a href="computer">Home</a></li>
-
-			<!--  NAVIGATION ADD COMPUTER -->
-			<c:url value="computer/${applicationScope.actions.ADD_FORM_COMPUTER}" var="urlAddComputer"></c:url>
-			<li><a href="${urlAddComputer}">Add entry</a></li>
-
-			<!--  NAVIGATION LIST COMPUTER -->
-			<c:url value="computer/${applicationScope.actions.LIST_COMPUTERS}" var="urlListComputers">
-				<c:param name="page" value="1" />
-				<c:param name="limit" value="20" />
-			</c:url>
-			<li><a href="${urlListComputers}">Computers</a></li>
-			<!--  NAVIGATION LIST COMPANY -->
-			<c:url value="company/${applicationScope.actions.LIST_COMPANIES}" var="urlListCompanies">
-				<c:param name="page" value="1" />
-				<c:param name="limit" value="20" />
-			</c:url>
-			<li><a href="${urlListCompanies}">Companies</a></li>
+			<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+			<li><a href="${contextPath }/index">Home</a></li>
+			<li><a href="${contextPath }/computer/${applicationScope.actions.ADD_FORM_COMPUTER}">Add entry</a></li>
+			<li><a href="${contextPath }/computer/${applicationScope.actions.LIST_COMPUTERS}?page=1&limit=20">Computers</a></li>
+			<li><a href="${contextPath }/company/${applicationScope.actions.LIST_COMPANIES}?page=1&limit=20">Companies</a></li>
 		</ul>
 	</div>
 </nav>

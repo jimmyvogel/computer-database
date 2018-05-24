@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -16,7 +18,7 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
-import com.excilys.cdb.webconfig.ApplicationSpringConfig;
+import com.excilys.cdb.webconfig.AppSpringConfig;
 
 /**
  * Controler de l'interface cli.
@@ -83,18 +85,18 @@ public class UIController {
 
 	// Un objet de type computer pour avoir en mémoire les dernières demandes.
 	private Computer inter;
-	private static ApplicationSpringConfig appConfig;
 
 	/**
 	 * Constructor sans arguments initiant les variables d'états, la vue et les
 	 * pageurs.
+	 * @param context contexte.
 	 */
-	public UIController() {
+	public UIController(AbstractApplicationContext context) {
 		Logger logger = LoggerFactory.getLogger(UIController.class);
 		logger.info("Création d'un objet de type UIController");
 		initialize();
-		serviceComputer = (ComputerService) appConfig.getAppContext().getBean("computerService");
-		serviceCompany = (CompanyService) appConfig.getAppContext().getBean("companyService");
+		serviceComputer = (ComputerService) context.getBean("computerService");
+		serviceCompany = (CompanyService) context.getBean("companyService");
 	}
 
 	/**
@@ -115,7 +117,6 @@ public class UIController {
 		while (continu) {
 			continu = read();
 		}
-		appConfig.disuseContext();
 	}
 
 	/**
@@ -679,8 +680,8 @@ public class UIController {
 	 * @param args arguments
 	 */
 	public static void main(final String[] args) {
-		appConfig = new ApplicationSpringConfig();
-		UIController controller = new UIController();
+		AbstractApplicationContext appConfig = new AnnotationConfigApplicationContext(AppSpringConfig.class);
+		UIController controller = new UIController(appConfig);
 		controller.run();
 	}
 

@@ -6,13 +6,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DaoException;
@@ -24,12 +25,14 @@ import com.excilys.cdb.servlet.ressources.UrlID;
 import com.excilys.cdb.servlet.ressources.UrlRessources;
 import com.excilys.cdb.validator.ComputerValidator;
 
-@RestController
+@Controller
 @RequestMapping("/computer")
 public class ComputerController {
 
 	@Autowired
 	private ComputerService serviceComputer;
+	@Autowired
+	private ComputerService serviceCompany;
 
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
@@ -43,21 +46,21 @@ public class ComputerController {
 	 * Direction liste des compagnies.
 	 * @param numeropage le numero de la page à afficher.
 	 * @param limit nombres de résultats par bloc
-	 * @param model model.
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + LIST_COMPUTERS)
-	public String liste(@RequestParam(UrlID.PAGE) Integer numeropage,
-			@RequestParam(UrlID.LIMIT) Integer limit, Model model) {
+	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage,
+			@RequestParam(UrlID.LIMIT) Integer limit) {
 		Page<Computer> page = new Page<Computer>(limit, 0);
+		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
 			page = serviceComputer.getPage(numeropage, limit);
 		} catch (ServiceException e) {
-			model.addAttribute(JspRessources.ERROR, e.getMessage());
+			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
-		model.addAttribute(UrlID.ACTION_PAGINATION, LIST_COMPUTERS);
-		model.addAttribute(UrlID.PAGE, page);
-		return UrlRessources.LIST_COMPUTERS;
+		mv.addObject(UrlID.ACTION_PAGINATION, LIST_COMPUTERS);
+		mv.addObject(UrlID.PAGE, page);
+		return mv;
 	}
 
 	/**
@@ -65,41 +68,42 @@ public class ComputerController {
 	 * @param search la recherche.
 	 * @param numeropage le numero de la page à afficher.
 	 * @param limit nombres de résultats par bloc
-	 * @param model model.
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + SEARCH_COMPUTER)
-	public String liste(@RequestParam(UrlID.SEARCH) String search,
-			@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit,
-			Model model) {
+	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search,
+			@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
 		Page<Computer> page = new Page<Computer>(limit, 0);
+		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
 			page = serviceComputer.getPageSearch(search, numeropage, limit);
 		} catch (ServiceException e) {
-			model.addAttribute(JspRessources.ERROR, e.getMessage());
+			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
-		model.addAttribute(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
-		model.addAttribute(UrlID.PAGE, page);
-		return UrlRessources.LIST_COMPUTERS;
+		mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
+		mv.addObject(UrlID.PAGE, page);
+		return mv;
 	}
 
 	/**
 	 * Suppression des computers.
 	 * @param deletes l'id des computers à supprimer dans un string.
-	 * @param model model.
 	 * @return nom de la jsp.
 	 */
 	@PostMapping("/" + DELETE_COMPUTER)
-	public String delete(@RequestParam(JspRessources.DELETE_SELECT) String deletes, Model model) {
+	public ModelAndView delete(@RequestParam(JspRessources.DELETE_SELECT) String deletes) {
 		String[] selections = deletes.split(",");
 		Set<Long> set = Arrays.stream(selections).map(l -> Long.valueOf(l)).collect(Collectors.toSet());
+		ModelAndView mv;
 		try {
 			serviceComputer.deleteAll(set);
-			model.addAttribute(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
+			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
+			mv.addObject(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
 		} catch (DaoException e) {
-			model.addAttribute(JspRessources.ERROR, e.getMessage());
+			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
+			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
-		return liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT, model);
+		return mv;
 	}
 
 	/**
@@ -108,37 +112,42 @@ public class ComputerController {
 	 * @param introducedS la date d'introduction
 	 * @param discontinuedS la date de termination
 	 * @param idCompanyS l'id de la company du computer
-	 * @param model model
-	 * @return nom de la jsp de redirection.
+	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + ADD_COMPUTER)
-	public String add(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
+	public ModelAndView add(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED) String introducedS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS,
-			Model model) {
+			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS) {
 
 		Optional<Computer> c = ComputerValidator.validComputer(nameS, introducedS, discontinuedS, idCompanyS);
+		ModelAndView mv = formAdd();
 		if (c.isPresent()) {
 			try {
 				serviceComputer.create(c.get());
 			} catch (ServiceException | DaoException e) {
-				model.addAttribute(JspRessources.ERROR, e.getMessage());
+				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
-			model.addAttribute(JspRessources.SUCCESS, "Update Computer success.");
+			mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 		} else {
-			model.addAttribute(JspRessources.ERROR, "Invalide arguments");
+			mv.addObject(JspRessources.ERROR, "Invalide arguments");
 		}
-		return formAdd(model);
+		return mv;
 	}
 
 	/**
 	 * Redirection vers le form d'addtion d'un computer.
-	 * @param model le model.
-	 * @return nom de la jsp de redirection.
+	 * @return jsp de redirection.
 	 */
-	private String formAdd(Model model) {
-		return null;
+	@GetMapping("/" + ADD_FORM_COMPUTER)
+	private ModelAndView formAdd() {
+		ModelAndView mv = new ModelAndView(UrlRessources.FORM_ADD_COMPUTER);
+		try {
+			mv.addObject(JspRessources.ALL_COMPANY, serviceCompany.getAll());
+		} catch (ServiceException e) {
+			mv.addObject(JspRessources.ERROR, e.getMessage());
+		}
+		return mv;
 	}
 
 	/**
@@ -147,36 +156,44 @@ public class ComputerController {
 	 * @param introducedS la date d'introduction
 	 * @param discontinuedS la date de termination
 	 * @param idCompanyS l'id de la company du computer
-	 * @param model model
-	 * @return nom de la jsp de redirection.
+	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + EDIT_COMPUTER)
-	public String edit(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
+	public ModelAndView edit(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED) String introducedS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS,
-			Model model) {
+			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS) {
+		ModelAndView mv = formAdd();
 		Optional<Computer> c = ComputerValidator.validComputer(nameS, introducedS, discontinuedS, idCompanyS);
 		if (c.isPresent()) {
 			try {
 				serviceComputer.update(c.get());
 			} catch (ServiceException | DaoException e) {
-				model.addAttribute(JspRessources.ERROR, e.getMessage());
+				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
-			model.addAttribute(JspRessources.SUCCESS, "Update Computer success.");
+			mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 		} else {
-			model.addAttribute(JspRessources.ERROR, "Invalide arguments");
+			mv.addObject(JspRessources.ERROR, "Invalide arguments");
 		}
-		return formEdit(model);
+		return mv;
 	}
 
 	/**
 	 * Redirection vers le form d'édition d'un computer
-	 * @param model le model.
-	 * @return nom de la jsp de redirection.
+	 * @param idS l'id du computer à modifié.
+	 * @return jsp de redirection.
 	 */
-	private String formEdit(Model model) {
-		return UrlRessources.FORM_EDIT_COMPUTER;
+	@GetMapping("/" + EDIT_FORM_COMPUTER)
+	public ModelAndView formEdit(@RequestParam(JspRessources.COMPUTER_ID) String idS) {
+		long id = Long.valueOf(idS);
+		ModelAndView mv = new ModelAndView(UrlRessources.FORM_EDIT_COMPUTER);
+		try {
+			mv.addObject(JspRessources.COMPUTER, new ComputerDTO(serviceComputer.get(id)));
+			mv.addObject(JspRessources.SUCCESS, "L'édition du computer a été validé.");
+		} catch (ServiceException | DaoException e) {
+			mv.addObject(JspRessources.ERROR, e.getMessage());
+		}
+		return mv;
 	}
 
 }

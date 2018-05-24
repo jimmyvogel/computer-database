@@ -5,13 +5,13 @@
     ${ page.count } Computers
 </h1>
 
-<form id="deleteForm/${applicationScope.actions.DELETE_COMPUTER}" action="computer" method="POST">
+<form id="deleteForm" action="${applicationScope.actions.DELETE_COMPUTER}" method="POST">
     <input type="hidden" name="selection" value="">
 </form>
         
 <div class="container" style="margin-top: 10px;">
 
-    <form id="searchForm" action="computer/${applicationScope.actions.SEARCH_COMPUTER}" method="GET" class="form-inline">
+    <form id="searchForm" action="${applicationScope.actions.SEARCH_COMPUTER}" method="GET" class="form-inline">
         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search..." />
         <input type="submit" id="searchsubmit" value="Search" class="btn btn-primary" />
     </form>
@@ -54,6 +54,6 @@
 </div>
 
 <div class="navbar">
-	<pg:pager target="computer" action="${actionPagination}" page="${page}"> </pg:pager>
+	<pg:pager action="${actionPagination}" page="${page}"> </pg:pager>
 </div>
 

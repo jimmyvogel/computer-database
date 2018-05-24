@@ -97,7 +97,10 @@ public class PagerTag extends TagSupport {
      * @return le format sous forme d'un string
      */
     private String getUrl(int page, int limit) {
-        return target + "?action=" + action + "&page=" + page + "&limit=" + limit;
+    	if (target == null) {
+    		return action + "?page=" + page + "&limit=" + limit;
+    	}
+        return target + "/" + action + "?page=" + page + "&limit=" + limit;
     }
 
 }

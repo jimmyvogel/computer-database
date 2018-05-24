@@ -5,7 +5,7 @@
        <div class="col-xs-8 col-xs-offset-2 box">
            <h1>Form edit computer</h1>
 
-           <form id="formEditComputer" action="computer/${applicationScope.actions.EDIT_COMPUTER}" method="POST">
+           <form id="formEditComputer" action="${applicationScope.actions.EDIT_COMPUTER}" method="POST">
                <input type="hidden" value="${computer.id}" name="id" id="id"/>
                <fieldset>
                    <div class="form-group">

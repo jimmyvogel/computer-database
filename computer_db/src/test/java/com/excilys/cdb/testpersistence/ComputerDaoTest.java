@@ -1,4 +1,4 @@
-package com.excilys.cdb.daos;
+package com.excilys.cdb.testpersistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,11 +16,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -29,11 +27,10 @@ import com.excilys.cdb.persistence.ComputerDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.webconfig.ApplicationSpringConfig;
+import com.excilys.cdb.testconfig.TestSuite;
 import com.zaxxer.hikari.HikariDataSource;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ComputerDaoTest {
+public class ComputerDaoTest extends TestSuite {
 
     @Mock
     private HikariDataSource dataSource;
@@ -59,15 +56,14 @@ public class ComputerDaoTest {
     private final LocalDateTime DATE_DISCONTINUED_VALID = LocalDateTime.of(2000,
             Month.APRIL, 8, 12, 30);
 
-    private static ApplicationSpringConfig appConfig;
+//    private static ApplicationSpringConfig appConfig;
 
     /**
      */
     @BeforeClass
     public static void startContext() {
-    	appConfig = new ApplicationSpringConfig();
-    	dao = (ComputerDao) appConfig.getAppContext().getBean("computerDao");
-    	daoCompany = (CompanyDao) appConfig.getAppContext().getBean("companyDao");
+    	dao = (ComputerDao) context.getBean("computerDao");
+    	daoCompany = (CompanyDao) context.getBean("companyDao");
     }
 
     /**
