@@ -18,21 +18,24 @@ import com.excilys.cdb.persistence.ComputerDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.ComputerValidator;
-import com.excilys.cdb.validator.TextValidation;
+import com.excilys.cdb.validator.SecurityTextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer et
  * de la table company qui lui est lié.
+ * (dev)Gestion de la validation des formats des arguments via paramètres dans le service.
+ * 		Gestion de la validité des modeles.
+ * 	    Gestion de la securité des arguments.
+ * 	    Gestion des exceptions de type validation, ou dao.
  * @author vogel
- *
  */
 @Service
 @Transactional
@@ -46,9 +49,9 @@ public class ComputerService {
 	/**
 	 * Récupérer une instance de type computerServiceImpl.
 	 * @return une référence sur le singleton ComputerServiceImpl.
-	 * @throws DAOConfigurationException erreur de configuration
+	 * @throws DaoConfigurationException erreur de configuration
 	 */
-	public static ComputerService getInstance() throws DAOConfigurationException {
+	public static ComputerService getInstance() throws DaoConfigurationException {
 		Logger logger = LoggerFactory.getLogger(ComputerService.class);
 		logger.info("Initialisation du singleton computer service");
 
@@ -75,18 +78,13 @@ public class ComputerService {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	public List<Computer> getByName(String name) throws ServiceException, DaoException {
-		String nameTraiter = TextValidation.traitementString(name);
-		return computerDao.getByName(nameTraiter);
-	}
-
-	/**
-	 * Optenir une page de computer.
-	 * @param page le numero de la page
-	 * @return une page chargé.
-	 * @throws ServiceException erreur de paramètres
-	 */
-	public Page<Computer> getPage(final int page) throws ServiceException {
-		return getPage(page, null);
+		if (name == null || name.isEmpty()) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
+		return computerDao.getByName(name);
 	}
 
 	/**
@@ -120,6 +118,12 @@ public class ComputerService {
 	 */
 	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
+		if (search == null) {
+			throw new ServiceException("La recherche ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(search)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
 		Page<Computer> pageComputer = null;
 		try {
 			if (limit == null) {
@@ -154,14 +158,17 @@ public class ComputerService {
 	 */
 	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
-
-		String nameTraiter = TextValidation.traitementString(name);
+		if (name == null) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
 		try {
-			ComputerValidator.validName(nameTraiter);
-			Computer c = new Computer(nameTraiter);
-			result = computerDao.create(c);
+			ComputerValidator.validName(name);
+			result = computerDao.create(new Computer(name));
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(nameTraiter, e.getReason());
+			throw new NameInvalidException(name, e.getMessage());
 		}
 		return result;
 	}
@@ -174,6 +181,9 @@ public class ComputerService {
 	 * @throws DaoException erreur de requête.
 	 */
 	public long create(final Computer computer) throws ServiceException, DaoException {
+		if (computer == null) {
+			throw new ServiceException("Le computer ne peut pas être null");
+		}
 		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompany().getId());
 	}
 
@@ -189,23 +199,25 @@ public class ComputerService {
 	 */
 	public long create(String name, LocalDateTime introduced, LocalDateTime discontinued, long companyId)
 			throws ServiceException, DaoException {
+		if (name == null) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
 		long result = -1;
 		try {
-			String nameTraiter = TextValidation.traitementString(name);
 			Company inter = null;
-
 			if (companyId > 0) {
 				inter = companyDao.getById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
 			}
-
-			Computer c = new Computer(nameTraiter, introduced, discontinued, inter);
+			Computer c = new Computer(name, introduced, discontinued, inter);
 			ComputerValidator.validComputer(c);
 			result = computerDao.create(c);
-
 		} catch (ValidatorDateException e) {
-			throw new DateInvalidException(e.getReason());
+			throw new DateInvalidException(e.getMessage());
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(name, e.getReason());
+			throw new NameInvalidException(name, e.getMessage());
 		}
 
 		return result;
@@ -218,23 +230,22 @@ public class ComputerService {
 	 * @throws DaoException erreur de requête
 	 */
 	public boolean delete(long id) throws DaoException {
-		if (id < 1) {
-			return false;
-		}
 		return computerDao.delete(id);
 	}
 
 	/**
 	 * Détruire plusieurs computers.
 	 * @param ids id(s) des computers à supprimer
-	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
+	 * @throws ServiceException set en paramètre vide
 	 */
-	public boolean deleteAll(Set<Long> ids) throws DaoException {
+	public void deleteAll(Set<Long> ids) throws DaoException, ServiceException {
 		if (ids == null || ids.size() == 0) {
-			return false;
+			throw new ServiceException("Aucun éléments selectionnés");
 		}
-		return computerDao.delete(ids);
+		if (!computerDao.delete(ids)) {
+			throw new ServiceException("La suppression n'a pas abouti.");
+		}
 	}
 
 	/**
@@ -246,14 +257,19 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres.
 	 */
 	public boolean update(long id, String name) throws ServiceException, DaoException {
+		if (name == null) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
 		Computer c;
-		String nameTraiter = TextValidation.traitementString(name);
 		try {
-			ComputerValidator.validName(nameTraiter);
+			ComputerValidator.validName(name);
 			c = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
-			c.setName(nameTraiter);
+			c.setName(name);
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(nameTraiter, e.getReason());
+			throw new NameInvalidException(name, e.getMessage());
 		}
 		return computerDao.update(c);
 	}
@@ -266,6 +282,9 @@ public class ComputerService {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	public boolean update(Computer update) throws ServiceException, DaoException {
+		if (update == null) {
+			throw new ServiceException("Le computer ne peut pas être null");
+		}
 		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(), update.getCompany().getId());
 	}
 
@@ -286,12 +305,13 @@ public class ComputerService {
 		if (name == null && introduced == null && discontinued == null && companyId == -1) {
 			throw new ServiceException("Aucun éléments n'a été spécifié.");
 		}
-
-		String nameTraiter = TextValidation.traitementString(name);
+		if (name != null && !SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("Le nom contient des characters spéciaux illégaux.");
+		}
 		Computer nouveau = new Computer();
 		Computer initial = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
 		nouveau.setId(initial.getId());
-		nouveau.setName(nameTraiter == null ? initial.getName() : nameTraiter);
+		nouveau.setName(name == null ? initial.getName() : name);
 		nouveau.setIntroduced(introduced == null ? initial.getIntroduced() : introduced);
 		nouveau.setDiscontinued(discontinued == null ? initial.getDiscontinued() : discontinued);
 		if (companyId == -1) {
@@ -305,9 +325,9 @@ public class ComputerService {
 		try {
 			ComputerValidator.validComputer(nouveau);
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(nameTraiter, e.getReason());
+			throw new NameInvalidException(name, e.getMessage());
 		} catch (ValidatorDateException e) {
-			throw new DateInvalidException(e.getReason());
+			throw new DateInvalidException(e.getMessage());
 		}
 
 		return computerDao.update(nouveau);

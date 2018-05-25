@@ -5,7 +5,6 @@ public class ValidatorStringException extends Exception {
     /**
      */
     private static final long serialVersionUID = -9132599808149416148L;
-    private String reason;
 
     /**
      * Exception de type string dans la validation.
@@ -14,11 +13,6 @@ public class ValidatorStringException extends Exception {
      */
     public ValidatorStringException(String s, String reason) {
         super(s + " not valid : " + reason);
-        this.reason = reason;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
 }

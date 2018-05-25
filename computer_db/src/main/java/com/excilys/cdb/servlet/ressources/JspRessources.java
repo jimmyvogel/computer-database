@@ -19,4 +19,7 @@ public class JspRessources {
 
     public static final String DELETE_SELECT = "selection";
 
+    public static final String BUTTON_EDIT = "buttonEdit";
+    public static final String BUTTON_ADD = "buttonAdd";
+
 }

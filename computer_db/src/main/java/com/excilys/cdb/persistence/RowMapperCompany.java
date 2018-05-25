@@ -12,7 +12,7 @@ import com.excilys.cdb.model.Company;
  * @author vogel
  *
  */
-public class MapperCompany implements RowMapper<Company> {
+public class RowMapperCompany implements RowMapper<Company> {
 
 	@Override
 	public Company mapRow(ResultSet result, int rownumber) throws SQLException {

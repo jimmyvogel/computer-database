@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -34,11 +34,11 @@ public class WebSpringConfig implements WebMvcConfigurer {
 
 	/**
 	 * Initialisation de hikaridatasource.
-	 * @throws DAOConfigurationException erreur de configuration.
+	 * @throws DaoConfigurationException erreur de configuration.
 	 * @return datasource singleton.
 	 */
 	@Bean
-	public DataSource dataSource() throws DAOConfigurationException {
+	public DataSource dataSource() throws DaoConfigurationException {
 		Logger logger = LoggerFactory.getLogger(WebSpringConfig.class);
 		logger.info("Initialisation du singleton dao factory");
 
@@ -47,14 +47,14 @@ public class WebSpringConfig implements WebMvcConfigurer {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			throw new DAOConfigurationException("Driver introuvable");
+			throw new DaoConfigurationException("Driver introuvable");
 		}
 
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fichierProperties = classLoader.getResourceAsStream(FICHIER_PROPERTIES);
 		if (fichierProperties == null) {
-			throw new DAOConfigurationException("Le fichier properties " + FICHIER_PROPERTIES + " est introuvable.");
+			throw new DaoConfigurationException("Le fichier properties " + FICHIER_PROPERTIES + " est introuvable.");
 		}
 		try {
 			properties.load(fichierProperties);
@@ -63,7 +63,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 			config.setPassword(properties.getProperty(PROPERTY_MOT_DE_PASSE));
 			ds = new HikariDataSource(config);
 		} catch (IOException e) {
-			throw new DAOConfigurationException("Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
+			throw new DaoConfigurationException("Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
 		}
 		return ds;
 	}

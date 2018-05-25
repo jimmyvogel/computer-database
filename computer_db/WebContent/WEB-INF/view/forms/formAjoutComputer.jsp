@@ -32,7 +32,7 @@
                 </fieldset>
                 
                 <div class="actions pull-right">
-                    <input type="submit" value="Ajouter" class="btn btn-primary" id="buttonAjout" name="buttonAjout">
+                    <input type="submit" value="Ajouter" class="btn btn-primary" id="buttonAdd" name="buttonAdd">
                 </div>
             </form>
         </div>

@@ -19,9 +19,11 @@ import org.testng.annotations.Test;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servlet.ressources.Action;
+import com.excilys.cdb.servlet.ressources.JspRessources;
 import com.excilys.cdb.validator.ComputerValidator;
 
 public class AjouterComputerIT extends SeleniumSuite {
@@ -33,11 +35,11 @@ public class AjouterComputerIT extends SeleniumSuite {
     private static final String NAMEINVALID = "";
 
     /** Beforeclass.
-     * @throws DAOConfigurationException configuration exception
+     * @throws DaoConfigurationException configuration exception
      * @throws ServiceException service exception
      */
     @BeforeClass
-    public static void beforeClass() throws DAOConfigurationException, ServiceException {
+    public static void beforeClass() throws DaoConfigurationException, ServiceException {
     	LOGGER.info("BeforeClass in IT ajouter computer");
         ajout = new Computer("nameValid",
                 ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
@@ -63,7 +65,7 @@ public class AjouterComputerIT extends SeleniumSuite {
     	LOGGER.info("ajoutTextcomputerName : " + name);
         driver.findElement(By.id("computerName")).sendKeys(name);
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        assertEquals(name, driver.findElement(By.id("computerName")).getAttribute("value"));
+        assertEquals(name, driver.findElement(By.id(JspRessources.FORM_COMPUTER_PARAM_NAME)).getAttribute("value"));
         LOGGER.info("fin ajoutTextcomputerName");
     }
 
@@ -97,20 +99,24 @@ public class AjouterComputerIT extends SeleniumSuite {
     private void ajoutTextCompanyIdName(Company company) {
     	LOGGER.info("ajoutTextCompanyIdName : " + company);
         if (company != null) {
-            WebElement select = driver.findElement(By.id("companyId"));
+        	LOGGER.info("Passage dans le if");
+            WebElement select = driver.findElement(By.id(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY));
+            LOGGER.info("Récupération de l'idcompany");
             List<WebElement> options = select.findElements(By.tagName("option"));
+            LOGGER.info("Récupération de l'élément by tag");
             for (WebElement option : options) {
                 if (option.getText().equals(company.getName())) {
                     option.click();
                     break;
                 }
             }
+            LOGGER.info("Juste après la sélection de l'élément");
             driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-            Assert.assertEquals(new Long(company.getId()), Long.valueOf(driver.findElement(By.id("companyId")).getAttribute("value")));
+            Assert.assertEquals(new Long(company.getId()), Long.valueOf(driver.findElement(By.id(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY)).getAttribute("value")));
 
         } else {
             driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-            Assert.assertEquals(new Long(-1), Long.valueOf(driver.findElement(By.id("companyId")).getAttribute("value")));
+            Assert.assertEquals(new Long(-1), Long.valueOf(driver.findElement(By.id(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY)).getAttribute("value")));
         }
         LOGGER.info(" fin ajoutTextCompanyIdName : ");
     }
@@ -123,17 +129,18 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutOk() throws ServiceException, DaoException {
     	LOGGER.info("ajoutButtonAjoutOk");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
         this.ajoutTextComputerName(ajout.getName());
         this.ajoutTextIntroduced(ajout.getIntroduced());
         this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        LOGGER.info("Juste avant le bouton add");
+        driver.findElement(By.id(JspRessources.BUTTON_ADD)).click();
         String result = "";
-        LOGGER.info("Modification work: test result");
+        LOGGER.info("Button add ok Modification work: test result");
         try {
             Thread.sleep(300L);
-            result = driver.findElement(By.id("success")).getText();
+            result = driver.findElement(By.id(JspRessources.SUCCESS)).getText();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -149,17 +156,17 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForName() throws ServiceException, DaoException {
     	LOGGER.info("verifyAjouterButtonAjoutFailForName");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
         this.ajoutTextComputerName(NAMEINVALID);
         this.ajoutTextIntroduced(ajout.getIntroduced());
         this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        driver.findElement(By.id(JspRessources.BUTTON_ADD)).click();
         String result = "";
         LOGGER.info("Modification work: test result");
         try {
             Thread.sleep(300L);
-            result = driver.findElement(By.id("error")).getText();
+            result = driver.findElement(By.id(JspRessources.ERROR)).getText();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -175,17 +182,17 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForIntroduced() throws ServiceException, DaoException {
     	LOGGER.info("verifyAjouterButtonAjoutFailForIntroduced");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
         this.ajoutTextComputerName(ajout.getName());
         this.ajoutTextIntroduced(ajout.getIntroduced().minus(Period.ofYears(100)));
         this.ajoutTextDiscontinued(ajout.getDiscontinued());
         this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        driver.findElement(By.id(JspRessources.BUTTON_ADD)).click();
         String result = "";
         LOGGER.info("Modification work: test result");
         try {
             Thread.sleep(300L);
-            result = driver.findElement(By.id("error")).getText();
+            result = driver.findElement(By.id(JspRessources.ERROR)).getText();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -201,17 +208,17 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForDiscontinued() throws ServiceException, DaoException {
     	LOGGER.info("verifyAjouterButtonAjoutFailForDiscontinued");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
         this.ajoutTextComputerName(ajout.getName());
         this.ajoutTextIntroduced(ajout.getIntroduced());
         this.ajoutTextDiscontinued(ajout.getDiscontinued().minus(Period.ofYears(100)));
         this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        driver.findElement(By.id(JspRessources.BUTTON_ADD)).click();
         String result = "";
         LOGGER.info("Modification work: test result");
         try {
             Thread.sleep(300L);
-            result = driver.findElement(By.id("error")).getText();
+            result = driver.findElement(By.id(JspRessources.ERROR)).getText();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -227,17 +234,17 @@ public class AjouterComputerIT extends SeleniumSuite {
     public void verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
     	LOGGER.info("verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced");
         driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-        driver.get("http://localhost:" + PORT + "/computer_db/computer?action=add_form_computer");
+        driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
         this.ajoutTextComputerName(ajout.getName());
         this.ajoutTextIntroduced(ajout.getDiscontinued());
         this.ajoutTextDiscontinued(ajout.getIntroduced());
         this.ajoutTextCompanyIdName(ajout.getCompany());
-        driver.findElement(By.id("buttonAjout")).click();
+        driver.findElement(By.id(JspRessources.BUTTON_ADD)).click();
         String result = "";
         LOGGER.info("Modification work: test result");
         try {
             Thread.sleep(300L);
-            result = driver.findElement(By.id("error")).getText();
+            result = driver.findElement(By.id(JspRessources.ERROR)).getText();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

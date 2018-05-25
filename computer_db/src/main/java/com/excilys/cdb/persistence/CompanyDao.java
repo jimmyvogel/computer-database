@@ -17,6 +17,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.persistence.exceptions.DaoCharacterSpeciauxException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.mysql.jdbc.Statement;
 
@@ -57,7 +58,7 @@ public class CompanyDao implements Dao<Company> {
 	 * @return une référence sur le singleton company dao
 	 */
 	public List<Company> getAll() {
-		return jt.query(SQL_ALL_COMPANIES, new MapperCompany());
+		return jt.query(SQL_ALL_COMPANIES, new RowMapperCompany());
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class CompanyDao implements Dao<Company> {
 	public Optional<Company> getById(final long id) {
 		Company company = null;
 		try {
-			company = jt.queryForObject(SQL_ONE_COMPANY, new MapperCompany(), id);
+			company = jt.queryForObject(SQL_ONE_COMPANY, new RowMapperCompany(), id);
 		} catch (EmptyResultDataAccessException e) {
 		}
 
@@ -85,7 +86,7 @@ public class CompanyDao implements Dao<Company> {
 		if (name == null) {
 			throw new DaoException("Illegal argument exceptions");
 		}
-		return jt.query(SQL_SEARCH_ALL_COMPANY, new MapperCompany(), "%" + name + "%");
+		return jt.query(SQL_SEARCH_ALL_COMPANY, new RowMapperCompany(), "%" + name + "%");
 	}
 
 	/**
@@ -144,7 +145,7 @@ public class CompanyDao implements Dao<Company> {
 			throw new DaoException("Illegal argument exceptions");
 		}
 		Page<Company> page = new Page<Company>(limit, (int) this.getCount());
-		List<Company> companies = jt.query(SQL_PAGE_COMPANY, new MapperCompany(), page.getLimit(),
+		List<Company> companies = jt.query(SQL_PAGE_COMPANY, new RowMapperCompany(), page.getLimit(),
 				page.offset(numeroPage));
 		page.charge(companies, numeroPage);
 		return page;
@@ -174,7 +175,7 @@ public class CompanyDao implements Dao<Company> {
 			throw new DaoException("Illegal argument exceptions");
 		}
 		Page<Company> page = new Page<Company>(limit, (int) this.getSearchCount(search));
-		List<Company> companies = jt.query(SQL_SEARCH_PAGE_COMPANY, new MapperCompany(), "%" + search + "%",
+		List<Company> companies = jt.query(SQL_SEARCH_PAGE_COMPANY, new RowMapperCompany(), "%" + search + "%",
 				page.getLimit(), page.offset(numeroPage));
 		page.charge(companies, numeroPage);
 		return page;
@@ -217,7 +218,7 @@ public class CompanyDao implements Dao<Company> {
 	 */
 	public long create(final Company company) throws DaoException {
 		if (company == null || company.getName() == null) {
-			throw new DaoException("Illegal argument exceptions");
+			throw new DaoCharacterSpeciauxException();
 		}
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jt.update((c) -> {

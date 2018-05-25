@@ -15,8 +15,8 @@ public class DateValidationTest {
     public void testValidationDateOk() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime now = LocalDateTime.now();
-        Assert.assertNotNull(DateValidation.validationDate(formatter.format(now)));
-        Assert.assertNotNull(DateValidation.validationDate(now.toString()));
+        Assert.assertNotNull(DateValidation.validDateFormat(formatter.format(now)));
+        Assert.assertNotNull(DateValidation.validDateFormat(now.toString()));
     }
 
     /**
@@ -26,7 +26,7 @@ public class DateValidationTest {
     public void testValidationDateFailRegex() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy-dd");
         LocalDateTime now = LocalDateTime.now();
-        Assert.assertNull(DateValidation.validationDate(formatter.format(now)));
+        Assert.assertNull(DateValidation.validDateFormat(formatter.format(now)));
     }
 
     /**
@@ -34,7 +34,7 @@ public class DateValidationTest {
      */
     @Test
     public void testValidationDateStringEmpty() {
-        Assert.assertNull(DateValidation.validationDate(""));
+        Assert.assertNull(DateValidation.validDateFormat(""));
     }
 
     /**
@@ -42,7 +42,7 @@ public class DateValidationTest {
      */
     @Test
     public void testValidationDateStringNull() {
-        Assert.assertNull(DateValidation.validationDate(null));
+        Assert.assertNull(DateValidation.validDateFormat(null));
     }
 
 }

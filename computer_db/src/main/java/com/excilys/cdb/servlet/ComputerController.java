@@ -17,6 +17,7 @@ import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.servlet.ressources.DefaultValues;
@@ -32,7 +33,7 @@ public class ComputerController {
 	@Autowired
 	private ComputerService serviceComputer;
 	@Autowired
-	private ComputerService serviceCompany;
+	private CompanyService serviceCompany;
 
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";

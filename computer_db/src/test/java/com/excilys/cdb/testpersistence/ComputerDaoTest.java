@@ -25,12 +25,12 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.ComputerDao;
 import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.testconfig.TestSuite;
+import com.excilys.cdb.testconfig.JunitSuite;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class ComputerDaoTest extends TestSuite {
+public class ComputerDaoTest extends JunitSuite {
 
     @Mock
     private HikariDataSource dataSource;
@@ -68,12 +68,12 @@ public class ComputerDaoTest extends TestSuite {
 
     /**
      * Initialisation.
-     * @throws DAOConfigurationException erreur de configuration.
+     * @throws DaoConfigurationException erreur de configuration.
      * @throws DaoException erreur de requête.
      */
     @Before
     public void initialisation()
-            throws DAOConfigurationException, DaoException {
+            throws DaoConfigurationException, DaoException {
         MockitoAnnotations.initMocks(this);
 
         computerValid = dao.getPage(1).getObjects().get(0);

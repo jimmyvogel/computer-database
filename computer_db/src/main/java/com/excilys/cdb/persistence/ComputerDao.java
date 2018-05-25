@@ -19,13 +19,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.exceptions.DaoCharacterSpeciauxException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.persistence.exceptions.DaoIllegalArgumentException;
+import com.excilys.cdb.validator.SecurityTextValidation;
 import com.mysql.jdbc.Statement;
 
 /**
  * Classe contenant les requêtes possibles sur la table des computer de la base
- * de donnée.
+ * de donnée, pas de gestion de validité, mais regestion de la sécurité.
  * @author vogel
  *
  */
@@ -70,7 +72,7 @@ public class ComputerDao implements Dao<Computer> {
 	 * @return une liste
 	 */
 	public List<Computer> getAll() {
-		return jt.query(SQL_ALL_COMPUTERS, new MapperComputer());
+		return jt.query(SQL_ALL_COMPUTERS, new RowMapperComputer());
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class ComputerDao implements Dao<Computer> {
 	public Optional<Computer> getById(long id) {
 		Computer computer = null;
 		try {
-			computer = jt.queryForObject(SQL_ONE_COMPUTER, new MapperComputer(), id);
+			computer = jt.queryForObject(SQL_ONE_COMPUTER, new RowMapperComputer(), id);
 		} catch (EmptyResultDataAccessException e) {
 		}
 
@@ -95,7 +97,7 @@ public class ComputerDao implements Dao<Computer> {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	public List<Computer> getByName(String name) throws DaoException {
-		return jt.query(SQL_SEARCH_ALL_COMPUTER, new MapperComputer(), "%" + name + "%", "%" + name + "%");
+		return jt.query(SQL_SEARCH_ALL_COMPUTER, new RowMapperComputer(), "%" + name + "%", "%" + name + "%");
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class ComputerDao implements Dao<Computer> {
 			throw new DaoIllegalArgumentException();
 		}
 		Page<Computer> page = new Page<Computer>(limit, (int) this.getCount());
-		List<Computer> computers = jt.query(SQL_PAGE_COMPUTER, new MapperComputer(), page.getLimit(),
+		List<Computer> computers = jt.query(SQL_PAGE_COMPUTER, new RowMapperComputer(), page.getLimit(),
 				page.offset(numeroPage));
 		page.charge(computers, numeroPage);
 		return page;
@@ -259,8 +261,11 @@ public class ComputerDao implements Dao<Computer> {
 		if (search == null || numeroPage < 1 || limit < 1) {
 			throw new DaoIllegalArgumentException();
 		}
+		if (!SecurityTextValidation.valideString(search)) {
+			throw new DaoCharacterSpeciauxException();
+		}
 		Page<Computer> page = new Page<Computer>(limit, (int) this.getSearchCount(search));
-		List<Computer> companies = jt.query(SQL_SEARCH_PAGE_COMPUTER, new MapperComputer(), "%" + search + "%",
+		List<Computer> companies = jt.query(SQL_SEARCH_PAGE_COMPUTER, new RowMapperComputer(), "%" + search + "%",
 				"%" + search + "%", page.getLimit(), page.offset(numeroPage));
 		page.charge(companies, numeroPage);
 		return page;

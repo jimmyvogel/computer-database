@@ -423,7 +423,7 @@ public class UIController {
 			break;
 		case INTRODUCED:
 			if (!ligne.equals("no")) {
-				timeInter = DateValidation.validationDate(ligne);
+				timeInter = DateValidation.validDateFormat(ligne);
 				if (timeInter == null) {
 					view.setAffichage("Error" + UITextes.AJOUT_INTRODUCED);
 					stateAjout = Ajout.NAME;
@@ -435,7 +435,7 @@ public class UIController {
 			break;
 		case DISCONTINUED:
 			if (!ligne.equals("no")) {
-				timeInter = DateValidation.validationDate(ligne);
+				timeInter = DateValidation.validDateFormat(ligne);
 				if (timeInter == null) {
 					view.setAffichage("Error" + UITextes.AJOUT_DISCONTINUED);
 					stateAjout = Ajout.INTRODUCED;
@@ -494,25 +494,25 @@ public class UIController {
 			break;
 		case INTRODUCED:
 			if (!ligne.equals("no")) {
-				timeInter = DateValidation.validationDate(ligne);
+				timeInter = DateValidation.validDateFormat(ligne);
 				if (timeInter == null) {
 					view.setAffichage("Error" + UITextes.UPDATE_INTRODUCED);
 					stateUpdate = Update.NAME;
 					break;
 				}
-				inter.setIntroduced(DateValidation.validationDate(ligne));
+				inter.setIntroduced(DateValidation.validDateFormat(ligne));
 			}
 			view.setAffichage(UITextes.UPDATE_DISCONTINUED);
 			break;
 		case DISCONTINUED:
 			if (!ligne.equals("no")) {
-				timeInter = DateValidation.validationDate(ligne);
+				timeInter = DateValidation.validDateFormat(ligne);
 				if (timeInter != null) {
 					view.setAffichage("Error" + UITextes.UPDATE_DISCONTINUED);
 					stateUpdate = Update.INTRODUCED;
 					break;
 				}
-				inter.setDiscontinued(DateValidation.validationDate(ligne));
+				inter.setDiscontinued(DateValidation.validDateFormat(ligne));
 			}
 			view.setAffichage(UITextes.UPDATE_COMPANY_ID);
 			break;

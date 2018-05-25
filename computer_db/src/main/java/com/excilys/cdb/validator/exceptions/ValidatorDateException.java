@@ -7,7 +7,6 @@ public class ValidatorDateException extends Exception {
     /**
      */
     private static final long serialVersionUID = -9132599808149416148L;
-    private String reason;
 
     /**
      * Exception de type date dans la validation.
@@ -16,10 +15,5 @@ public class ValidatorDateException extends Exception {
      */
     public ValidatorDateException(LocalDateTime date, String reason) {
         super(date + " not valid : " + reason);
-        this.reason = reason;
-    }
-
-    public String getReason() {
-        return reason;
     }
 }

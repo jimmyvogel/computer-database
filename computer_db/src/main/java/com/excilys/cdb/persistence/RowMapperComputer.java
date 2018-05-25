@@ -13,7 +13,7 @@ import com.excilys.cdb.model.Computer;
  * @author vogel
  *
  */
-public class MapperComputer implements RowMapper<Computer> {
+public class RowMapperComputer implements RowMapper<Computer> {
 
 	@Override
 	public Computer mapRow(ResultSet result, int rownumber) throws SQLException {

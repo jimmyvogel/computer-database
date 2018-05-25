@@ -40,7 +40,7 @@
 					<td>
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
 					</td>
-					<c:url value="computer/${applicationScope.actions.EDIT_FORM_COMPUTER}" var="urlEditFormComputer">
+					<c:url value="${applicationScope.actions.EDIT_FORM_COMPUTER}" var="urlEditFormComputer">
 		 				<c:param name="id" value="${computer.id}"/>
 	  				</c:url>
 					<td><a href="${urlEditFormComputer}">${computer.name}</a></td>

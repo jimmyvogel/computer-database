@@ -3,14 +3,13 @@ package com.excilys.cdb.validator;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
- * Validator for the instance variables of a computer.
+ * Validator for the instance variables of a computer. Return exceptions when fail.
  * @author vogel
  *
  */
@@ -52,18 +51,6 @@ public class ComputerValidator {
     }
 
     /**
-     * Validation arguments constructor.
-     * @param name name du computer
-     * @param introduced introduced en string
-     * @param discontinued discontinued en string
-     * @param idCompany l'id de la company
-     * @return renvoi le computer valide ou null.
-     */
-    public static Optional<Computer> validComputer(String name, String introduced, String discontinued, String idCompany) {
-    	return null;
-    }
-
-    /**
      * Validator for instance variable name of a computer.
      * @param name the variable to test
      * @return String contenant le nom valid avec possible traitement.
@@ -73,6 +60,9 @@ public class ComputerValidator {
         if (name == null) {
             throw new ValidatorStringException("null", "Le nom est null");
         }
+    	if (!SecurityTextValidation.valideString(name)) {
+    		throw new ValidatorStringException(name, "Le nom contient des characters non valide.");
+    	}
         if (name.length() < TAILLE_MIN_NAME) {
             throw new ValidatorStringException(name,
                     "Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");

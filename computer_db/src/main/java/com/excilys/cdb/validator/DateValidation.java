@@ -16,7 +16,7 @@ public class DateValidation {
      * @return Une LocalDateTime spécifié par l'utilisateur ou null si une
      *         erreur.
      */
-    public static LocalDateTime validationDate(final String ligne) {
+    public static LocalDateTime validDateFormat(final String ligne) {
         LocalDateTime dateTime = null;
         if (ligne != null) {
             String regex = "^\\d{4}-\\d{2}-\\d{2}$"; // (yyyy-MM-dd)

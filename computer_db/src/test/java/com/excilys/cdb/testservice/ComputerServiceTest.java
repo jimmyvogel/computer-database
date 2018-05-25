@@ -19,17 +19,17 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.testconfig.TestSuite;
+import com.excilys.cdb.testconfig.JunitSuite;
 import com.excilys.cdb.validator.ComputerValidator;
 
-public class ComputerServiceTest extends TestSuite {
+public class ComputerServiceTest extends JunitSuite {
 
     private static ComputerService serviceComputer;
     private static CompanyService serviceCompany;
@@ -71,13 +71,13 @@ public class ComputerServiceTest extends TestSuite {
 
     /**
      * Initialisation des données avant les tests.
-     * @throws DAOConfigurationException erreur de configuration.
+     * @throws DaoConfigurationException erreur de configuration.
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
     @Before
     public void initialisation()
-            throws DAOConfigurationException, ServiceException, DaoException {
+            throws DaoConfigurationException, ServiceException, DaoException {
         MockitoAnnotations.initMocks(this);
         nbComputers = serviceComputer.count();
         nbCompany = serviceCompany.count();

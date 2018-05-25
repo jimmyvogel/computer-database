@@ -14,17 +14,21 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.CompanyValidator;
-import com.excilys.cdb.validator.TextValidation;
+import com.excilys.cdb.validator.SecurityTextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer et
  * de la table company qui lui est lié.
+ * (dev)Gestion de la validation des formats des arguments via paramètres dans le service.
+ * 		Gestion de la validité des références.
+ * 	    Gestion de la securité des arguments.
+ * 	    Gestion des exceptions de type validation, ou dao.
  * @author vogel
  *
  */
@@ -38,9 +42,9 @@ public class CompanyService {
 	/**
 	 * Récupérer une instance de type computerServiceImpl.
 	 * @return une référence sur le singleton ComputerServiceImpl.
-	 * @throws DAOConfigurationException erreur de configuration
+	 * @throws DaoConfigurationException erreur de configuration
 	 */
-	public CompanyService getInstance() throws DAOConfigurationException {
+	public CompanyService getInstance() throws DaoConfigurationException {
 		Logger logger = LoggerFactory.getLogger(CompanyService.class);
 		logger.info("Initialisation du singleton computer service");
 		CompanyService service = new CompanyService();
@@ -66,8 +70,13 @@ public class CompanyService {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	public List<Company> getByName(String name) throws ServiceException, DaoException {
-		String nameTraiter = TextValidation.traitementString(name);
-		return companyDao.getByName(nameTraiter);
+		if (name == null || name.isEmpty()) {
+			throw new ServiceException("La recherche ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
+		return companyDao.getByName(name);
 	}
 
 	/**
@@ -111,14 +120,19 @@ public class CompanyService {
 	 */
 	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
+		if (search == null) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(search)) {
+			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+		}
 		Page<Company> pageComputer = new Page<Company>(0, 0);
-		String searchTraiter = TextValidation.traitementString(search);
 		if (search != null) {
 			try {
 				if (limit == null) {
-					pageComputer = companyDao.getPageSearch(searchTraiter, page);
+					pageComputer = companyDao.getPageSearch(search, page);
 				} else {
-					pageComputer = companyDao.getPageSearch(searchTraiter, page, limit);
+					pageComputer = companyDao.getPageSearch(search, page, limit);
 				}
 			} catch (DaoException e) {
 				throw new ServiceException("Méthode dao fail", e);
@@ -148,14 +162,18 @@ public class CompanyService {
 	 */
 	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
-
-		String nameTraiter = TextValidation.traitementString(name);
+		if (name == null || name.isEmpty()) {
+			throw new ServiceException("Le nom ne peut pas être null ou empty");
+		}
+		if (!SecurityTextValidation.valideString(name)) {
+			throw new ServiceException("Le nom ne pas pas contenir des characters spéciaux illégaux.");
+		}
 		try {
-			CompanyValidator.validName(nameTraiter);
-			Company c = new Company(nameTraiter);
+			CompanyValidator.validName(name);
+			Company c = new Company(name);
 			result = companyDao.create(c);
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(nameTraiter, e.getReason());
+			throw new NameInvalidException(name, e.getMessage());
 		}
 		return result;
 	}
@@ -167,23 +185,22 @@ public class CompanyService {
 	 * @throws DaoException erreur de requête
 	 */
 	public boolean delete(long id) throws DaoException {
-		if (id < 1) {
-			return false;
-		}
 		return companyDao.delete(id);
 	}
 
 	/**
 	 * Détruire plusieurs compagnies.
 	 * @param ids id(s) des compagnies à supprimer
-	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
+	 * @throws ServiceException suppression fail.
 	 */
-	public boolean deleteAll(Set<Long> ids) throws DaoException {
+	public void deleteAll(Set<Long> ids) throws DaoException, ServiceException {
 		if (ids == null || ids.size() == 0) {
-			return false;
+			throw new ServiceException("Aucun éléments selectionnés");
 		}
-		return companyDao.deleteAll(ids);
+		if (!companyDao.deleteAll(ids)) {
+			throw new ServiceException("La suppression n'a pas abouti.");
+		}
 	}
 
 	/**

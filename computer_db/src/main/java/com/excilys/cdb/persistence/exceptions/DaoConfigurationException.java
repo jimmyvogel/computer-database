@@ -1,6 +1,6 @@
 package com.excilys.cdb.persistence.exceptions;
 
-public class DAOConfigurationException extends RuntimeException {
+public class DaoConfigurationException extends RuntimeException {
 
     /**
      */
@@ -10,7 +10,7 @@ public class DAOConfigurationException extends RuntimeException {
      * Constructor de l'exception.
      * @param string le problème
      */
-    public DAOConfigurationException(String string) {
+    public DaoConfigurationException(String string) {
         super(string);
     }
 
@@ -19,7 +19,7 @@ public class DAOConfigurationException extends RuntimeException {
      * @param string le problème
      * @param e l'exception précédente
      */
-    public DAOConfigurationException(String string, Exception e) {
+    public DaoConfigurationException(String string, Exception e) {
         super(string, e);
     }
 

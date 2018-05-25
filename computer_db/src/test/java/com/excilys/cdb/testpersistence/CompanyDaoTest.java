@@ -21,12 +21,12 @@ import org.mockito.MockitoAnnotations;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.persistence.exceptions.DAOConfigurationException;
+import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.testconfig.TestSuite;
+import com.excilys.cdb.testconfig.JunitSuite;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class CompanyDaoTest extends TestSuite {
+public class CompanyDaoTest extends JunitSuite {
 
     @Mock
     private HikariDataSource dataSource;
@@ -45,14 +45,14 @@ public class CompanyDaoTest extends TestSuite {
 
     /**
      * Initialisation.
-     * @throws DAOConfigurationException
+     * @throws DaoConfigurationException
      *             erreur de configuration
      * @throws DaoException
      *             erreur de requête
      */
     @Before
     public void initialisation()
-            throws DAOConfigurationException, DaoException {
+            throws DaoConfigurationException, DaoException {
         MockitoAnnotations.initMocks(this);
         companyValid = dao.getPage(1).getObjects().get(0);
     }
