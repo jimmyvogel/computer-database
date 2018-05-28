@@ -1,5 +1,8 @@
 package com.excilys.cdb.persistence.exceptions;
 
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+
 public class DaoCharacterSpeciauxException extends DaoException {
 
 	/**
@@ -10,7 +13,7 @@ public class DaoCharacterSpeciauxException extends DaoException {
 	 * Constructor.
 	 */
 	public DaoCharacterSpeciauxException() {
-		super("Charactères spéciaux interdits");
+		super(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
 	}
 
 }

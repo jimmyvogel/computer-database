@@ -1,15 +1,14 @@
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
 <section id="main">
 	<div class="container">	
-		Bienvenue sur Computer Database!!!
-		
-		Sur ce dashboard, il est possible de:
-		
+	<spring:message code="home.welcome.title"/>
 		<ul>
-			<li>Ajouter un computer</li>
-			<li>Voir les computers</li>
-			<li>Voir les companies</li>
-			<li>Modifier un computer</li>
+			<li><spring:message code="home.welcome.add"/></li>
+			<li><spring:message code="home.welcome.listcomputer"/></li>
+			<li><spring:message code="home.welcome.listcompany"/></li>
+			<li><spring:message code="home.welcome.modify"/></li>
 		</ul>
-		Ce site est en cours de production !!!!!!
+		<spring:message code="home.welcome.inprod"/>
 	</div>
 </section>

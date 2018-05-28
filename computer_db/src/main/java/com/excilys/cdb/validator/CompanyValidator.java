@@ -1,5 +1,10 @@
 package com.excilys.cdb.validator;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
@@ -20,13 +25,17 @@ public class CompanyValidator {
      */
     public static String validName(final String name) throws ValidatorStringException {
         if (name == null) {
-            throw new ValidatorStringException("Le nom est null");
+            throw new ValidatorStringException(
+            		ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, Collections.singleton(name).toArray()));
         }
         if (name.length() < TAILLE_MIN_NAME) {
-            throw new ValidatorStringException("Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
+            throw new ValidatorStringException(
+            		ExceptionHandler.getMessage(
+            				MessageException.VALIDATION_NAME_SHORT, Arrays.asList(name, TAILLE_MIN_NAME).toArray()));
         }
         if (name.length() > TAILLE_MAX_NAME) {
-            throw new ValidatorStringException("Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
+            throw new ValidatorStringException(ExceptionHandler.getMessage(
+    				MessageException.VALIDATION_NAME_LONG, Arrays.asList(name, TAILLE_MAX_NAME).toArray()));
         }
         return name;
     }

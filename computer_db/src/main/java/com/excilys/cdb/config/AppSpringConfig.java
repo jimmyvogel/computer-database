@@ -1,7 +1,8 @@
-package com.excilys.cdb.webconfig;
+package com.excilys.cdb.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -12,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,13 +25,16 @@ import com.zaxxer.hikari.HikariDataSource;
  *
  */
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet", "com.excilys.cdb.service.exceptions" })
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet",
+		"com.excilys.cdb.exception" })
 public class AppSpringConfig {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";
 	private static final String PROPERTY_URL = "url";
 	private static final String PROPERTY_NOM_UTILISATEUR = "username";
 	private static final String PROPERTY_MOT_DE_PASSE = "password";
+
+	private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
 	/**
 	 * Initialisation de hikaridatasource.
@@ -43,16 +49,17 @@ public class AppSpringConfig {
 		HikariConfig config = new HikariConfig();
 		HikariDataSource ds;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(DRIVER_CLASS_NAME);
 		} catch (ClassNotFoundException e) {
-			throw new DaoConfigurationException("Driver introuvable");
+			throw new DaoConfigurationException(ExceptionHandler.getMessage(MessageException.BDD_CONFIG_DRIVER, null));
 		}
 
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fichierProperties = classLoader.getResourceAsStream(FICHIER_PROPERTIES);
 		if (fichierProperties == null) {
-			throw new DaoConfigurationException("Le fichier properties " + FICHIER_PROPERTIES + " est introuvable.");
+			throw new DaoConfigurationException(ExceptionHandler.getMessage(MessageException.BDD_CONFIG_FILE_NOT_FOUND,
+					Collections.singleton(FICHIER_PROPERTIES).toArray()));
 		}
 		try {
 			properties.load(fichierProperties);
@@ -61,7 +68,8 @@ public class AppSpringConfig {
 			config.setPassword(properties.getProperty(PROPERTY_MOT_DE_PASSE));
 			ds = new HikariDataSource(config);
 		} catch (IOException e) {
-			throw new DaoConfigurationException("Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
+			throw new DaoConfigurationException(
+					ExceptionHandler.getMessage(MessageException.BDD_CONFIG_FILE_FAIL, null), e);
 		}
 		return ds;
 	}

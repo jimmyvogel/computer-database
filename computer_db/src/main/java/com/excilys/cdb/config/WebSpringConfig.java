@@ -1,4 +1,4 @@
-package com.excilys.cdb.webconfig;
+package com.excilys.cdb.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet", "com.excilys.cdb.service.exceptions" })
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet", "com.excilys.cdb.exception" })
 public class WebSpringConfig implements WebMvcConfigurer {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";

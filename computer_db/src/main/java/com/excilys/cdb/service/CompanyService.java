@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CompanyDao;
 import com.excilys.cdb.persistence.Page;
@@ -71,10 +73,10 @@ public class CompanyService {
 	 */
 	public List<Company> getByName(String name) throws ServiceException, DaoException {
 		if (name == null || name.isEmpty()) {
-			throw new ServiceException("La recherche ne peut pas être null ou empty");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
 		}
 		return companyDao.getByName(name);
 	}
@@ -105,7 +107,7 @@ public class CompanyService {
 				pageCompany = companyDao.getPage(page, limit);
 			}
 		} catch (DaoException e) {
-			throw new ServiceException("Méthode dao fail", e);
+			throw new ServiceException(e.getMessage());
 		}
 		return pageCompany;
 	}
@@ -121,10 +123,10 @@ public class CompanyService {
 	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
-			throw new ServiceException("Le nom ne peut pas être null ou empty");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(search)) {
-			throw new ServiceException("La recherche contient des characters spéciaux illégaux.");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
 		}
 		Page<Company> pageComputer = new Page<Company>(0, 0);
 		if (search != null) {
@@ -135,7 +137,7 @@ public class CompanyService {
 					pageComputer = companyDao.getPageSearch(search, page, limit);
 				}
 			} catch (DaoException e) {
-				throw new ServiceException("Méthode dao fail", e);
+				throw new ServiceException(e.getMessage());
 			}
 		}
 		return pageComputer;
@@ -163,17 +165,17 @@ public class CompanyService {
 	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
 		if (name == null || name.isEmpty()) {
-			throw new ServiceException("Le nom ne peut pas être null ou empty");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException("Le nom ne pas pas contenir des characters spéciaux illégaux.");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
 		}
 		try {
 			CompanyValidator.validName(name);
 			Company c = new Company(name);
 			result = companyDao.create(c);
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(name, e.getMessage());
+			throw new NameInvalidException(e.getMessage());
 		}
 		return result;
 	}
@@ -196,10 +198,10 @@ public class CompanyService {
 	 */
 	public void deleteAll(Set<Long> ids) throws DaoException, ServiceException {
 		if (ids == null || ids.size() == 0) {
-			throw new ServiceException("Aucun éléments selectionnés");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
 		if (!companyDao.deleteAll(ids)) {
-			throw new ServiceException("La suppression n'a pas abouti.");
+			throw new ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL, null));
 		}
 	}
 

@@ -1,5 +1,10 @@
 package com.excilys.cdb.persistence.exceptions;
 
+import java.util.Collections;
+
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+
 public class CompanyNotFoundException extends DaoException {
 
     /**
@@ -11,7 +16,7 @@ public class CompanyNotFoundException extends DaoException {
      * @param id the id specified.
      */
     public CompanyNotFoundException(long id) {
-        super("Company id (" + id + ") is not valid");
+        super(ExceptionHandler.getMessage(MessageException.COMPANY_NOT_FOUND, Collections.singleton(id).toArray()));
     }
 
 }

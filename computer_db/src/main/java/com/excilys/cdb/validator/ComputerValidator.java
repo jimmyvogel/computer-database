@@ -3,7 +3,10 @@ package com.excilys.cdb.validator;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
@@ -38,14 +41,13 @@ public class ComputerValidator {
 
         //Discontinued without introduced
         if (computer.getDiscontinued() != null && computer.getIntroduced() == null) {
-            throw new ValidatorDateException("Computer introduced is null and discontinued is not.");
+            throw new ValidatorDateException(ExceptionHandler.getMessage(MessageException.COMPUTER_DISCONTINUED_ALONE, null));
         }
 
         //Discontinued and introduced but discontinued before
         if (computer.getIntroduced()   != null && computer.getDiscontinued() != null
                 && computer.getIntroduced().isAfter(computer.getDiscontinued())) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            throw new ValidatorDateException("Computer introduced is after computer discontinued.");
+            throw new ValidatorDateException(ExceptionHandler.getMessage(MessageException.COMPUTER_INTRODUCED_AFTER, null));
         }
         return computer;
     }
@@ -58,16 +60,18 @@ public class ComputerValidator {
      */
     public static String validName(String name) throws ValidatorStringException {
         if (name == null) {
-            throw new ValidatorStringException("Le nom est null");
+            throw new ValidatorStringException(ExceptionHandler.getMessage(
+    				MessageException.VALIDATION_NAME_NULL, null));
         }
     	if (!SecurityTextValidation.valideString(name)) {
-    		throw new ValidatorStringException("Le nom contient des characters non valide.");
+    		throw new ValidatorStringException(ExceptionHandler.getMessage(
+    				MessageException.SPECIAL_CHARACTERS, null));
     	}
         if (name.length() < TAILLE_MIN_NAME) {
-            throw new ValidatorStringException("Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
+            throw new ValidatorStringException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_SHORT, Arrays.asList(name, TAILLE_MIN_NAME).toArray()));
         }
         if (name.length() > TAILLE_MAX_NAME) {
-            throw new ValidatorStringException("Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
+            throw new ValidatorStringException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_LONG, Arrays.asList(name, TAILLE_MIN_NAME).toArray()));
         }
         return name;
     }
@@ -82,7 +86,8 @@ public class ComputerValidator {
         if (introduced != null) {
             if (!DateValidation.validDateInBetween(introduced, BEGIN_DATE_VALID, END_DATE_VALID)) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                throw new ValidatorDateException("Introduced date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
+                Object[] o = Arrays.asList(BEGIN_DATE_VALID.format(formatter), END_DATE_VALID.format(formatter)).toArray();
+                throw new ValidatorDateException(ExceptionHandler.getMessage(MessageException.VALIDATION_DATE_INTRODUCED, o));
             }
         }
         return introduced;
@@ -98,7 +103,8 @@ public class ComputerValidator {
         if (discontinued != null) {
             if (!DateValidation.validDateInBetween(discontinued, BEGIN_DATE_VALID, END_DATE_VALID)) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                throw new ValidatorDateException("Discontinued date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
+                Object[] o = Arrays.asList(BEGIN_DATE_VALID.format(formatter), END_DATE_VALID.format(formatter)).toArray();
+                throw new ValidatorDateException(ExceptionHandler.getMessage(MessageException.VALIDATION_DATE_DISCONTINUED, o));
             }
         }
         return discontinued;

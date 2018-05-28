@@ -11,7 +11,7 @@ public class DateInvalidException extends ServiceException {
      * @param reason la raison de l'erreur
      */
     public DateInvalidException(String reason) {
-        super("La date est invalid car : " + reason);
+        super(reason);
     }
 
 }

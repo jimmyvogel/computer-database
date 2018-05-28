@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.excilys.cdb.config.AppSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
@@ -18,7 +19,6 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
 import com.excilys.cdb.vue.UITextes;
 import com.excilys.cdb.vue.UIView;
-import com.excilys.cdb.webconfig.AppSpringConfig;
 
 /**
  * Controler de l'interface cli.

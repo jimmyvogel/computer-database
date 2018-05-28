@@ -8,17 +8,24 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service" })
-public class TestSpringConfig {
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.exception" })
+public class TestSpringConfig implements WebMvcConfigurer {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";
 	private static final String PROPERTY_URL = "url";
@@ -59,5 +66,35 @@ public class TestSpringConfig {
 			throw new DaoConfigurationException("Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e);
 		}
 		return ds;
+	}
+
+	/**
+	 * Ajout des fichiers de messages.
+	 * @return bena de type messagesource
+	 */
+	@Bean("messageSource")
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:strings");
+		messageSource.setDefaultEncoding("UTF-8");
+		messageSource.setUseCodeAsDefaultMessage(true);
+		return messageSource;
+	}
+
+	/**
+	 * Retourne le cookielocale resolver défaut.
+	 * @return bean de type localeResolver
+	 */
+	@Bean
+	public LocaleResolver localeResolver() {
+		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
+		return localeResolver;
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+		localeChangeInterceptor.setParamName("lang");
+		registry.addInterceptor(localeChangeInterceptor);
 	}
 }

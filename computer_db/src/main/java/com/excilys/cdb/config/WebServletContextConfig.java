@@ -1,4 +1,4 @@
-package com.excilys.cdb.webconfig;
+package com.excilys.cdb.config;
 
 import java.util.EnumSet;
 import java.util.HashMap;

@@ -1,5 +1,8 @@
 package com.excilys.cdb.persistence.exceptions;
 
+import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+
 public class DaoIllegalArgumentException extends DaoException {
 
 	/**
@@ -10,7 +13,7 @@ public class DaoIllegalArgumentException extends DaoException {
 	 * Constructor.
 	 */
 	public DaoIllegalArgumentException() {
-		super("Illegal arguments exception");
+		super(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 	}
 
 }
