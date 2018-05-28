@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DaoException;
@@ -24,7 +25,6 @@ import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.servlet.ressources.JspRessources;
 import com.excilys.cdb.servlet.ressources.UrlID;
 import com.excilys.cdb.servlet.ressources.UrlRessources;
-import com.excilys.cdb.validator.ComputerValidator;
 
 @Controller
 @RequestMapping("/computer")
@@ -100,7 +100,7 @@ public class ComputerController {
 			serviceComputer.deleteAll(set);
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
 			mv.addObject(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
-		} catch (DaoException e) {
+		} catch (DaoException | ServiceException e) {
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
@@ -121,15 +121,15 @@ public class ComputerController {
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS) {
 
-		Optional<Computer> c = ComputerValidator.validComputer(nameS, introducedS, discontinuedS, idCompanyS);
+		Optional<Computer> c = MapperComputer.map(nameS, introducedS, discontinuedS, idCompanyS);
 		ModelAndView mv = formAdd();
 		if (c.isPresent()) {
 			try {
 				serviceComputer.create(c.get());
+				mv.addObject(JspRessources.SUCCESS, "Create Computer success.");
 			} catch (ServiceException | DaoException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
-			mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 		} else {
 			mv.addObject(JspRessources.ERROR, "Invalide arguments");
 		}
@@ -157,22 +157,24 @@ public class ComputerController {
 	 * @param introducedS la date d'introduction
 	 * @param discontinuedS la date de termination
 	 * @param idCompanyS l'id de la company du computer
+	 * @param idComputerS l'id du computer à modifier.
 	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + EDIT_COMPUTER)
 	public ModelAndView edit(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED) String introducedS,
 			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS) {
-		ModelAndView mv = formAdd();
-		Optional<Computer> c = ComputerValidator.validComputer(nameS, introducedS, discontinuedS, idCompanyS);
+			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS,
+			@RequestParam(JspRessources.COMPUTER_ID) String idComputerS) {
+		ModelAndView mv = formEdit(idComputerS);
+		Optional<Computer> c = MapperComputer.map(idComputerS, nameS, introducedS, discontinuedS, idCompanyS);
 		if (c.isPresent()) {
 			try {
 				serviceComputer.update(c.get());
+				mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 			} catch (ServiceException | DaoException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
-			mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 		} else {
 			mv.addObject(JspRessources.ERROR, "Invalide arguments");
 		}
@@ -190,7 +192,6 @@ public class ComputerController {
 		ModelAndView mv = new ModelAndView(UrlRessources.FORM_EDIT_COMPUTER);
 		try {
 			mv.addObject(JspRessources.COMPUTER, new ComputerDTO(serviceComputer.get(id)));
-			mv.addObject(JspRessources.SUCCESS, "L'édition du computer a été validé.");
 		} catch (ServiceException | DaoException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}

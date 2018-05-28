@@ -19,11 +19,7 @@ public class WebSpringContext implements WebApplicationInitializer {
 		log.info("Startup of the application spring context");
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 		context.register(WebSpringConfig.class);
-		// ContextLoaderListener contextLoaderListener = new
-		// ContextLoaderListener(context);
-		// servletContext.addListener(contextLoaderListener);
 
-		// Create and register the DispatcherServlet
 		ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
 		servlet.setLoadOnStartup(1);
 		servlet.addMapping("/");

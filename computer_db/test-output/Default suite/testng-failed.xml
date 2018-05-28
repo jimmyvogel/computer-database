@@ -3,12 +3,15 @@
 <suite name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="com.excilys.cdb.selenium.AjouterComputerIT">
+      <class name="com.excilys.cdb.selenium.EditComputerIT">
         <methods>
-          <include name="verifyAjouterButtonAjoutOk"/>
+          <include name="verifyEditerbuttonEditFailForDiscontinuedBeforeIntroduced"/>
+          <include name="afterClass"/>
+          <include name="verifyEditerbuttonEditFailForDiscontinued"/>
           <include name="beforeClass"/>
+          <include name="verifyEditerbuttonEditFailForIntroduced"/>
         </methods>
-      </class> <!-- com.excilys.cdb.selenium.AjouterComputerIT -->
+      </class> <!-- com.excilys.cdb.selenium.EditComputerIT -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

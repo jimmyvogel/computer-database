@@ -17,4 +17,12 @@ public class HomeController {
 		return "accueil";
 	}
 
+	/**
+	 * Direction accueil.
+	 * @return nom de la jsp
+	 */
+	@GetMapping("")
+	public String empty() {
+		return "accueil";
+	}
 }

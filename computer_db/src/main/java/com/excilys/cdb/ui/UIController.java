@@ -620,7 +620,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException, DaoException {
-		Page<Computer> pageComputer = serviceComputer.getPage(page);
+		Page<Computer> pageComputer = serviceComputer.getPage(page, null);
 		int taille = (int) serviceComputer.count();
 		int limit = pageComputer.getLimit();
 		int endBloc = taille / limit;

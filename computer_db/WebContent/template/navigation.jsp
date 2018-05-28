@@ -2,7 +2,7 @@
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Actions</a>
+			<a class="navbar-brand" href="#">-></a>
 		</div>
 		<ul class="nav navbar-nav">
 

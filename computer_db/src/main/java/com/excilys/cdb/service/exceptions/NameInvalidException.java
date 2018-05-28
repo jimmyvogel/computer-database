@@ -1,7 +1,12 @@
 package com.excilys.cdb.service.exceptions;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+
 public class NameInvalidException extends ServiceException {
 
+	  @Autowired
+	  private Environment env;
     /**
      */
     private static final long serialVersionUID = 6765269871660816698L;
@@ -13,6 +18,7 @@ public class NameInvalidException extends ServiceException {
      */
     public NameInvalidException(String name, String reason) {
         super("Le nom : " + name + " est invalid car : " + reason);
+        System.out.println(env.getProperty("exception.computer.name.short"));
     }
 
 }

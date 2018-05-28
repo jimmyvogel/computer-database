@@ -16,8 +16,13 @@ import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+/**
+ * Class de configuration de spring pour une utilisation sans context web.
+ * @author vogel
+ *
+ */
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet" })
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet", "com.excilys.cdb.service.exceptions" })
 public class AppSpringConfig {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";

@@ -38,14 +38,14 @@ public class ComputerValidator {
 
         //Discontinued without introduced
         if (computer.getDiscontinued() != null && computer.getIntroduced() == null) {
-            throw new ValidatorDateException(null, "Computer introduced is null and discontinued is not.");
+            throw new ValidatorDateException("Computer introduced is null and discontinued is not.");
         }
 
         //Discontinued and introduced but discontinued before
         if (computer.getIntroduced()   != null && computer.getDiscontinued() != null
                 && computer.getIntroduced().isAfter(computer.getDiscontinued())) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            throw new ValidatorDateException(computer.getIntroduced(), "Computer introduced is after computer discontinued: " + computer.getDiscontinued().format(formatter));
+            throw new ValidatorDateException("Computer introduced is after computer discontinued.");
         }
         return computer;
     }
@@ -58,18 +58,16 @@ public class ComputerValidator {
      */
     public static String validName(String name) throws ValidatorStringException {
         if (name == null) {
-            throw new ValidatorStringException("null", "Le nom est null");
+            throw new ValidatorStringException("Le nom est null");
         }
     	if (!SecurityTextValidation.valideString(name)) {
-    		throw new ValidatorStringException(name, "Le nom contient des characters non valide.");
+    		throw new ValidatorStringException("Le nom contient des characters non valide.");
     	}
         if (name.length() < TAILLE_MIN_NAME) {
-            throw new ValidatorStringException(name,
-                    "Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
+            throw new ValidatorStringException("Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
         }
         if (name.length() > TAILLE_MAX_NAME) {
-            throw new ValidatorStringException(name,
-                    "Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
+            throw new ValidatorStringException("Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
         }
         return name;
     }
@@ -84,8 +82,7 @@ public class ComputerValidator {
         if (introduced != null) {
             if (!DateValidation.validDateInBetween(introduced, BEGIN_DATE_VALID, END_DATE_VALID)) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                throw new ValidatorDateException(introduced,
-                        "introduced date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
+                throw new ValidatorDateException("Introduced date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
             }
         }
         return introduced;
@@ -101,8 +98,7 @@ public class ComputerValidator {
         if (discontinued != null) {
             if (!DateValidation.validDateInBetween(discontinued, BEGIN_DATE_VALID, END_DATE_VALID)) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                throw new ValidatorDateException(discontinued,
-                        "discontinued date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
+                throw new ValidatorDateException("Discontinued date n'est pas comprise entre " + BEGIN_DATE_VALID.format(formatter) + " et " + END_DATE_VALID.format(formatter));
             }
         }
         return discontinued;

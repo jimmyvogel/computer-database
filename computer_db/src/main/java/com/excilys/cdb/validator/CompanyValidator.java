@@ -20,15 +20,13 @@ public class CompanyValidator {
      */
     public static String validName(final String name) throws ValidatorStringException {
         if (name == null) {
-            throw new ValidatorStringException("null", "Le nom est null");
+            throw new ValidatorStringException("Le nom est null");
         }
         if (name.length() < TAILLE_MIN_NAME) {
-            throw new ValidatorStringException(name,
-                    "Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
+            throw new ValidatorStringException("Le nom est trop court " + TAILLE_MIN_NAME + " lettres minimum");
         }
         if (name.length() > TAILLE_MAX_NAME) {
-            throw new ValidatorStringException(name,
-                    "Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
+            throw new ValidatorStringException("Le nom est trop long " + TAILLE_MAX_NAME + " lettres maximum");
         }
         return name;
     }

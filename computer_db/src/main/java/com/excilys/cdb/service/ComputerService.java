@@ -257,7 +257,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres.
 	 */
 	public boolean update(long id, String name) throws ServiceException, DaoException {
-		if (name == null) {
+		if (name == null || name.isEmpty()) {
 			throw new ServiceException("Le nom ne peut pas être null ou empty");
 		}
 		if (!SecurityTextValidation.valideString(name)) {
@@ -311,7 +311,7 @@ public class ComputerService {
 		Computer nouveau = new Computer();
 		Computer initial = computerDao.getById(id).orElseThrow(() -> new ComputerNotFoundException(id));
 		nouveau.setId(initial.getId());
-		nouveau.setName(name == null ? initial.getName() : name);
+		nouveau.setName(name == null || name.trim().isEmpty() ? initial.getName() : name);
 		nouveau.setIntroduced(introduced == null ? initial.getIntroduced() : introduced);
 		nouveau.setDiscontinued(discontinued == null ? initial.getDiscontinued() : discontinued);
 		if (companyId == -1) {

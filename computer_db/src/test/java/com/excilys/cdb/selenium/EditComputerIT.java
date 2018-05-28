@@ -168,7 +168,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result, "Update Computer " + edit.getName() + "success.");
+		Assert.assertEquals(result, "Update Computer success.");
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class EditComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		Assert.assertEquals(result,
-				"La date est invalid car : introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+				"La date est invalid car : Introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class EditComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		Assert.assertEquals(result,
-				"La date est invalid car : discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+				"La date est invalid car : Discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
 	}
 
 	/**
@@ -240,10 +240,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued: "
-				+ formatter.format(ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1))));
-		System.out.println("resultat3");
+		Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued.");
 	}
 
 }

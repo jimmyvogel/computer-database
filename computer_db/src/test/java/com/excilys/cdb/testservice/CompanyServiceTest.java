@@ -1,6 +1,5 @@
 package com.excilys.cdb.testservice;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -68,7 +67,7 @@ public class CompanyServiceTest extends JunitSuite {
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
 
         companyValid = serviceCompany.getPage(1).getObjects().get(0);
-        computerValid = serviceComputer.getPage(1).getObjects().get(0);
+        computerValid = serviceComputer.getPage(1, null).getObjects().get(0);
         computerValid.setCompany(companyValid);
         serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),
@@ -153,7 +152,7 @@ public class CompanyServiceTest extends JunitSuite {
         long id2 = serviceCompany.create(NAME_VALID);
         long id3 = serviceCompany.create(NAME_VALID);
         assertTrue(count + 3 == serviceCompany.count());
-        assertTrue(serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3)));
         assertTrue(count == serviceCompany.count());
     }
 
@@ -169,7 +168,7 @@ public class CompanyServiceTest extends JunitSuite {
         assertTrue(count + 1 == serviceCompany.count());
         long idC = serviceComputer.create(NAME_VALID, null, null, id);
         Assert.assertNotNull(serviceComputer.get(idC));
-        assertTrue(serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id))));
+        serviceCompany.deleteAll(new HashSet<Long>(Arrays.asList(id)));
         serviceComputer.get(idC);
     }
 
@@ -178,10 +177,19 @@ public class CompanyServiceTest extends JunitSuite {
      * @throws ServiceException erreur sur le service
      * @throws DaoException erreur de reqûete.
      */
-    @Test
+    @Test(expected = ServiceException.class)
     public void testDeleteManyCompanyWithBadList() throws ServiceException, DaoException {
-        assertFalse(serviceCompany.deleteAll(null));
-        assertFalse(serviceCompany.deleteAll(new HashSet<Long>()));
+        serviceCompany.deleteAll(null);
+    }
+
+    /**
+     * Méthode de test du deleteCompanies.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = ServiceException.class)
+    public void testDeleteManyCompanyWithEmptyList() throws ServiceException, DaoException {
+    	serviceCompany.deleteAll(new HashSet<Long>());
     }
 
 }

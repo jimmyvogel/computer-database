@@ -145,7 +145,7 @@ public class AjouterComputerIT extends SeleniumSuite {
             e.printStackTrace();
         }
         LOGGER.info("Result: " + result);
-        Assert.assertEquals(result, "Create Computer " + ajout.getName() + " success.");
+        Assert.assertEquals(result, "Create Computer success.");
     }
 
     /**Verify click du bouton + ajout fonctionnel.
@@ -197,7 +197,7 @@ public class AjouterComputerIT extends SeleniumSuite {
             e.printStackTrace();
         }
         LOGGER.info("Result: " + result);
-        Assert.assertEquals(result, "La date est invalid car : introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+        Assert.assertEquals(result, "La date est invalid car : Introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
     }
 
     /**Verify click du bouton + ajout fonctionnel.
@@ -223,7 +223,7 @@ public class AjouterComputerIT extends SeleniumSuite {
             e.printStackTrace();
         }
         LOGGER.info("Result: " + result);
-        Assert.assertEquals(result, "La date est invalid car : discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+        Assert.assertEquals(result, "La date est invalid car : Discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
     }
 
     /**Verify click du bouton + ajout fonctionnel.
@@ -249,8 +249,7 @@ public class AjouterComputerIT extends SeleniumSuite {
             e.printStackTrace();
         }
         LOGGER.info("Result: " + result);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued: " + ajout.getIntroduced().format(formatter));
+        Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued.");
     }
 
 }

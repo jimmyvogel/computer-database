@@ -6,7 +6,6 @@
            <h1>Form edit computer</h1>
 
            <form id="formEditComputer" action="${applicationScope.actions.EDIT_COMPUTER}" method="POST">
-               <input type="hidden" value="${computer.id}" name="id" id="id"/>
                <fieldset>
                    <div class="form-group">
                        <label for="computerName">Computer name</label>
@@ -41,6 +40,7 @@
                         </select>
                     </div>            
                 </fieldset>
+                <input type="hidden" value="${computer.id}" name="id" id="id"/>
                 <div class="actions pull-right">
                     <input type="submit" value="Edit" id="buttonEdit" class="btn btn-primary">
                 </div>

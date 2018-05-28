@@ -1,7 +1,5 @@
 package com.excilys.cdb.validator.exceptions;
 
-import java.time.LocalDateTime;
-
 public class ValidatorDateException extends Exception {
 
     /**
@@ -10,10 +8,9 @@ public class ValidatorDateException extends Exception {
 
     /**
      * Exception de type date dans la validation.
-     * @param date la date non valid.
      * @param reason the reason of the exception.
      */
-    public ValidatorDateException(LocalDateTime date, String reason) {
-        super(date + " not valid : " + reason);
+    public ValidatorDateException(String reason) {
+        super(reason);
     }
 }

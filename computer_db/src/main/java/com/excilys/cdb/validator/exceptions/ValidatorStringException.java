@@ -8,11 +8,10 @@ public class ValidatorStringException extends Exception {
 
     /**
      * Exception de type string dans la validation.
-     * @param s le string non valid.
      * @param reason the reason of the exception.
      */
-    public ValidatorStringException(String s, String reason) {
-        super(s + " not valid : " + reason);
+    public ValidatorStringException(String reason) {
+        super(reason);
     }
 
 }

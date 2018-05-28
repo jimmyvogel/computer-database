@@ -85,7 +85,7 @@ public class ComputerServiceTest extends JunitSuite {
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
 
         companyValid = serviceCompany.getPage(1).getObjects().get(0);
-        computerValid = serviceComputer.getPage(1).getObjects().get(0);
+        computerValid = serviceComputer.getPage(1, null).getObjects().get(0);
         computerValid.setCompany(companyValid);
         serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),
@@ -181,7 +181,7 @@ public class ComputerServiceTest extends JunitSuite {
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = NameInvalidException.class)
+    @Test(expected = ServiceException.class)
     public void testCreateComputerNameEmpty()
             throws ServiceException, DaoException {
         serviceComputer.create(null, null, null, -1);
@@ -246,7 +246,7 @@ public class ComputerServiceTest extends JunitSuite {
      * @throws ServiceException erreur de service.
      * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = NameInvalidException.class)
+    @Test(expected = ServiceException.class)
     public void testUpdateComputerWithNameNull() throws ServiceException, DaoException {
         serviceComputer.update(computerValid.getId(), null);
     }
@@ -503,7 +503,7 @@ public class ComputerServiceTest extends JunitSuite {
         long id2 = serviceComputer.create(NAME_VALID);
         long id3 = serviceComputer.create(NAME_VALID);
         assertTrue(count + 3 == serviceComputer.count());
-        assertTrue(serviceComputer.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3))));
+        serviceComputer.deleteAll(new HashSet<Long>(Arrays.asList(id, id2, id3)));
         assertTrue(count == serviceComputer.count());
     }
 
@@ -512,10 +512,19 @@ public class ComputerServiceTest extends JunitSuite {
      * @throws ServiceException erreur sur le service
      * @throws DaoException erreur de reqûete.
      */
-    @Test
+    @Test(expected = ServiceException.class)
+    public void testDeleteManyComputerWithEmptyList() throws ServiceException, DaoException {
+        serviceComputer.deleteAll(new HashSet<Long>());
+    }
+
+    /**
+     * Méthode de test du deleteComputers.
+     * @throws ServiceException erreur sur le service
+     * @throws DaoException erreur de reqûete.
+     */
+    @Test(expected = ServiceException.class)
     public void testDeleteManyComputerWithBadList() throws ServiceException, DaoException {
-        assertFalse(serviceComputer.deleteAll(null));
-        assertFalse(serviceComputer.deleteAll(new HashSet<Long>()));
+        serviceComputer.deleteAll(null);
     }
 
 }
