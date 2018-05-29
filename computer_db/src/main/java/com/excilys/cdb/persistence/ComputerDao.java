@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DaoCharacterSpeciauxException;
@@ -32,7 +31,6 @@ import com.mysql.jdbc.Statement;
  *
  */
 @Repository
-@Transactional
 public class ComputerDao implements Dao<Computer> {
 
 	@Autowired

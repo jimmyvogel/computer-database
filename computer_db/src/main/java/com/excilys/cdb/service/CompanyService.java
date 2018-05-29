@@ -1,25 +1,28 @@
 package com.excilys.cdb.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Set;import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.persistence.CompanyDao;
+import com.excilys.cdb.persistence.CompanyCrudDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
-import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.validator.CompanyValidator;
 import com.excilys.cdb.validator.SecurityTextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
@@ -39,46 +42,19 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 public class CompanyService {
 
 	@Autowired
-	private CompanyDao companyDao;
-
-	/**
-	 * Récupérer une instance de type computerServiceImpl.
-	 * @return une référence sur le singleton ComputerServiceImpl.
-	 * @throws DaoConfigurationException erreur de configuration
-	 */
-	public CompanyService getInstance() throws DaoConfigurationException {
-		Logger logger = LoggerFactory.getLogger(CompanyService.class);
-		logger.info("Initialisation du singleton computer service");
-		CompanyService service = new CompanyService();
-		return service;
-	}
+	private CompanyCrudDao companyDao;
 
 	/**
 	 * Retourne toutes les company de la bdd.
 	 * @return une liste
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public List<Company> getAll() throws ServiceException {
 		List<Company> list = new ArrayList<Company>();
-		list = companyDao.getAll();
+		//list = companyDao.getAll();
+		list = StreamSupport.stream(companyDao.findAll().spliterator(), false).collect(Collectors.toList());
 		return list;
-	}
-
-	/**
-	 * Retourne toutes les companies comprenant name.
-	 * @param name le nom de la(les) company(ies).
-	 * @return une liste de company
-	 * @throws ServiceException erreur de paramètres
-	 * @throws DaoException erreur de reqûete.
-	 */
-	public List<Company> getByName(String name) throws ServiceException, DaoException {
-		if (name == null || name.isEmpty()) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
-		}
-		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
-		}
-		return companyDao.getByName(name);
 	}
 
 	/**
@@ -98,17 +74,17 @@ public class CompanyService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
 		Page<Company> pageCompany = null;
-		try {
-			if (limit == null) {
-				pageCompany = companyDao.getPage(page);
-			} else {
-				pageCompany = companyDao.getPage(page, limit);
-			}
-		} catch (DaoException e) {
-			throw new ServiceException(e.getMessage());
+		org.springframework.data.domain.Page<Company> qpage;
+		if (limit == null) {
+			qpage = companyDao.findAll(new QPageRequest(page, DefaultValues.DEFAULT_LIMIT));
+		} else {
+			qpage = companyDao.findAll(new QPageRequest(page, limit));
 		}
+		pageCompany = new Page<Company>(limit, qpage.getTotalElements());
+		pageCompany.charge(qpage.getContent(), page);
 		return pageCompany;
 	}
 
@@ -120,6 +96,7 @@ public class CompanyService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
@@ -150,8 +127,9 @@ public class CompanyService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
+	@Transactional(readOnly = true)
 	public Company get(long id) throws ServiceException, DaoException {
-		Company company = companyDao.getById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+		Company company = companyDao.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
 		return company;
 	}
 
@@ -173,7 +151,7 @@ public class CompanyService {
 		try {
 			CompanyValidator.validName(name);
 			Company c = new Company(name);
-			result = companyDao.create(c);
+			result = companyDao.save(c).getId();
 		} catch (ValidatorStringException e) {
 			throw new NameInvalidException(e.getMessage());
 		}
@@ -186,8 +164,8 @@ public class CompanyService {
 	 * @return un boolean représentant le résultat
 	 * @throws DaoException erreur de requête
 	 */
-	public boolean delete(long id) throws DaoException {
-		return companyDao.delete(id);
+	public void delete(long id) throws DaoException {
+		companyDao.deleteById(id);
 	}
 
 	/**
@@ -200,7 +178,7 @@ public class CompanyService {
 		if (ids == null || ids.size() == 0) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
-		if (!companyDao.deleteAll(ids)) {
+		if (!companyDao.deleteAllById(ids)) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL, null));
 		}
 	}
@@ -211,7 +189,8 @@ public class CompanyService {
 	 * @throws ServiceException erreur de service.
 	 * @throws DaoException erreur de requête.
 	 */
+	@Transactional(readOnly = true)
 	public long count() throws ServiceException, DaoException {
-		return companyDao.getCount();
+		return companyDao.count();
 	}
 }

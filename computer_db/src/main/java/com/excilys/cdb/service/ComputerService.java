@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +13,11 @@ import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.CompanyDao;
-import com.excilys.cdb.persistence.ComputerDao;
+import com.excilys.cdb.persistence.CompanyCrudDao;
+import com.excilys.cdb.persistence.ComputerCrudDao;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
-import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
@@ -44,28 +41,16 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 public class ComputerService {
 
 	@Autowired
-	private ComputerDao computerDao;
+	private ComputerCrudDao computerDao;
 	@Autowired
-	private CompanyDao companyDao;
-
-	/**
-	 * Récupérer une instance de type computerServiceImpl.
-	 * @return une référence sur le singleton ComputerServiceImpl.
-	 * @throws DaoConfigurationException erreur de configuration
-	 */
-	public static ComputerService getInstance() throws DaoConfigurationException {
-		Logger logger = LoggerFactory.getLogger(ComputerService.class);
-		logger.info("Initialisation du singleton computer service");
-
-		ComputerService service = new ComputerService();
-		return service;
-	}
+	private CompanyCrudDao companyDao;
 
 	/**
 	 * Retourne tous les computers de la bdd.
 	 * @return une liste
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public List<Computer> getAll() throws ServiceException {
 		List<Computer> list = new ArrayList<Computer>();
 		list = computerDao.getAll();
@@ -79,6 +64,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de paramètres
 	 * @throws DaoException erreur de reqûete.
 	 */
+	@Transactional(readOnly = true)
 	public List<Computer> getByName(String name) throws ServiceException, DaoException {
 		if (name == null || name.isEmpty()) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
@@ -96,6 +82,7 @@ public class ComputerService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
 		Page<Computer> pageComputer = null;
 		try {
@@ -118,6 +105,7 @@ public class ComputerService {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
@@ -341,6 +329,7 @@ public class ComputerService {
 	 * @throws ServiceException erreur de service.
 	 * @throws DaoException erreur de requête.
 	 */
+	@Transactional(readOnly = true)
 	public long count() throws ServiceException, DaoException {
 		return computerDao.getCount();
 	}

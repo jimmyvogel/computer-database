@@ -2,18 +2,32 @@ package com.excilys.cdb.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 /**
  * Class représentant un computer avec un lien unidirectionnel vers la compagnie
  * de manufactu.
  * @author vogel
  *
  */
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private LocalDateTime introduced;
     private LocalDateTime discontinued;
+    @ManyToOne
+    @JoinColumn(name = "id")
     private Company company;
 
     /**

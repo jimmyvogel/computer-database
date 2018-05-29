@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.exceptions.DaoCharacterSpeciauxException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.mysql.jdbc.Statement;
 
 /**
@@ -130,7 +131,7 @@ public class CompanyDao implements Dao<Company> {
 	 * @throws DaoException exception sur la requête
 	 */
 	public Page<Company> getPage(final int numeroPage) throws DaoException {
-		return getPage(numeroPage, LIMIT_DEFAULT);
+		return getPage(numeroPage, DefaultValues.DEFAULT_LIMIT);
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class CompanyDao implements Dao<Company> {
 	 * @throws DaoException exception sur la requête
 	 */
 	public Page<Company> getPageSearch(final String search, final int numeroPage) throws DaoException {
-		return getPageSearch(search, numeroPage, LIMIT_DEFAULT);
+		return getPageSearch(search, numeroPage, DefaultValues.DEFAULT_LIMIT);
 	}
 
 	/**

@@ -8,6 +8,7 @@ import java.util.List;
  * @author vogel
  * @param <T> le type de donnée à charger
  */
+@SuppressWarnings("serial")
 public class Page<T> {
 
     private List<T> objects;
@@ -22,7 +23,7 @@ public class Page<T> {
     private int limit;
 
     //Le nombre d'élément maximum.
-    private int count;
+    private long count;
 
     //Max page
     private int maxPage;
@@ -30,13 +31,13 @@ public class Page<T> {
     /**
      * Constructor.
      * @param limit le nombre d'objets par bloc
-     * @param count le nombre d'éléments en bdd
+     * @param l le nombre d'éléments en bdd
      */
-    public Page(int limit, int count) {
+    public Page(int limit, long l) {
         objects = new ArrayList<T>();
         this.limit = limit;
-        this.count = count;
-        this.maxPage = (int) Math.ceil((double) count / limit);
+        this.count = l;
+        this.maxPage = (int) Math.ceil((double) l / limit);
     }
 
     /**
@@ -99,7 +100,7 @@ public class Page<T> {
         return maxPage;
     }
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
