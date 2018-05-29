@@ -2,7 +2,10 @@ package com.excilys.cdb.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.Size;
+
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.validator.ComputerValidator;
 
 /**
  * DTO de la class Computer.
@@ -12,6 +15,7 @@ import com.excilys.cdb.model.Computer;
 public class ComputerDTO {
 
     private long id;
+    @Size(min = ComputerValidator.TAILLE_MIN_NAME, max = ComputerValidator.TAILLE_MAX_NAME)
     private String name;
     private LocalDateTime introduced;
     private LocalDateTime discontinued;

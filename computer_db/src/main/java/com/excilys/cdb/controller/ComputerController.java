@@ -5,8 +5,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -112,11 +116,18 @@ public class ComputerController {
 	/**
 	 * Ajouter d'un computer.
 	 * @param computer computerdto
+	 * @param bindingResult validation
 	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + ADD_COMPUTER)
-	public ModelAndView add(@ModelAttribute ComputerDTO computer) {
-
+	public ModelAndView add(@ModelAttribute @Valid ComputerDTO computer, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			ModelAndView mv = formEdit(computer.getId());
+			for (ObjectError oe : bindingResult.getAllErrors()) {
+				mv.addObject(JspRessources.ERROR, oe.getDefaultMessage());
+			}
+			return mv;
+		}
 		Optional<Computer> c = MapperComputer.map(computer);
 		ModelAndView mv = formAdd();
 		if (c.isPresent()) {
@@ -150,10 +161,18 @@ public class ComputerController {
 	/**
 	 * Edition d'un computer.
 	 * @param computer computerdto
+	 * @param bindingResult validation
 	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + EDIT_COMPUTER)
-	public ModelAndView edit(@ModelAttribute ComputerDTO computer) {
+	public ModelAndView edit(@ModelAttribute @Valid ComputerDTO computer, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			ModelAndView mv = formEdit(computer.getId());
+			for (ObjectError oe : bindingResult.getAllErrors()) {
+				mv.addObject(JspRessources.ERROR, oe.getDefaultMessage());
+			}
+			return mv;
+		}
 		ModelAndView mv = formEdit(computer.getId());
 		Optional<Computer> c = MapperComputer.map(computer);
 		if (c.isPresent()) {
