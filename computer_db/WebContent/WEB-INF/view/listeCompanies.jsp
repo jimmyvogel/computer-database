@@ -1,7 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="../tags.tld" prefix="pg" %> 
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <h1 id="homeTitle" class="text-center">
-    ${ page.count } Companies
+    ${ page.count } <spring:message code="companies"/>
 </h1>
 <div class="container" style="margin-top: 10px;">
 	
@@ -13,8 +14,8 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>Id company</th>
-				<th>Name company</th>
+				<th><spring:message code="company.id"/></th>
+				<th><spring:message code="company.name"/></th>
 			</tr>
 		</thead>
 		<!-- Browse attribute computers -->

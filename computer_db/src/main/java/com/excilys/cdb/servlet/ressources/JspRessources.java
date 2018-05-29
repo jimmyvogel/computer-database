@@ -9,7 +9,7 @@ public class JspRessources {
     public static final String ERROR = "error";
     public static final String SUCCESS = "success";
 
-    public static final String FORM_COMPUTER_PARAM_NAME = "computerName";
+    public static final String FORM_COMPUTER_PARAM_NAME = "name";
     public static final String FORM_COMPUTER_PARAM_INTRODUCED = "introduced";
     public static final String FORM_COMPUTER_PARAM_DISCONTINUED = "discontinued";
     public static final String FORM_COMPUTER_PARAM_IDCOMPANY = "companyId";

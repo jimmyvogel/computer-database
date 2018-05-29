@@ -3,6 +3,7 @@ package com.excilys.cdb.mapper;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.DateValidation;
@@ -23,7 +24,7 @@ public class MapperComputer {
 	 * @return un optionnal de computer pouvant être null.
 	 */
 	public static Optional<Computer> map(String name, String introduced, String discontinued, String idCompany) {
-    	return map("-1", name, introduced, discontinued, idCompany);
+    	return map("0", name, introduced, discontinued, idCompany);
 	}
 
 	/**
@@ -40,10 +41,20 @@ public class MapperComputer {
     	LocalDateTime dateDiscon = DateValidation.validDateFormat(discontinued);
     	Computer c = null;
     	try {
-    		System.out.println(idCompany);
     		c = new Computer(Long.valueOf(id), name, dateIntro, dateDiscon, new Company(Long.valueOf(idCompany), ""));
     	} catch (NumberFormatException e) { }
     	return Optional.ofNullable(c);
+	}
+
+	/**
+	 * Mapping from computerdto to computer.
+	 * @param computer computerdto
+	 * @return un optionnal computer
+	 */
+	public static Optional<Computer> map(ComputerDTO computer) {
+		String introduced = computer.getIntroduced() == null ? null : computer.getIntroduced().toString();
+		String discontinued = computer.getDiscontinued() == null ? null : computer.getDiscontinued().toString();
+		return map(String.valueOf(computer.getId()), computer.getName(), introduced, discontinued, String.valueOf(computer.getCompanyId()));
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.excilys.cdb.servlet;
+package com.excilys.cdb.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

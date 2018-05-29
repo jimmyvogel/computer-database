@@ -1,7 +1,7 @@
 package com.excilys.cdb.servlet.ressources;
 
-import com.excilys.cdb.servlet.ComputerController;
-import com.excilys.cdb.servlet.CompanyController;
+import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.controller.ComputerController;
 
 public enum Action {
 	HOME(DefaultValues.HOME),

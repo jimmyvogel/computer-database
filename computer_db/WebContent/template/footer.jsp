@@ -8,8 +8,8 @@
        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><spring:message code="app.lang.title"/></button>
        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="?lang=en"><spring:message code="app.lang.english"/></a> 
-          <a class="dropdown-item" href="?lang=fr"><spring:message code="app.lang.french"/></a>
+          <a class="dropdown-item" href="${contextPath}/${applicationScope.actions.HOME}?lang=en"><spring:message code="app.lang.english"/></a> 
+          <a class="dropdown-item" href="${contextPath}/${applicationScope.actions.HOME}?lang=fr"><spring:message code="app.lang.french"/></a>
        </div>
     </div>
     <div class="text-center">

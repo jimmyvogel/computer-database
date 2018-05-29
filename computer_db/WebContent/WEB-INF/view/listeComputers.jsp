@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="../tags.tld" prefix="pg" %> 
- 
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <h1 id="homeTitle" class="text-center">
-    ${ page.count } Computers
+    ${ page.count } <spring:message code="computers"/>
 </h1>
 
 <form id="deleteForm" action="${applicationScope.actions.DELETE_COMPUTER}" method="POST">
@@ -27,10 +27,10 @@
 						</a>
 					</span>
 				</th>
-				<th>Computer name</th>
-				<th>Introduced date</th>
-				<th>Discontinued date</th>
-				<th>Company</th>
+				<th><spring:message code="computer.name"/></th>
+				<th><spring:message code="computer.introduced"/></th>
+				<th><spring:message code="computer.discontinued"/></th>
+				<th><spring:message code="computer.company"/></th>
 			</tr>
 		</thead>
 		<!-- Browse attribute computers -->

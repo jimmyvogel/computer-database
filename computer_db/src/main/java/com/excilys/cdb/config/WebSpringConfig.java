@@ -2,6 +2,7 @@ package com.excilys.cdb.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -30,7 +31,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.servlet", "com.excilys.cdb.exception" })
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.controller"})
 public class WebSpringConfig implements WebMvcConfigurer {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";
@@ -113,6 +114,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 	@Bean
 	public LocaleResolver localeResolver() {
 		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
+		localeResolver.setDefaultLocale(Locale.FRENCH);
 		return localeResolver;
 	}
 

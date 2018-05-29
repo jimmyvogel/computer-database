@@ -1,4 +1,4 @@
-package com.excilys.cdb.servlet;
+package com.excilys.cdb.controller;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.MapperComputer;
+import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.Page;
 import com.excilys.cdb.persistence.exceptions.DaoException;
@@ -52,10 +54,10 @@ public class ComputerController {
 	@GetMapping("/" + LIST_COMPUTERS)
 	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage,
 			@RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<Computer> page = new Page<Computer>(limit, 0);
+		Page<ComputerDTO> page = new Page<ComputerDTO>(limit, 0);
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
-			page = serviceComputer.getPage(numeropage, limit);
+			page = PageMapper.mapPageComputerToDto(serviceComputer.getPage(numeropage, limit));
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
@@ -109,19 +111,13 @@ public class ComputerController {
 
 	/**
 	 * Ajouter d'un computer.
-	 * @param nameS le nom du computer
-	 * @param introducedS la date d'introduction
-	 * @param discontinuedS la date de termination
-	 * @param idCompanyS l'id de la company du computer
+	 * @param computer computerdto
 	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + ADD_COMPUTER)
-	public ModelAndView add(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED) String introducedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS) {
+	public ModelAndView add(@ModelAttribute ComputerDTO computer) {
 
-		Optional<Computer> c = MapperComputer.map(nameS, introducedS, discontinuedS, idCompanyS);
+		Optional<Computer> c = MapperComputer.map(computer);
 		ModelAndView mv = formAdd();
 		if (c.isPresent()) {
 			try {
@@ -153,23 +149,16 @@ public class ComputerController {
 
 	/**
 	 * Edition d'un computer.
-	 * @param nameS le nom du computer
-	 * @param introducedS la date d'introduction
-	 * @param discontinuedS la date de termination
-	 * @param idCompanyS l'id de la company du computer
-	 * @param idComputerS l'id du computer à modifier.
+	 * @param computer computerdto
 	 * @return jsp de redirection.
 	 */
 	@PostMapping("/" + EDIT_COMPUTER)
-	public ModelAndView edit(@RequestParam(JspRessources.FORM_COMPUTER_PARAM_NAME) String nameS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_INTRODUCED) String introducedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_DISCONTINUED) String discontinuedS,
-			@RequestParam(JspRessources.FORM_COMPUTER_PARAM_IDCOMPANY) String idCompanyS,
-			@RequestParam(JspRessources.COMPUTER_ID) String idComputerS) {
-		ModelAndView mv = formEdit(idComputerS);
-		Optional<Computer> c = MapperComputer.map(idComputerS, nameS, introducedS, discontinuedS, idCompanyS);
+	public ModelAndView edit(@ModelAttribute ComputerDTO computer) {
+		ModelAndView mv = formEdit(computer.getId());
+		Optional<Computer> c = MapperComputer.map(computer);
 		if (c.isPresent()) {
 			try {
+				System.out.println(c);
 				serviceComputer.update(c.get());
 				mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
 			} catch (ServiceException | DaoException e) {
@@ -183,15 +172,15 @@ public class ComputerController {
 
 	/**
 	 * Redirection vers le form d'édition d'un computer
-	 * @param idS l'id du computer à modifié.
+	 * @param id l'id du computer à modifié.
 	 * @return jsp de redirection.
 	 */
 	@GetMapping("/" + EDIT_FORM_COMPUTER)
-	public ModelAndView formEdit(@RequestParam(JspRessources.COMPUTER_ID) String idS) {
-		long id = Long.valueOf(idS);
+	public ModelAndView formEdit(@RequestParam(JspRessources.COMPUTER_ID) long id) {
 		ModelAndView mv = new ModelAndView(UrlRessources.FORM_EDIT_COMPUTER);
 		try {
 			mv.addObject(JspRessources.COMPUTER, new ComputerDTO(serviceComputer.get(id)));
+			mv.addObject(JspRessources.ALL_COMPANY, serviceCompany.getAll());
 		} catch (ServiceException | DaoException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}

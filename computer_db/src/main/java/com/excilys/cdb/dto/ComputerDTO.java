@@ -19,6 +19,11 @@ public class ComputerDTO {
     private String company;
 
     /**
+     * Constructor empty for framework.
+     */
+    public ComputerDTO() { }
+
+    /**
      * Constructor.
      * @param computer
      *            l'instance a transformer en dto.
@@ -120,4 +125,33 @@ public class ComputerDTO {
         return true;
     }
 
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setIntroduced(LocalDateTime introduced) {
+		this.introduced = introduced;
+	}
+
+	public void setDiscontinued(LocalDateTime discontinued) {
+		this.discontinued = discontinued;
+	}
+
+	public void setCompanyId(long companyId) {
+		this.companyId = companyId;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	@Override
+	public String toString() {
+		return "ComputerDTO [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
+				+ discontinued + ", companyId=" + companyId + ", company=" + company + "]";
+	}
 }

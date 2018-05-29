@@ -7,6 +7,7 @@
 		<ul class="nav navbar-nav">
 
 			<!--  NAVIGATION HOME -->
+			
 			<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 			<li><a href="${contextPath }/index">Home</a></li>
 			<li><a href="${contextPath }/computer/${applicationScope.actions.ADD_FORM_COMPUTER}">Add entry</a></li>
