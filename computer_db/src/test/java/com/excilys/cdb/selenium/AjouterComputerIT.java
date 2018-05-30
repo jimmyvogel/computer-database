@@ -2,6 +2,7 @@ package com.excilys.cdb.selenium;
 
 import static org.testng.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +73,7 @@ public class AjouterComputerIT extends SeleniumSuite {
     /** Method used in ajoutComputer.
      * @param introduced la date à insérer
      */
-    private void ajoutTextIntroduced(LocalDateTime introduced) {
+    private void ajoutTextIntroduced(LocalDate introduced) {
     	LOGGER.info("ajoutTextcomputerIntroduced : " + introduced);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = introduced.format(formatter);
@@ -84,7 +85,7 @@ public class AjouterComputerIT extends SeleniumSuite {
     /** Method used in ajoutComputer.
      * @param discontinued date discontinued à insérer.
      */
-    public void ajoutTextDiscontinued(LocalDateTime discontinued) {
+    public void ajoutTextDiscontinued(LocalDate discontinued) {
     	LOGGER.info("ajoutTextDiscontinued : " + discontinued);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = discontinued.format(formatter);

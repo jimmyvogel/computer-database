@@ -44,6 +44,6 @@ public interface Dao<T> {
      * @return exception de requête
      * @throws DaoException erreur de requête
      */
-    Page<T> getPage(int numeroPage) throws DaoException;
+    CDBPage<T> getPage(int numeroPage) throws DaoException;
 
 }

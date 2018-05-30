@@ -11,22 +11,28 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.CompanyService;
-import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.service.ICompanyService;
+import com.excilys.cdb.service.IComputerService;
+import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.testconfig.JunitSuite;
+import com.excilys.cdb.testconfig.TestSpringConfig;
 
+@SpringJUnitConfig(classes = TestSpringConfig.class)
 public class CompanyServiceTest extends JunitSuite {
 
-    private static ComputerService serviceComputer;
-    private static CompanyService serviceCompany;
+	@Autowired
+    private IComputerService serviceComputer;
+	@Autowired
+    private ICompanyService serviceCompany;
     private long nbCompany;
 
     private final String NAME_VALID = "nouveaunomvalid";
@@ -48,8 +54,8 @@ public class CompanyServiceTest extends JunitSuite {
      */
     @BeforeClass
     public static void startContext() {
-    	serviceComputer = (ComputerService) context.getBean("computerService");
-    	serviceCompany = (CompanyService) context.getBean("companyService");
+//    	serviceComputer = (IComputerService) context.getBean("iComputerService");
+//    	serviceCompany = (ICompanyService) context.getBean("iCompanyService");
     }
 
     /**
@@ -136,7 +142,7 @@ public class CompanyServiceTest extends JunitSuite {
         assertTrue(count + 1 == serviceCompany.count());
         long idC = serviceComputer.create(NAME_VALID, null, null, id);
         Assert.assertNotNull(serviceComputer.get(idC));
-        assertTrue(serviceCompany.delete(id));
+        serviceCompany.delete(id);
         serviceComputer.get(idC);
     }
 

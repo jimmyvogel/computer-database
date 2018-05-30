@@ -9,7 +9,7 @@ import java.util.List;
  * @param <T> le type de donnée à charger
  */
 @SuppressWarnings("serial")
-public class Page<T> {
+public class CDBPage<T> {
 
     private List<T> objects;
 
@@ -33,7 +33,7 @@ public class Page<T> {
      * @param limit le nombre d'objets par bloc
      * @param l le nombre d'éléments en bdd
      */
-    public Page(int limit, long l) {
+    public CDBPage(int limit, long l) {
         objects = new ArrayList<T>();
         this.limit = limit;
         this.count = l;

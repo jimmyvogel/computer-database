@@ -108,8 +108,8 @@ public class ComputerDao implements Dao<Computer> {
 		if (comp == null) {
 			throw new DaoIllegalArgumentException();
 		}
-		Timestamp introduced = comp.getIntroduced() != null ? Timestamp.valueOf(comp.getIntroduced()) : null;
-		Timestamp discontinued = comp.getDiscontinued() != null ? Timestamp.valueOf(comp.getDiscontinued()) : null;
+		Timestamp introduced = comp.getIntroduced() != null ? Timestamp.valueOf(comp.getIntroduced().atStartOfDay()) : null;
+		Timestamp discontinued = comp.getDiscontinued() != null ? Timestamp.valueOf(comp.getDiscontinued().atStartOfDay()) : null;
 		Long idCompany = comp.getCompany() != null ? comp.getCompany().getId() : null;
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jt.update((c) -> {
@@ -136,8 +136,8 @@ public class ComputerDao implements Dao<Computer> {
 		if (comp == null) {
 			return false;
 		}
-		Timestamp introduced = comp.getIntroduced() != null ? Timestamp.valueOf(comp.getIntroduced()) : null;
-		Timestamp discontinued = comp.getDiscontinued() != null ? Timestamp.valueOf(comp.getDiscontinued()) : null;
+		Timestamp introduced = comp.getIntroduced() != null ? Timestamp.valueOf(comp.getIntroduced().atStartOfDay()) : null;
+		Timestamp discontinued = comp.getDiscontinued() != null ? Timestamp.valueOf(comp.getDiscontinued().atStartOfDay()) : null;
 		Long idCompany = comp.getCompany() != null ? comp.getCompany().getId() : null;
 		return jt.update(SQL_UPDATE_COMPUTER, comp.getName(), introduced, discontinued, idCompany, comp.getId()) > 0;
 	}
@@ -210,7 +210,7 @@ public class ComputerDao implements Dao<Computer> {
 	 * @return une liste de computers dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Computer> getPage(final int numeroPage) throws DaoException {
+	public CDBPage<Computer> getPage(final int numeroPage) throws DaoException {
 		return getPage(numeroPage, LIMIT_DEFAULT);
 	}
 
@@ -222,11 +222,11 @@ public class ComputerDao implements Dao<Computer> {
 	 * @return une liste de computers dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Computer> getPage(final int numeroPage, final int limit) throws DaoException {
+	public CDBPage<Computer> getPage(final int numeroPage, final int limit) throws DaoException {
 		if (numeroPage < 1 || limit < 1) {
 			throw new DaoIllegalArgumentException();
 		}
-		Page<Computer> page = new Page<Computer>(limit, (int) this.getCount());
+		CDBPage<Computer> page = new CDBPage<Computer>(limit, (int) this.getCount());
 		List<Computer> computers = jt.query(SQL_PAGE_COMPUTER, new RowMapperComputer(), page.getLimit(),
 				page.offset(numeroPage));
 		page.charge(computers, numeroPage);
@@ -241,7 +241,7 @@ public class ComputerDao implements Dao<Computer> {
 	 * @return une liste de computers dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Computer> getPageSearch(final String search, final int numeroPage) throws DaoException {
+	public CDBPage<Computer> getPageSearch(final String search, final int numeroPage) throws DaoException {
 		return getPageSearch(search, numeroPage, LIMIT_DEFAULT);
 	}
 
@@ -254,7 +254,7 @@ public class ComputerDao implements Dao<Computer> {
 	 * @return une liste de computers dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Computer> getPageSearch(final String search, final int numeroPage, final int limit)
+	public CDBPage<Computer> getPageSearch(final String search, final int numeroPage, final int limit)
 			throws DaoException {
 		if (search == null || numeroPage < 1 || limit < 1) {
 			throw new DaoIllegalArgumentException();
@@ -262,7 +262,7 @@ public class ComputerDao implements Dao<Computer> {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new DaoCharacterSpeciauxException();
 		}
-		Page<Computer> page = new Page<Computer>(limit, (int) this.getSearchCount(search));
+		CDBPage<Computer> page = new CDBPage<Computer>(limit, (int) this.getSearchCount(search));
 		List<Computer> companies = jt.query(SQL_SEARCH_PAGE_COMPUTER, new RowMapperComputer(), "%" + search + "%",
 				"%" + search + "%", page.getLimit(), page.offset(numeroPage));
 		page.charge(companies, numeroPage);

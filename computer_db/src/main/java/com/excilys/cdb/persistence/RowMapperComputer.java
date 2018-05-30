@@ -24,12 +24,12 @@ public class RowMapperComputer implements RowMapper<Computer> {
             computer.setName(result.getString(4));
             if (result.getString(5) != null) {
                 computer.setIntroduced(
-                        result.getTimestamp(5).toLocalDateTime());
+                        result.getTimestamp(5).toLocalDateTime().toLocalDate());
             }
 
             if (result.getString(6) != null) {
                 computer.setDiscontinued(
-                        result.getTimestamp(6).toLocalDateTime());
+                        result.getTimestamp(6).toLocalDateTime().toLocalDate());
             }
 
             if (result.getString(2) != null) {

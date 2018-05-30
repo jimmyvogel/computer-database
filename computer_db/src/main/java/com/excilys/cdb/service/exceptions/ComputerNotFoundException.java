@@ -1,11 +1,11 @@
-package com.excilys.cdb.persistence.exceptions;
+package com.excilys.cdb.service.exceptions;
 
 import java.util.Collections;
 
 import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 
-public class ComputerNotFoundException extends DaoException {
+public class ComputerNotFoundException extends ServiceException {
 
     /**
      */

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -22,10 +24,9 @@ import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.CompanyService;
-import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.persistence.CDBPage;
+import com.excilys.cdb.service.ICompanyService;
+import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.servlet.ressources.JspRessources;
@@ -37,9 +38,11 @@ import com.excilys.cdb.servlet.ressources.UrlRessources;
 public class ComputerController {
 
 	@Autowired
-	private ComputerService serviceComputer;
+	private IComputerService serviceComputer;
 	@Autowired
-	private CompanyService serviceCompany;
+	private ICompanyService serviceCompany;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
@@ -56,9 +59,8 @@ public class ComputerController {
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + LIST_COMPUTERS)
-	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage,
-			@RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<ComputerDTO> page = new Page<ComputerDTO>(limit, 0);
+	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
+		CDBPage<ComputerDTO> page = new CDBPage<ComputerDTO>(limit, 0);
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
 			page = PageMapper.mapPageComputerToDto(serviceComputer.getPage(numeropage, limit));
@@ -78,16 +80,19 @@ public class ComputerController {
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + SEARCH_COMPUTER)
-	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search,
-			@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<Computer> page = new Page<Computer>(limit, 0);
+	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search, @RequestParam(value = UrlID.PAGE, required = false) Integer iNumpage,
+			@RequestParam(value = UrlID.LIMIT, required = false) Integer paramLimit) {
+		int numpage = (iNumpage == null) ? 1 : iNumpage;
+		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		CDBPage<Computer> page = new CDBPage<Computer>(limit, 0);
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
-			page = serviceComputer.getPageSearch(search, numeropage, limit);
+			page = serviceComputer.getPageSearch(search, numpage, limit);
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
-		mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
+		mv.addObject(UrlID.SEARCH, search);
+		//mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
 		mv.addObject(UrlID.PAGE, page);
 		return mv;
 	}
@@ -106,7 +111,7 @@ public class ComputerController {
 			serviceComputer.deleteAll(set);
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
 			mv.addObject(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
-		} catch (DaoException | ServiceException e) {
+		} catch (ServiceException e) {
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
@@ -122,7 +127,7 @@ public class ComputerController {
 	@PostMapping("/" + ADD_COMPUTER)
 	public ModelAndView add(@ModelAttribute @Valid ComputerDTO computer, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			ModelAndView mv = formEdit(computer.getId());
+			ModelAndView mv = formAdd();
 			for (ObjectError oe : bindingResult.getAllErrors()) {
 				mv.addObject(JspRessources.ERROR, oe.getDefaultMessage());
 			}
@@ -134,7 +139,7 @@ public class ComputerController {
 			try {
 				serviceComputer.create(c.get());
 				mv.addObject(JspRessources.SUCCESS, "Create Computer success.");
-			} catch (ServiceException | DaoException e) {
+			} catch (ServiceException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
 		} else {
@@ -180,7 +185,7 @@ public class ComputerController {
 				System.out.println(c);
 				serviceComputer.update(c.get());
 				mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
-			} catch (ServiceException | DaoException e) {
+			} catch (ServiceException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
 		} else {
@@ -190,7 +195,7 @@ public class ComputerController {
 	}
 
 	/**
-	 * Redirection vers le form d'édition d'un computer
+	 * Redirection vers le form d'édition d'un computer.
 	 * @param id l'id du computer à modifié.
 	 * @return jsp de redirection.
 	 */
@@ -200,7 +205,7 @@ public class ComputerController {
 		try {
 			mv.addObject(JspRessources.COMPUTER, new ComputerDTO(serviceComputer.get(id)));
 			mv.addObject(JspRessources.ALL_COMPANY, serviceCompany.getAll());
-		} catch (ServiceException | DaoException e) {
+		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
 		return mv;

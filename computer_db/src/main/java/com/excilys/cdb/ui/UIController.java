@@ -1,5 +1,6 @@
 package com.excilys.cdb.ui;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -11,7 +12,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import com.excilys.cdb.config.AppSpringConfig;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
@@ -213,11 +214,11 @@ public class UIController {
 			// compagnie.
 			case DELETE_COMPUTER:
 				value = Long.valueOf(ligne);
-				view.setAffichage(supprimerComputer(value));
+				supprimerComputer(value);
 				break;
 			case DELETE_COMPANY:
 				value = Long.valueOf(ligne);
-				view.setAffichage(supprimerCompany(value));
+				supprimerCompany(value);
 				break;
 			default:
 				break;
@@ -414,7 +415,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private void switchFormulaireAjout(String ligne) throws ServiceException, DaoException {
-		LocalDateTime timeInter;
+		LocalDate timeInter;
 		switch (stateAjout) {
 		case NAME:
 			inter = new Computer();
@@ -473,7 +474,7 @@ public class UIController {
 	 */
 	private void switchFormulaireUpdate(String ligne) throws NumberFormatException, ServiceException, DaoException {
 		long value;
-		LocalDateTime timeInter;
+		LocalDate timeInter;
 		switch (stateUpdate) {
 		case ID:
 			value = Long.valueOf(ligne);
@@ -559,18 +560,11 @@ public class UIController {
 	/**
 	 * Supprimer un computer dans la bdd.
 	 * @param id l'id du computer a supprimé
-	 * @return l'affichage du résultat dans un string.
 	 * @throws ServiceException exception de service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	private String supprimerComputer(final long id) throws ServiceException, DaoException {
-		boolean delete = serviceComputer.delete(id);
-
-		if (delete) {
-			return "Suppression réussi\n";
-		}
-
-		return "Suppression fail\n";
+	private void supprimerComputer(final long id) throws ServiceException, DaoException {
+		serviceComputer.delete(id);
 	}
 
 	/**
@@ -580,14 +574,8 @@ public class UIController {
 	 * @throws ServiceException exception de service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	private String supprimerCompany(final long id) throws ServiceException, DaoException {
-		boolean delete = serviceCompany.delete(id);
-
-		if (delete) {
-			return "Suppression réussi\n";
-		}
-
-		return "Suppression fail\n";
+	private void supprimerCompany(final long id) throws ServiceException, DaoException {
+		serviceCompany.delete(id);
 	}
 
 	/**
@@ -620,7 +608,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException, DaoException {
-		Page<Computer> pageComputer = serviceComputer.getPage(page, null);
+		CDBPage<Computer> pageComputer = serviceComputer.getPage(page, null);
 		int taille = (int) serviceComputer.count();
 		int limit = pageComputer.getLimit();
 		int endBloc = taille / limit;
@@ -638,7 +626,7 @@ public class UIController {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	private String pageurCompanyShow(final int page) throws ServiceException, DaoException {
-		Page<Company> pageCompany = serviceCompany.getPage(page);
+		CDBPage<Company> pageCompany = serviceCompany.getPage(page);
 		int taille = (int) serviceCompany.count();
 		int limit = pageCompany.getLimit();
 		int endBloc = taille / limit;

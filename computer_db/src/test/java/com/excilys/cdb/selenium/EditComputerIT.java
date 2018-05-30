@@ -2,6 +2,7 @@ package com.excilys.cdb.selenium;
 
 import static org.testng.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -104,7 +105,7 @@ public class EditComputerIT extends SeleniumSuite {
 	 * Method used in editComputer.
 	 * @param introduced la date à insérer
 	 */
-	private void editTextIntroduced(LocalDateTime introduced) {
+	private void editTextIntroduced(LocalDate introduced) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String date = introduced.format(formatter);
 		je.executeScript("return document.getElementById('introduced').value = '" + date + "';");
@@ -115,7 +116,7 @@ public class EditComputerIT extends SeleniumSuite {
 	 * Method used in editComputer.
 	 * @param discontinued date discontinued à insérer.
 	 */
-	public void editTextDiscontinued(LocalDateTime discontinued) {
+	public void editTextDiscontinued(LocalDate discontinued) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String date = discontinued.format(formatter);
 		je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");

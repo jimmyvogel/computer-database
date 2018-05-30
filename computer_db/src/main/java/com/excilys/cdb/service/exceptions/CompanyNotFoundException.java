@@ -1,11 +1,12 @@
-package com.excilys.cdb.persistence.exceptions;
+package com.excilys.cdb.service.exceptions;
 
 import java.util.Collections;
 
 import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+import com.excilys.cdb.persistence.exceptions.DaoException;
 
-public class CompanyNotFoundException extends DaoException {
+public class CompanyNotFoundException extends ServiceException {
 
     /**
      */

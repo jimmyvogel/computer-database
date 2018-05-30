@@ -1,12 +1,12 @@
 package com.excilys.cdb.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -24,10 +24,9 @@ public class Computer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private LocalDateTime introduced;
-    private LocalDateTime discontinued;
+    private LocalDate introduced;
+    private LocalDate discontinued;
     @ManyToOne
-    @JoinColumn(name = "id")
     private Company company;
 
     /**
@@ -52,8 +51,8 @@ public class Computer {
      * @param discontinued la date d'arret
      * @param company la compagnie lié
      */
-    public Computer(long id, String name, LocalDateTime introduced,
-            LocalDateTime discontinued, Company company) {
+    public Computer(long id, String name, LocalDate introduced,
+            LocalDate discontinued, Company company) {
         this.id = id;
         this.name = name;
         this.introduced = introduced;
@@ -68,8 +67,8 @@ public class Computer {
      * @param discontinued la date d'arret
      * @param company la compagnie lié
      */
-    public Computer(String name, LocalDateTime introduced,
-            LocalDateTime discontinued, Company company) {
+    public Computer(String name, LocalDate introduced,
+            LocalDate discontinued, Company company) {
         this(0, name, introduced, discontinued, company);
     }
 
@@ -89,19 +88,19 @@ public class Computer {
         this.name = name;
     }
 
-    public LocalDateTime getIntroduced() {
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
-    public void setIntroduced(LocalDateTime introduced) {
+    public void setIntroduced(LocalDate introduced) {
         this.introduced = introduced;
     }
 
-    public LocalDateTime getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
-    public void setDiscontinued(LocalDateTime discontinued) {
+    public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
 

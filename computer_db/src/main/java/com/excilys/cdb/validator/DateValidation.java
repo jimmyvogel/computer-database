@@ -1,6 +1,6 @@
 package com.excilys.cdb.validator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DateValidation {
@@ -16,19 +16,15 @@ public class DateValidation {
      * @return Une LocalDateTime spécifié par l'utilisateur ou null si une
      *         erreur.
      */
-    public static LocalDateTime validDateFormat(final String ligne) {
-        LocalDateTime dateTime = null;
+    public static LocalDate validDateFormat(final String ligne) {
+        LocalDate dateTime = null;
         if (ligne != null) {
             String regex = "^\\d{4}-\\d{2}-\\d{2}$"; // (yyyy-MM-dd)
-            String regexPlusTime = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[.]\\d+";
             try {
                 if (ligne.matches(regex)) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     String line = ligne + " 00:00";
-                    dateTime = LocalDateTime.parse(line, formatter);
-                }
-                if (ligne.matches(regexPlusTime)) {
-                    dateTime = LocalDateTime.parse(ligne);
+                    dateTime = LocalDate.parse(line, formatter);
                 }
             } catch (java.time.format.DateTimeParseException e) {
                 return null;
@@ -44,7 +40,7 @@ public class DateValidation {
      * @param last la seconde date not included
      * @return un boolean définissant la validité de la date
      */
-    public static boolean validDateInBetween(LocalDateTime ldt, LocalDateTime first, LocalDateTime last) {
+    public static boolean validDateInBetween(LocalDate ldt, LocalDate first, LocalDate last) {
         return ldt.isAfter(first) && ldt.isBefore(last);
     }
 

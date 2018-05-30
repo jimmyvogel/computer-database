@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.persistence.Page;
-import com.excilys.cdb.service.CompanyService;
+import com.excilys.cdb.persistence.CDBPage;
+import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.servlet.ressources.JspRessources;
 import com.excilys.cdb.servlet.ressources.UrlID;
 import com.excilys.cdb.servlet.ressources.UrlRessources;
@@ -22,7 +23,7 @@ import com.excilys.cdb.servlet.ressources.UrlRessources;
 public class CompanyController {
 
 	@Autowired
-	private CompanyService serviceCompany;
+	private ICompanyService serviceCompany;
 
 	public static final String SEARCH_COMPANY = "searchCompany";
 	public static final String LIST_COMPANIES = "listCompanies";
@@ -36,10 +37,9 @@ public class CompanyController {
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + LIST_COMPANIES)
-	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage,
-			@RequestParam(UrlID.LIMIT) Integer limit) {
+	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
 		LOGGER.info("Méthode liste");
-		Page<Company> page = new Page<Company>(limit, 0);
+		CDBPage<Company> page = new CDBPage<Company>(limit, 0);
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPANIES);
 		try {
 			page = serviceCompany.getPage(numeropage, limit);
@@ -60,14 +60,18 @@ public class CompanyController {
 	 */
 	@GetMapping("/" + SEARCH_COMPANY)
 	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search,
-			@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<Company> page = new Page<Company>(limit, 0);
+			@RequestParam(value = UrlID.PAGE, required = false) Integer iNumpage,
+			@RequestParam(value = UrlID.LIMIT, required = false) Integer paramLimit) {
+		int numpage = (iNumpage == null) ? 1 : iNumpage;
+		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		CDBPage<Company> page = new CDBPage<Company>(limit, 0);
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPANIES);
 		try {
-			page = serviceCompany.getPageSearch(search, numeropage, limit);
+			page = serviceCompany.getPageSearch(search, numpage, limit);
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
+		mv.addObject(UrlID.SEARCH, search);
 		mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPANY);
 		mv.addObject(UrlID.PAGE, page);
 		return mv;

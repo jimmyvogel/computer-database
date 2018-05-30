@@ -8,6 +8,16 @@ import org.junit.Test;
 
 public class DateValidationTest {
 
+	private static final String DATE_VALID = "2000-12-12";
+
+    /**
+     * DateValidation.
+     */
+    @Test
+    public void testValidationDateStringOk() {
+        Assert.assertNotNull(DateValidation.validDateFormat(DATE_VALID));;
+    }
+
     /**
      * DateValidation.
      */

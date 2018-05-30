@@ -7,7 +7,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.CDBPage;
 
 
 /**
@@ -20,12 +20,13 @@ public class PagerTag extends TagSupport {
     private static final long serialVersionUID = -3073077658952397365L;
 
     @SuppressWarnings("rawtypes")
-    private Page page;
+    private CDBPage page;
     private String action;
     private String target;
+    private String params;
 
 
-    public void setPage(@SuppressWarnings("rawtypes") Page page) {
+    public void setPage(@SuppressWarnings("rawtypes") CDBPage page) {
         this.page = page;
     }
     public void setAction(String action) {
@@ -33,6 +34,9 @@ public class PagerTag extends TagSupport {
     }
     public void setTarget(String target) {
         this.target = target;
+    }
+    public void setParams(String params) {
+        this.params = params;
     }
 
     /**
@@ -97,10 +101,10 @@ public class PagerTag extends TagSupport {
      * @return le format sous forme d'un string
      */
     private String getUrl(int page, int limit) {
-    	if (target == null) {
-    		return action + "?page=" + page + "&limit=" + limit;
-    	}
-        return target + "/" + action + "?page=" + page + "&limit=" + limit;
+    	String t = target == null ? "" : target + "/";
+    	String p = params == null ? "" : "?" + params;
+    	String numpage = params == null ? ("?page=" + page) : ("&page=" + page);
+        return t + action + p + numpage + "&limit=" + limit;
     }
 
 }

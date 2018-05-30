@@ -138,8 +138,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Hibernate Jpa Spring
-	 * @return -
+	 * Hibernate Jpa Spring.
 	 */
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -155,9 +154,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Hibernate Jpa Spring
-	 * @param emf -
-	 * @return -
+	 * Hibernate Jpa Spring.
 	 */
 	@Bean
 	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
@@ -168,8 +165,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Hibernate Jpa Spring
-	 * @return -
+	 * Hibernate Jpa Spring.
 	 */
 	@Bean
 	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
@@ -177,8 +173,7 @@ public class WebSpringConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Hibernate Jpa Spring
-	 * @return -
+	 * Hibernate Jpa Spring.
 	 */
 	private Properties additionalProperties() {
 		Properties properties = new Properties();

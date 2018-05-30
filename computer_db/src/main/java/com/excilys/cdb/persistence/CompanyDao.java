@@ -130,7 +130,7 @@ public class CompanyDao implements Dao<Company> {
 	 * @return une liste d'objets dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Company> getPage(final int numeroPage) throws DaoException {
+	public CDBPage<Company> getPage(final int numeroPage) throws DaoException {
 		return getPage(numeroPage, DefaultValues.DEFAULT_LIMIT);
 	}
 
@@ -141,11 +141,11 @@ public class CompanyDao implements Dao<Company> {
 	 * @return une liste d'objets dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Company> getPage(final int numeroPage, final int limit) throws DaoException {
+	public CDBPage<Company> getPage(final int numeroPage, final int limit) throws DaoException {
 		if (numeroPage < 1 || limit < 1) {
 			throw new DaoException("Illegal argument exceptions");
 		}
-		Page<Company> page = new Page<Company>(limit, (int) this.getCount());
+		CDBPage<Company> page = new CDBPage<Company>(limit, (int) this.getCount());
 		List<Company> companies = jt.query(SQL_PAGE_COMPANY, new RowMapperCompany(), page.getLimit(),
 				page.offset(numeroPage));
 		page.charge(companies, numeroPage);
@@ -159,7 +159,7 @@ public class CompanyDao implements Dao<Company> {
 	 * @return une liste de computers dans une page
 	 * @throws DaoException exception sur la requête
 	 */
-	public Page<Company> getPageSearch(final String search, final int numeroPage) throws DaoException {
+	public CDBPage<Company> getPageSearch(final String search, final int numeroPage) throws DaoException {
 		return getPageSearch(search, numeroPage, DefaultValues.DEFAULT_LIMIT);
 	}
 
@@ -171,11 +171,11 @@ public class CompanyDao implements Dao<Company> {
 	 * @return une liste d'objets dans une page
 	 * @throws DaoException exception sur la requite
 	 */
-	public Page<Company> getPageSearch(final String search, final int numeroPage, final int limit) throws DaoException {
+	public CDBPage<Company> getPageSearch(final String search, final int numeroPage, final int limit) throws DaoException {
 		if (search == null || numeroPage < 1 || limit < 1) {
 			throw new DaoException("Illegal argument exceptions");
 		}
-		Page<Company> page = new Page<Company>(limit, (int) this.getSearchCount(search));
+		CDBPage<Company> page = new CDBPage<Company>(limit, (int) this.getSearchCount(search));
 		List<Company> companies = jt.query(SQL_SEARCH_PAGE_COMPANY, new RowMapperCompany(), "%" + search + "%",
 				page.getLimit(), page.offset(numeroPage));
 		page.charge(companies, numeroPage);

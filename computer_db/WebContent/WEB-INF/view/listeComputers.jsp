@@ -54,6 +54,11 @@
 </div>
 
 <div class="navbar">
-	<pg:pager action="${actionPagination}" page="${page}"> </pg:pager>
+    <c:if test="${empty search}">
+        <pg:pager action="${actionPagination}" page="${page}"> </pg:pager>
+    </c:if>
+    <c:if test="${not empty search}">
+        <pg:pager action="${actionPagination}" page="${page}" params="search=${search}"> </pg:pager>
+    </c:if>
 </div>
 

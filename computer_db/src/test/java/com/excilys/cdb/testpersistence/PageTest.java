@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.cdb.persistence.Page;
+import com.excilys.cdb.persistence.CDBPage;
 
 public class PageTest {
 
@@ -17,14 +17,14 @@ public class PageTest {
     private static final Integer NB_ELEMENTS = 600;
     private static final Integer PAGE_COURANTE = 5;
 
-    private Page<Integer> page;
+    private CDBPage<Integer> page;
 
     /**
      * Initialisation des variables de tests.
      */
     @Before
     public void init() {
-        page = new Page<Integer>(LIMIT, NB_ELEMENTS);
+        page = new CDBPage<Integer>(LIMIT, NB_ELEMENTS);
         List<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < LIMIT; i++) {
             list.add(i);

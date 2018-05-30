@@ -1,8 +1,11 @@
 package com.excilys.cdb.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.validator.ComputerValidator;
@@ -17,8 +20,10 @@ public class ComputerDTO {
     private long id;
     @Size(min = ComputerValidator.TAILLE_MIN_NAME, max = ComputerValidator.TAILLE_MAX_NAME)
     private String name;
-    private LocalDateTime introduced;
-    private LocalDateTime discontinued;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate introduced;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate discontinued;
     private long companyId;
     private String company;
 
@@ -53,11 +58,11 @@ public class ComputerDTO {
         return name;
     }
 
-    public LocalDateTime getIntroduced() {
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
-    public LocalDateTime getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
@@ -137,11 +142,11 @@ public class ComputerDTO {
 		this.name = name;
 	}
 
-	public void setIntroduced(LocalDateTime introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public void setDiscontinued(LocalDateTime discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 
