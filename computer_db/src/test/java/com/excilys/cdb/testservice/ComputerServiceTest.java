@@ -222,7 +222,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 * @throws ServiceException erreur sur le service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	@Test(expected = ServiceException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateComputerInvalidIdCompany() throws ServiceException, DaoException {
 		serviceComputer.update(-1, null, null, null, -1);
 	}
@@ -234,7 +234,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test(expected = ServiceException.class)
 	public void testUpdateInvalidDateIntroducedMinDate() throws ServiceException, DaoException {
-		serviceComputer.update(computerValid.getId(), null, ComputerValidator.BEGIN_DATE_VALID, null, -1);
+		serviceComputer.update(computerValid.getId(), null, Computer.BEGIN_DATE_VALID, null, -1);
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test(expected = ServiceException.class)
 	public void testUpdateInvalidDateIntroducedMaxDate() throws ServiceException, DaoException {
-		serviceComputer.update(computerValid.getId(), null, ComputerValidator.END_DATE_VALID, null, -1);
+		serviceComputer.update(computerValid.getId(), null, Computer.END_DATE_VALID, null, -1);
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test(expected = ServiceException.class)
 	public void testUpdateInvalidDateDiscontinuedMinDate() throws ServiceException, DaoException {
-		serviceComputer.update(computerValid.getId(), null, null, ComputerValidator.BEGIN_DATE_VALID, -1);
+		serviceComputer.update(computerValid.getId(), null, null, Computer.BEGIN_DATE_VALID, -1);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test(expected = ServiceException.class)
 	public void testUpdateInvalidDateDiscontinuedMaxDate() throws ServiceException, DaoException {
-		serviceComputer.update(computerValid.getId(), null, null, ComputerValidator.END_DATE_VALID, -1);
+		serviceComputer.update(computerValid.getId(), null, null, Computer.END_DATE_VALID, -1);
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 * @throws ServiceException erreur sur le service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	@Test(expected = ServiceException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateWithoutArguments() throws ServiceException, DaoException {
 		serviceComputer.update(computerValid.getId(), null, null, null, -1);
 	}
@@ -420,7 +420,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 * @throws ServiceException erreur sur le service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	@Test(expected = ServiceException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testDeleteManyComputerWithEmptyList() throws ServiceException, DaoException {
 		serviceComputer.deleteAll(new HashSet<Long>());
 	}
@@ -430,7 +430,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 * @throws ServiceException erreur sur le service
 	 * @throws DaoException erreur de reqûete.
 	 */
-	@Test(expected = ServiceException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testDeleteManyComputerWithBadList() throws ServiceException, DaoException {
 		serviceComputer.deleteAll(null);
 	}

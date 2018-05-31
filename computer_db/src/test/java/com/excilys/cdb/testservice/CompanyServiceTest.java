@@ -164,7 +164,7 @@ public class CompanyServiceTest extends JunitSuite {
      * @throws ServiceException erreur sur le service
      * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = ServiceException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testDeleteManyCompanyWithBadList() throws ServiceException, DaoException {
         serviceCompany.deleteAll(null);
     }
@@ -174,7 +174,7 @@ public class CompanyServiceTest extends JunitSuite {
      * @throws ServiceException erreur sur le service
      * @throws DaoException erreur de reqûete.
      */
-    @Test(expected = ServiceException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testDeleteManyCompanyWithEmptyList() throws ServiceException, DaoException {
     	serviceCompany.deleteAll(new HashSet<Long>());
     }

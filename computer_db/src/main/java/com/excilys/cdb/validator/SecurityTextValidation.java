@@ -1,5 +1,7 @@
 package com.excilys.cdb.validator;
 
+import com.excilys.cdb.ressources.DefaultValues;
+
 public class SecurityTextValidation {
 
     /**
@@ -16,7 +18,7 @@ public class SecurityTextValidation {
         if (s == null) {
             return false;
         }
-        String test = s.replace("<[^>]*>", "");
+        String test = s.replace(DefaultValues.INVALID_CHARACTERS, "");
         return test.length() == s.length();
     }
 

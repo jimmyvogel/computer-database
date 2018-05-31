@@ -3,9 +3,9 @@ package com.excilys.cdb.selenium;
 import static org.testng.Assert.assertEquals;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,15 +18,16 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.servlet.ressources.Action;
-import com.excilys.cdb.servlet.ressources.DefaultValues;
-import com.excilys.cdb.servlet.ressources.JspRessources;
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.ressources.Action;
+import com.excilys.cdb.ressources.DefaultValues;
+import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.validator.ComputerValidator;
 import com.excilys.cdb.validator.DateValidation;
 
 public class EditComputerIT extends SeleniumSuite {
@@ -106,7 +107,7 @@ public class EditComputerIT extends SeleniumSuite {
 	 * @param introduced la date à insérer
 	 */
 	private void editTextIntroduced(LocalDate introduced) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DefaultValues.PATTERN_DATE);
 		String date = introduced.format(formatter);
 		je.executeScript("return document.getElementById('introduced').value = '" + date + "';");
 		Assert.assertEquals((String) je.executeScript("return document.getElementById('introduced').value;"), date);
@@ -117,7 +118,7 @@ public class EditComputerIT extends SeleniumSuite {
 	 * @param discontinued date discontinued à insérer.
 	 */
 	public void editTextDiscontinued(LocalDate discontinued) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DefaultValues.PATTERN_DATE);
 		String date = discontinued.format(formatter);
 		je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");
 		Assert.assertEquals((String) je.executeScript("return document.getElementById('discontinued').value;"), date);
@@ -169,7 +170,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result, "Update Computer success.");
+		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.SUCCESS_UPDATE, null));
 	}
 
 	/**
@@ -182,7 +183,7 @@ public class EditComputerIT extends SeleniumSuite {
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
 		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.EDIT_FORM_COMPUTER.getValue() + "?id="
 				+ edit.getId());
-		this.editTextIntroduced(ComputerValidator.BEGIN_DATE_VALID.minus(Period.ofDays(1)));
+		this.editTextIntroduced(Computer.BEGIN_DATE_VALID.minus(Period.ofDays(1)));
 		driver.findElement(By.id(JspRessources.BUTTON_EDIT)).click();
 		String result = "";
 		try {
@@ -191,8 +192,8 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result,
-				"La date est invalid car : Introduced date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+		Assert.assertEquals(result,MessageHandler.getMessage(CDBMessage.VALIDATION_DATE_INTRODUCED,
+				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
 	/**
@@ -205,7 +206,7 @@ public class EditComputerIT extends SeleniumSuite {
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
 		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.EDIT_FORM_COMPUTER.getValue() + "?id="
 				+ edit.getId());
-		this.editTextDiscontinued(ComputerValidator.END_DATE_VALID.plus(Period.ofDays(1)));
+		this.editTextDiscontinued(Computer.END_DATE_VALID.plus(Period.ofDays(1)));
 		driver.findElement(By.id(JspRessources.BUTTON_EDIT)).click();
 		String result = "";
 		try {
@@ -214,8 +215,8 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result,
-				"La date est invalid car : Discontinued date n'est pas comprise entre 1972-12-31 et 2030-01-01");
+		Assert.assertEquals(result,MessageHandler.getMessage(CDBMessage.VALIDATION_DATE_DISCONTINUED,
+				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
 	/**
@@ -228,8 +229,8 @@ public class EditComputerIT extends SeleniumSuite {
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
 		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.EDIT_FORM_COMPUTER.getValue() + "?id="
 				+ edit.getId());
-		this.editTextIntroduced(ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(3)));
-		this.editTextDiscontinued(ComputerValidator.BEGIN_DATE_VALID.plus(Period.ofDays(1)));
+		this.editTextIntroduced(Computer.BEGIN_DATE_VALID.plus(Period.ofDays(3)));
+		this.editTextDiscontinued(Computer.BEGIN_DATE_VALID.plus(Period.ofDays(1)));
 		driver.findElement(By.id(JspRessources.BUTTON_EDIT)).click();
 		String result = "";
 		try {
@@ -241,7 +242,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result, "La date est invalid car : Computer introduced is after computer discontinued.");
+		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.COMPUTER_INTRODUCED_AFTER, null));
 	}
 
 }

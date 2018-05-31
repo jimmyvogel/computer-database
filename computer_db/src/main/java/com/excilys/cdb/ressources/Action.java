@@ -1,8 +1,13 @@
-package com.excilys.cdb.servlet.ressources;
+package com.excilys.cdb.ressources;
 
 import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.controller.ComputerController;
 
+/**
+ * Lien java action name -> url_action_value
+ * @author vogel
+ *
+ */
 public enum Action {
 	HOME(DefaultValues.HOME),
 	ADD_COMPUTER(ComputerController.ADD_COMPUTER),

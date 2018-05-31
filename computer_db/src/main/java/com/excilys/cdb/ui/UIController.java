@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.excilys.cdb.config.AppSpringConfig;
+import com.excilys.cdb.config.SpringConfigApplication;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CDBPage;
@@ -670,7 +670,7 @@ public class UIController {
 	 * @param args arguments
 	 */
 	public static void main(final String[] args) {
-		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(AppSpringConfig.class);
+		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(SpringConfigApplication.class);
 		UIController controller = new UIController(appConfig);
 		controller.run();
 	}

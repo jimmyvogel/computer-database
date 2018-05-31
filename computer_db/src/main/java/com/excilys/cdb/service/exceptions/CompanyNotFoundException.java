@@ -2,9 +2,8 @@ package com.excilys.cdb.service.exceptions;
 
 import java.util.Collections;
 
-import com.excilys.cdb.exception.ExceptionHandler;
-import com.excilys.cdb.exception.ExceptionHandler.MessageException;
-import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 
 public class CompanyNotFoundException extends ServiceException {
 
@@ -17,7 +16,7 @@ public class CompanyNotFoundException extends ServiceException {
      * @param id the id specified.
      */
     public CompanyNotFoundException(long id) {
-        super(ExceptionHandler.getMessage(MessageException.COMPANY_NOT_FOUND, Collections.singleton(id).toArray()));
+        super(MessageHandler.getMessage(CDBMessage.COMPANY_NOT_FOUND, Collections.singleton(id).toArray()));
     }
 
 }

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.cdb.exception.ExceptionHandler;
+import com.excilys.cdb.exception.MessageHandler;
 import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.IComputerService;
 
@@ -17,7 +17,7 @@ public class JunitSuite {
 	/**
 	 */
 	public JunitSuite() {
-		ExceptionHandler.init(context);
+		MessageHandler.init(context);
 		serviceComputer = (IComputerService) context.getBean(IComputerService.class);
 		serviceCompany = (ICompanyService) context.getBean(ICompanyService.class);
 	}

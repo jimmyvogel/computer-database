@@ -3,9 +3,17 @@ package com.excilys.cdb.selenium;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.testconfig.TestSpringConfig;
 
 public class SeleniumSuite {
-
+	
+	protected static AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestSpringConfig.class);
     protected static JavascriptExecutor je;
     protected static WebDriver driver;
     private static int nombreClients;
@@ -17,6 +25,7 @@ public class SeleniumSuite {
         if (driver == null) {
             driver = new FirefoxDriver();
             je = (JavascriptExecutor) driver;
+    		MessageHandler.init(context);
         }
         nombreClients++;
     }

@@ -2,8 +2,8 @@ package com.excilys.cdb.service.exceptions;
 
 import java.util.Collections;
 
-import com.excilys.cdb.exception.ExceptionHandler;
-import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 
 public class ComputerNotFoundException extends ServiceException {
 
@@ -16,7 +16,7 @@ public class ComputerNotFoundException extends ServiceException {
      * @param id the id specified.
      */
     public ComputerNotFoundException(final long id) {
-        super(ExceptionHandler.getMessage(MessageException.COMPUTER_NOT_FOUND, Collections.singleton(id).toArray()));
+        super(MessageHandler.getMessage(CDBMessage.COMPUTER_NOT_FOUND, Collections.singleton(id).toArray()));
     }
 
 }

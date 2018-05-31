@@ -14,6 +14,8 @@ public interface CompanyCrudDao extends PagingAndSortingRepository<Company, Long
 
 	@Override
 	List<Company> findAll();
+
 	void deleteAllByIdIn(Iterable<Long> ids);
+
 	Page<Company> findByNameContainingOrderByName(String companyName, Pageable p);
 }

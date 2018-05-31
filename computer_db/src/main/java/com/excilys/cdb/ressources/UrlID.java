@@ -1,7 +1,8 @@
-package com.excilys.cdb.servlet.ressources;
+package com.excilys.cdb.ressources;
 
 public class UrlID {
 
+	//URL ?value=&value=?
 	public static final String SEARCH = "search";
 	public static final String LIMIT = "limit";
     public static final String ACTION = "action";

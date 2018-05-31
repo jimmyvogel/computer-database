@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.excilys.cdb.ressources.UrlRessources;
+
 @Controller
 @RequestMapping("/")
 public class HomeController {
@@ -14,7 +16,7 @@ public class HomeController {
 	 */
 	@GetMapping("index")
 	public String index() {
-		return "accueil";
+		return UrlRessources.ACCUEIL;
 	}
 
 	/**
@@ -23,6 +25,6 @@ public class HomeController {
 	 */
 	@GetMapping("")
 	public String empty() {
-		return "accueil";
+		return UrlRessources.ACCUEIL;
 	}
 }

@@ -11,15 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
-import com.excilys.cdb.exception.ExceptionHandler;
-import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.CompanyCrudDao;
+import com.excilys.cdb.ressources.DefaultValues;
+import com.excilys.cdb.service.exceptions.CharacterSpeciauxException;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.validator.CompanyValidator;
 import com.excilys.cdb.validator.SecurityTextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
@@ -67,10 +68,10 @@ public class CompanyService implements ICompanyService {
 	public CDBPage<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(search)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new CharacterSpeciauxException();
 		}
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		CDBPage<Company> pageCompany = new CDBPage<Company>(nbElements, 0);
@@ -93,10 +94,10 @@ public class CompanyService implements ICompanyService {
 	public long create(final String name) throws ServiceException {
 		long result = -1;
 		if (name == null || name.isEmpty()) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new CharacterSpeciauxException();
 		}
 		try {
 			CompanyValidator.validName(name);
@@ -117,7 +118,7 @@ public class CompanyService implements ICompanyService {
 	@Override
 	public void deleteAll(Set<Long> ids) throws ServiceException {
 		if (ids == null || ids.size() == 0) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
+			throw new IllegalArgumentException();
 		}
 		computerService.deleteAllByCompanyId(ids);
 		companyDao.deleteAllByIdIn(ids);

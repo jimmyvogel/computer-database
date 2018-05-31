@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.excilys.cdb.ressources.DefaultValues;
+
 public class DateValidationTest {
 
 	private static final String DATE_VALID = "2000-12-12";
@@ -15,7 +17,7 @@ public class DateValidationTest {
      */
     @Test
     public void testValidationDateStringOk() {
-        Assert.assertNotNull(DateValidation.validDateFormat(DATE_VALID));;
+        Assert.assertNotNull(DateValidation.validDateFormat(DATE_VALID));
     }
 
     /**
@@ -23,19 +25,9 @@ public class DateValidationTest {
      */
     @Test
     public void testValidationDateOk() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DefaultValues.PATTERN_DATE);
         LocalDateTime now = LocalDateTime.now();
         Assert.assertNotNull(DateValidation.validDateFormat(formatter.format(now)));
-    }
-
-    /**
-     * DateValidation.
-     */
-    @Test
-    public void testValidationDateFailRegex() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy-dd");
-        LocalDateTime now = LocalDateTime.now();
-        Assert.assertNull(DateValidation.validDateFormat(formatter.format(now)));
     }
 
     /**

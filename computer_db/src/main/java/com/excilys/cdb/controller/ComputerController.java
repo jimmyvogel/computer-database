@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,17 +19,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CDBPage;
+import com.excilys.cdb.ressources.DefaultValues;
+import com.excilys.cdb.ressources.JspRessources;
+import com.excilys.cdb.ressources.UrlID;
+import com.excilys.cdb.ressources.UrlRessources;
 import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.servlet.ressources.DefaultValues;
-import com.excilys.cdb.servlet.ressources.JspRessources;
-import com.excilys.cdb.servlet.ressources.UrlID;
-import com.excilys.cdb.servlet.ressources.UrlRessources;
 
 @Controller
 @RequestMapping("/computer")
@@ -41,8 +41,6 @@ public class ComputerController {
 	private IComputerService serviceComputer;
 	@Autowired
 	private ICompanyService serviceCompany;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
@@ -80,7 +78,8 @@ public class ComputerController {
 	 * @return nom de la jsp
 	 */
 	@GetMapping("/" + SEARCH_COMPUTER)
-	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search, @RequestParam(value = UrlID.PAGE, required = false) Integer iNumpage,
+	public ModelAndView search(@RequestParam(UrlID.SEARCH) String search,
+			@RequestParam(value = UrlID.PAGE, required = false) Integer iNumpage,
 			@RequestParam(value = UrlID.LIMIT, required = false) Integer paramLimit) {
 		int numpage = (iNumpage == null) ? 1 : iNumpage;
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
@@ -92,7 +91,7 @@ public class ComputerController {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
 		mv.addObject(UrlID.SEARCH, search);
-		//mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
+		// mv.addObject(UrlID.ACTION_PAGINATION, SEARCH_COMPUTER);
 		mv.addObject(UrlID.PAGE, page);
 		return mv;
 	}
@@ -110,7 +109,7 @@ public class ComputerController {
 		try {
 			serviceComputer.deleteAll(set);
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
-			mv.addObject(JspRessources.SUCCESS, "Delete computer " + Arrays.toString(selections) + " success.");
+			mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(CDBMessage.SUCCESS_DELETION, null));
 		} catch (ServiceException e) {
 			mv = liste(DefaultValues.DEFAULT_PAGE, DefaultValues.DEFAULT_LIMIT);
 			mv.addObject(JspRessources.ERROR, e.getMessage());
@@ -138,12 +137,12 @@ public class ComputerController {
 		if (c.isPresent()) {
 			try {
 				serviceComputer.create(c.get());
-				mv.addObject(JspRessources.SUCCESS, "Create Computer success.");
+				mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(CDBMessage.SUCCESS_CREATE, null));
 			} catch (ServiceException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
 		} else {
-			mv.addObject(JspRessources.ERROR, "Invalide arguments");
+			mv.addObject(JspRessources.ERROR, MessageHandler.getMessage(CDBMessage.ILLEGAL_ARGUMENTS, null));
 		}
 		return mv;
 	}
@@ -184,12 +183,12 @@ public class ComputerController {
 			try {
 				System.out.println(c);
 				serviceComputer.update(c.get());
-				mv.addObject(JspRessources.SUCCESS, "Update Computer success.");
+				mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(CDBMessage.SUCCESS_UPDATE, null));
 			} catch (ServiceException e) {
 				mv.addObject(JspRessources.ERROR, e.getMessage());
 			}
 		} else {
-			mv.addObject(JspRessources.ERROR, "Invalide arguments");
+			mv.addObject(JspRessources.ERROR, MessageHandler.getMessage(CDBMessage.ILLEGAL_ARGUMENTS, null));
 		}
 		return mv;
 	}

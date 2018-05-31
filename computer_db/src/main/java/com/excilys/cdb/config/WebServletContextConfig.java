@@ -12,29 +12,31 @@ import javax.servlet.annotation.WebListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.servlet.ressources.Action;
+import com.excilys.cdb.ressources.Action;
 
 @WebListener
 public class WebServletContextConfig implements ServletContextListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebServletContextConfig.class);
-    private static final String ACTIONS = "actions";
+	private static final String LOGGER_SERVLET_CONTEXT_INITIALIZED = "Configuration du contexte effectué.";
+	private static final String LOGGER_SERVLET_CONTEXT_DISABLE = "ServletContextListener destroyed";
 
-    @Override
-    public void contextDestroyed(ServletContextEvent event) {
-    	LOGGER.info("ServletContextListener destroyed");
-    }
+	private static final String ACTIONS = "actions";
 
-    // Run this before web application is started
-    @Override
-    public void contextInitialized(ServletContextEvent event) {
-        Map<String, String> map = new HashMap<>();
-        for (Action action : Action.values()) {
-            map.put(action.toString(), action.getValue());
-        }
-        event.getServletContext().setAttribute(ACTIONS, map);
-        event.getServletContext().setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
-        LOGGER.info("Configuration du contexte effectué.");
-    }
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		LOGGER.info(LOGGER_SERVLET_CONTEXT_INITIALIZED);
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		Map<String, String> map = new HashMap<>();
+		for (Action action : Action.values()) {
+			map.put(action.toString(), action.getValue());
+		}
+		event.getServletContext().setAttribute(ACTIONS, map);
+		event.getServletContext().setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
+		LOGGER.info(LOGGER_SERVLET_CONTEXT_DISABLE);
+	}
 
 }

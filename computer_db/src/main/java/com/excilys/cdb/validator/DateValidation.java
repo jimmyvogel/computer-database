@@ -3,6 +3,8 @@ package com.excilys.cdb.validator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import com.excilys.cdb.ressources.DefaultValues;
+
 public class DateValidation {
 
     /**
@@ -17,20 +19,19 @@ public class DateValidation {
      *         erreur.
      */
     public static LocalDate validDateFormat(final String ligne) {
-        LocalDate dateTime = null;
+        LocalDate date = null;
         if (ligne != null) {
-            String regex = "^\\d{4}-\\d{2}-\\d{2}$"; // (yyyy-MM-dd)
+            String regex = DefaultValues.PATTERN_DATE_REGEX; // (yyyy-MM-dd)
             try {
                 if (ligne.matches(regex)) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                    String line = ligne + " 00:00";
-                    dateTime = LocalDate.parse(line, formatter);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DefaultValues.PATTERN_DATE);
+                    date = LocalDate.parse(ligne, formatter);
                 }
             } catch (java.time.format.DateTimeParseException e) {
                 return null;
             }
         }
-        return dateTime;
+        return date;
     }
 
     /**

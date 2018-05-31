@@ -9,20 +9,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
-import com.excilys.cdb.exception.ExceptionHandler;
-import com.excilys.cdb.exception.ExceptionHandler.MessageException;
+import com.excilys.cdb.exception.MessageHandler;
+import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.CompanyCrudDao;
 import com.excilys.cdb.persistence.ComputerCrudDao;
 import com.excilys.cdb.persistence.exceptions.DaoException;
+import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.servlet.ressources.DefaultValues;
 import com.excilys.cdb.validator.ComputerValidator;
 import com.excilys.cdb.validator.SecurityTextValidation;
 import com.excilys.cdb.validator.exceptions.ValidatorDateException;
@@ -63,10 +63,10 @@ public class ComputerService implements IComputerService {
 	public CDBPage<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(search)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.SPECIAL_CHARACTERS, null));
 		}
 		CDBPage<Computer> pageComputer = null;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
@@ -87,10 +87,10 @@ public class ComputerService implements IComputerService {
 	public long create(final String name) throws ServiceException, DaoException {
 		long result = -1;
 		if (name == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.SPECIAL_CHARACTERS, null));
 		}
 		try {
 			ComputerValidator.validName(name);
@@ -104,7 +104,7 @@ public class ComputerService implements IComputerService {
 	@Override
 	public long create(final Computer computer) throws ServiceException {
 		if (computer == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
+			throw new IllegalArgumentException();
 		}
 		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(),
 				computer.getCompany().getId());
@@ -114,10 +114,10 @@ public class ComputerService implements IComputerService {
 	public long create(String name, LocalDate introduced, LocalDate discontinued, long companyId)
 			throws ServiceException {
 		if (name == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.SPECIAL_CHARACTERS, null));
 		}
 		long result = -1;
 		try {
@@ -145,7 +145,7 @@ public class ComputerService implements IComputerService {
 	@Override
 	public void deleteAll(Set<Long> ids) throws ServiceException {
 		if (ids == null || ids.size() == 0) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
+			throw new IllegalArgumentException();
 		}
 		computerDao.deleteByIdIn(ids);
 		// throw new
@@ -161,7 +161,7 @@ public class ComputerService implements IComputerService {
 	@Override
 	public boolean update(Computer update) throws ServiceException {
 		if (update == null) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_NULL, null));
 		}
 		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(),
 				update.getCompany().getId());
@@ -171,10 +171,10 @@ public class ComputerService implements IComputerService {
 	public boolean update(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId)
 			throws ServiceException {
 		if (name == null && introduced == null && discontinued == null && companyId == -1) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
+			throw new IllegalArgumentException();
 		}
 		if (name != null && !SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(ExceptionHandler.getMessage(MessageException.SPECIAL_CHARACTERS, null));
+			throw new ServiceException(MessageHandler.getMessage(CDBMessage.SPECIAL_CHARACTERS, null));
 		}
 		Computer nouveau = new Computer();
 		Computer initial = computerDao.findById(id).orElseThrow(() -> new ComputerNotFoundException(id));

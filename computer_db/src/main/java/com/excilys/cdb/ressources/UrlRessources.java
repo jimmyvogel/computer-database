@@ -1,4 +1,4 @@
-package com.excilys.cdb.servlet.ressources;
+package com.excilys.cdb.ressources;
 
 public class UrlRessources {
 

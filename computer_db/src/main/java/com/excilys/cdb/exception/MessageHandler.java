@@ -6,11 +6,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-public class ExceptionHandler {
+public class MessageHandler {
 
 	private static ApplicationContext context;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
 	public static ApplicationContext getContext() {
 		return context;
 	}
@@ -31,7 +31,7 @@ public class ExceptionHandler {
 	 * @param params paramètres de messages
 	 * @return le string d'exception demandé.
 	 */
-	public static String getMessage(MessageException message, Object[] params) {
+	public static String getMessage(CDBMessage message, Object[] params) {
 		String res = "";
 		if (context == null) {
 			LOGGER.error("Le context n'a pas été instancié");
@@ -41,7 +41,7 @@ public class ExceptionHandler {
 		return res;
 	}
 
-	public enum MessageException {
+	public enum CDBMessage {
 		COMPANY_NOT_FOUND("exception.company.notfound"),
 		COMPUTER_NOT_FOUND("exception.company.notfound"),
 		SPECIAL_CHARACTERS("exception.security.text.special.characters"),
@@ -52,16 +52,18 @@ public class ExceptionHandler {
 		COMPUTER_DISCONTINUED_ALONE("exception.computer.validator.discontinued.alone"),
 		COMPUTER_INTRODUCED_AFTER("exception.computer.validator.introduced.after"),
 		VALIDATION_NAME_NULL("exception.validator.name.null"),
-		VALIDATION_NAME_SHORT("exception.validator.name.tooshort"),
-		VALIDATION_NAME_LONG("exception.validator.name.toolong"),
+		VALIDATION_NAME_LENGTH("exception.validator.name.length"),
 		VALIDATION_DATE_INTRODUCED("exception.validator.date.introduced"),
 		VALIDATION_DATE_DISCONTINUED("exception.validator.date.discontinued"),
-		DELETE_FAIL("exception.delete.fail");
+		DELETE_FAIL("exception.delete.fail"),
+		SUCCESS_DELETION("success.deletion"),
+		SUCCESS_CREATE("success.create"),
+		SUCCESS_UPDATE("success.update");
 
 		/** Constructor.
 		 * @param v valeur key dans les fichiers de messages.
 		 */
-		MessageException(String v) {
+		CDBMessage(String v) {
 			this.key = v;
 		}
 		private String key;
