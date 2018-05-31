@@ -27,6 +27,7 @@ public interface ICompanyService extends IService<Company> {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de service
 	 */
+	@Transactional(readOnly = true)
 	CDBPage<Company> getPage(int page) throws ServiceException;
 
 	/**

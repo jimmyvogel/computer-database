@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,34 +11,22 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.CompanyService;
-import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.service.exceptions.DateInvalidException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.testconfig.JunitSuite;
-import com.excilys.cdb.testconfig.TestSpringConfig;
 import com.excilys.cdb.validator.ComputerValidator;
 
-@SpringJUnitConfig(classes = TestSpringConfig.class)
 public class ComputerServiceTest extends JunitSuite {
-
-	@Autowired
-	private ComputerService serviceComputer;
-	@Autowired
-	private CompanyService serviceCompany;
 
 	private long nbComputers;
 	private long nbCompany;
@@ -60,14 +47,6 @@ public class ComputerServiceTest extends JunitSuite {
 
 	private Company companyValid;
 	private Computer computerValid;
-
-	/**
-	 */
-	@BeforeClass
-	public static void startContext() {
-		// serviceComputer = (IComputerService) context.getBean("iComputerService");
-		// serviceCompany = (ICompanyService) context.getBean("iCompanyService");
-	}
 
 	/**
 	 * Initialisation des données avant les tests.

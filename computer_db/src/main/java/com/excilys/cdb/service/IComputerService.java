@@ -1,10 +1,10 @@
 package com.excilys.cdb.service;
 
 import java.time.LocalDate;
-
-import javax.transaction.Transactional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.CDBPage;
@@ -31,6 +31,7 @@ public interface IComputerService extends IService<Computer> {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	CDBPage<Computer> getPageSearch(String search, int page, Integer limit) throws ServiceException;
 
 	/**
@@ -38,7 +39,6 @@ public interface IComputerService extends IService<Computer> {
 	 * @param name le nom du computer
 	 * @return boolean le résultat
 	 * @throws ServiceException erreur de paramètres.
-	 * @throws DaoException erreur de requête.
 	 */
 	long create(String name) throws ServiceException, DaoException;
 
@@ -50,10 +50,9 @@ public interface IComputerService extends IService<Computer> {
 	 * @param companyId l'id de la company ou -1.
 	 * @return long l'id de l'élément ou -1 si fail
 	 * @throws ServiceException erreur de paramètres.
-	 * @throws DaoException erreur de requête.
 	 */
-	long create(String name, LocalDate introduced, LocalDate discontinued, long companyId)
-			throws ServiceException;
+	long create(String name, LocalDate introduced, LocalDate discontinued, long companyId) throws ServiceException;
+
 	/**
 	 * Modifié un computer.
 	 * @param id l'id du computer à modifié.
@@ -64,8 +63,14 @@ public interface IComputerService extends IService<Computer> {
 	 *            null.
 	 * @return un boolean pour le résultat
 	 * @throws ServiceException erreur de paramètres
-	 * @throws DaoException erreur de reqûete.
 	 */
 	boolean update(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId)
 			throws ServiceException;
+
+	/**
+	 * Détruire les computers liés au compagnies spécifiés.
+	 * @param ids ids des compagnies à délier.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	void deleteAllByCompanyId(Set<Long> ids) throws ServiceException;
 }

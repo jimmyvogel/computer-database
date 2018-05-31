@@ -8,33 +8,24 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
 import com.excilys.cdb.persistence.exceptions.DaoException;
-import com.excilys.cdb.service.ICompanyService;
-import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.testconfig.JunitSuite;
-import com.excilys.cdb.testconfig.TestSpringConfig;
 
-@SpringJUnitConfig(classes = TestSpringConfig.class)
 public class CompanyServiceTest extends JunitSuite {
-
-	@Autowired
-    private IComputerService serviceComputer;
-	@Autowired
-    private ICompanyService serviceCompany;
     private long nbCompany;
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyServiceTest.class);
     private final String NAME_VALID = "nouveaunomvalid";
 
     private final String NAME_INVALID = "ffff ffff ffff ffff"
@@ -49,15 +40,6 @@ public class CompanyServiceTest extends JunitSuite {
     private Company companyValid;
     private Computer computerValid;
 
-
-    /**
-     */
-    @BeforeClass
-    public static void startContext() {
-//    	serviceComputer = (IComputerService) context.getBean("iComputerService");
-//    	serviceCompany = (ICompanyService) context.getBean("iCompanyService");
-    }
-
     /**
      * Initialisation des données avant les tests.
      * @throws DaoConfigurationException erreur de configuration.
@@ -71,7 +53,6 @@ public class CompanyServiceTest extends JunitSuite {
         nbCompany = serviceCompany.count();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
-
         companyValid = serviceCompany.getPage(1).getObjects().get(0);
         computerValid = serviceComputer.getPage(1, null).getObjects().get(0);
         computerValid.setCompany(companyValid);

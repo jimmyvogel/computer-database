@@ -16,6 +16,8 @@ import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.service.ICompanyService;
+import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;
 import com.excilys.cdb.vue.UITextes;
@@ -28,8 +30,8 @@ import com.excilys.cdb.vue.UIView;
  */
 public class UIController {
 
-	private ComputerService serviceComputer;
-	private CompanyService serviceCompany;
+	private IComputerService serviceComputer;
+	private ICompanyService serviceCompany;
 
 	// Les énumérations permettant la gestion comme un automate du processus.
 	private enum State {
@@ -96,8 +98,8 @@ public class UIController {
 		Logger logger = LoggerFactory.getLogger(UIController.class);
 		logger.info("Création d'un objet de type UIController");
 		initialize();
-		serviceComputer = (ComputerService) context.getBean("computerService");
-		serviceCompany = (CompanyService) context.getBean("companyService");
+		serviceComputer = (IComputerService) context.getBean(IComputerService.class);
+		serviceCompany = (ICompanyService) context.getBean(ICompanyService.class);
 	}
 
 	/**
@@ -668,7 +670,7 @@ public class UIController {
 	 * @param args arguments
 	 */
 	public static void main(final String[] args) {
-		AbstractApplicationContext appConfig = new AnnotationConfigApplicationContext(AppSpringConfig.class);
+		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(AppSpringConfig.class);
 		UIController controller = new UIController(appConfig);
 		controller.run();
 	}

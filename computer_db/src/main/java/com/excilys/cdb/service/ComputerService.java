@@ -1,7 +1,6 @@
 package com.excilys.cdb.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
@@ -36,7 +34,6 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
  * @author vogel
  */
 @Service
-@Transactional
 public class ComputerService implements IComputerService {
 
 	@Autowired
@@ -45,13 +42,14 @@ public class ComputerService implements IComputerService {
 	private CompanyCrudDao companyDao;
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Computer> getAll() throws ServiceException {
 		return computerDao.findAll();
 	}
 
+	private ComputerService() {
+	}
+
 	@Override
-	@Transactional(readOnly = true)
 	public CDBPage<Computer> getPage(final int page, final Integer limit) throws ServiceException {
 		CDBPage<Computer> pageComputer = null;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
@@ -62,7 +60,6 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public CDBPage<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
@@ -73,12 +70,12 @@ public class ComputerService implements IComputerService {
 		}
 		CDBPage<Computer> pageComputer = null;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		Page<Computer> qpage = computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search, new QPageRequest(page - 1, nbElements));
+		Page<Computer> qpage = computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
+				new QPageRequest(page - 1, nbElements));
 		pageComputer = new CDBPage<Computer>(nbElements, qpage.getTotalElements());
 		pageComputer.charge(qpage.getContent(), page);
 		return pageComputer;
 	}
-
 
 	@Override
 	public Computer get(long id) throws ServiceException {
@@ -104,13 +101,13 @@ public class ComputerService implements IComputerService {
 		return result;
 	}
 
-
 	@Override
 	public long create(final Computer computer) throws ServiceException {
 		if (computer == null) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
-		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompany().getId());
+		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(),
+				computer.getCompany().getId());
 	}
 
 	@Override
@@ -141,18 +138,24 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	public void delete(long id) throws DaoException {
+	public void delete(long id) throws ServiceException {
 		computerDao.deleteById(id);
 	}
-
 
 	@Override
 	public void deleteAll(Set<Long> ids) throws ServiceException {
 		if (ids == null || ids.size() == 0) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
-		computerDao.deleteAllById(ids);
-		//throw new ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL, null));
+		computerDao.deleteByIdIn(ids);
+		// throw new
+		// ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL,
+		// null));
+	}
+
+	@Override
+	public void deleteAllByCompanyId(Set<Long> ids) throws ServiceException {
+		computerDao.deleteByCompanyIdIn(ids);
 	}
 
 	@Override
@@ -160,12 +163,13 @@ public class ComputerService implements IComputerService {
 		if (update == null) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.VALIDATION_NAME_NULL, null));
 		}
-		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(), update.getCompany().getId());
+		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(),
+				update.getCompany().getId());
 	}
 
 	@Override
-	public boolean update(long id, String name, LocalDate introduced, LocalDate discontinued,
-			long companyId) throws ServiceException {
+	public boolean update(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId)
+			throws ServiceException {
 		if (name == null && introduced == null && discontinued == null && companyId == -1) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
@@ -198,7 +202,6 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public long count() throws ServiceException {
 		return computerDao.count();
 	}

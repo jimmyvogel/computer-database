@@ -3,12 +3,10 @@ package com.excilys.cdb.service;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.persistence.CDBPage;
-import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
 @Service
@@ -20,6 +18,7 @@ public interface IService<T> {
 	 * @return une liste
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	List<T> getAll() throws ServiceException;
 
 	/**
@@ -28,6 +27,7 @@ public interface IService<T> {
 	 * @return le T résultant
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	T get(long id) throws ServiceException;
 
 	/**
@@ -43,21 +43,23 @@ public interface IService<T> {
 	 * @param ids id(s) des T à supprimer
 	 * @throws ServiceException set en paramètre vide
 	 */
+	@Transactional(rollbackFor = RuntimeException.class)
 	void deleteAll(Set<Long> ids) throws ServiceException;
 
 	/**
 	 * Détruire un T.
 	 * @param id l'id du T à supprimer
 	 * @return un boolean représentant le résultat
-	 * @throws DaoException erreur de requête
+	 * @throws ServiceException erreur de service
 	 */
-	void delete(long id) throws DaoException;
+	void delete(long id) throws ServiceException;
 
 	/**
 	 * Récupérer le nombre de T.
 	 * @return un type long
 	 * @throws ServiceException erreur de service.
 	 */
+	@Transactional(readOnly = true)
 	long count() throws ServiceException;
 
 	/**
@@ -75,5 +77,6 @@ public interface IService<T> {
 	 * @return une page chargé.
 	 * @throws ServiceException erreur de paramètres
 	 */
+	@Transactional(readOnly = true)
 	CDBPage<T> getPage(int page, Integer limit) throws ServiceException;
 }

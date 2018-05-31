@@ -1,20 +1,21 @@
 package com.excilys.cdb.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.exception.ExceptionHandler;
 import com.excilys.cdb.exception.ExceptionHandler.MessageException;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.CompanyCrudDao;
-import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
@@ -30,14 +31,19 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
  *
  */
 @Service
-@Transactional
 public class CompanyService implements ICompanyService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
 
 	@Autowired
 	private CompanyCrudDao companyDao;
+	@Autowired
+	private IComputerService computerService;
+
+	private CompanyService() {
+	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Company> getAll() throws ServiceException {
 		return companyDao.findAll();
 	}
@@ -48,18 +54,16 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public CDBPage<Company> getPage(final int page, final Integer limit) throws ServiceException {
 		CDBPage<Company> pageCompany = null;
-		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
+		int nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		Page<Company> qpage = companyDao.findAll(new QPageRequest(page - 1, nbElements));
-		pageCompany = new CDBPage<Company>(limit, qpage.getTotalElements());
+		pageCompany = new CDBPage<Company>(nbElements, qpage.getTotalElements());
 		pageCompany.charge(qpage.getContent(), page);
 		return pageCompany;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public CDBPage<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
@@ -71,7 +75,8 @@ public class CompanyService implements ICompanyService {
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		CDBPage<Company> pageCompany = new CDBPage<Company>(nbElements, 0);
 		if (search != null) {
-			Page<Company> qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(page - 1, nbElements));
+			Page<Company> qpage = companyDao.findByNameContainingOrderByName(search,
+					new QPageRequest(page - 1, nbElements));
 			pageCompany = new CDBPage<Company>(nbElements, qpage.getTotalElements());
 			pageCompany.charge(qpage.getContent(), page);
 		}
@@ -79,7 +84,6 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Company get(long id) throws ServiceException {
 		Company company = companyDao.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
 		return company;
@@ -105,7 +109,8 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public void delete(long id) throws DaoException {
+	public void delete(long id) throws ServiceException {
+		computerService.deleteAllByCompanyId(Collections.singleton(id));
 		companyDao.deleteById(id);
 	}
 
@@ -114,14 +119,14 @@ public class CompanyService implements ICompanyService {
 		if (ids == null || ids.size() == 0) {
 			throw new ServiceException(ExceptionHandler.getMessage(MessageException.ILLEGAL_ARGUMENTS, null));
 		}
-		companyDao.deleteAllById(ids);
+		computerService.deleteAllByCompanyId(ids);
+		companyDao.deleteAllByIdIn(ids);
 		// throw new
 		// ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL,
 		// null));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public long count() throws ServiceException {
 		return companyDao.count();
 	}

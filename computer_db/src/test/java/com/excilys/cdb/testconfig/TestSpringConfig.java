@@ -33,9 +33,9 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.excilys.cdb.persistence")
 @EnableTransactionManagement
-@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.controller", "com.excilys.cdb.testservice", "com.excilys.cdb.testpersistence" })
+@EnableJpaRepositories(basePackages = "com.excilys.cdb.persistence")
+@ComponentScan(basePackages = { "com.excilys.cdb.persistence", "com.excilys.cdb.service", "com.excilys.cdb.controller" })
 public class TestSpringConfig implements WebMvcConfigurer {
 
 	private static final String FICHIER_PROPERTIES = "dao.properties";
