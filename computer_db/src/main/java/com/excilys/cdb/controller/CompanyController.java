@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.ressources.UrlID;

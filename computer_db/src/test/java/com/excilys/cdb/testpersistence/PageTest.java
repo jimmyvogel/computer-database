@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.cdb.persistence.CDBPage;
+import com.excilys.cdb.dao.CDBPage;
 
 public class PageTest {
 

@@ -8,7 +8,14 @@
 <root level="debug">
 <appender-ref ref="STDOUT" />
 </root>
-<logger name="com.zaxxer.hikari">
+<logger name="com.excilys.cdb">
 <level value="error" />
 </logger>
+<logger name="org.springframework" level="info">
+<appender-ref ref="STDOUT" />
+</logger>
+<logger name="org.openqa.selenium" level="info">
+<appender-ref ref="STDOUT" /></logger>
+<logger name="org.hibernate" level="info">
+<appender-ref ref="STDOUT" /></logger>
 </configuration>

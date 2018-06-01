@@ -10,9 +10,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.excilys.cdb.config.SpringConfigApplication;
+import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;

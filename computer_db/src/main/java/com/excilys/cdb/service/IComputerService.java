@@ -6,8 +6,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.service.exceptions.ServiceException;
 

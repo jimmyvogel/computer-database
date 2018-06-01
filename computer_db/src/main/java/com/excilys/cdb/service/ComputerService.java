@@ -9,13 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.dao.CDBPage;
+import com.excilys.cdb.dao.CompanyCrudDao;
+import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.exception.MessageHandler;
 import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.CDBPage;
-import com.excilys.cdb.persistence.CompanyCrudDao;
-import com.excilys.cdb.persistence.ComputerCrudDao;
 import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;

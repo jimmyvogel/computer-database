@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.MessageHandler;
 import com.excilys.cdb.exception.MessageHandler.CDBMessage;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.CDBPage;
 import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.ressources.UrlID;

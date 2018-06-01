@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>cdb</artifactId>
+		<groupId>com.excilys.cdb.multimodule</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>persistence</artifactId>
+	<packaging>jar</packaging>
+	<name>persistence</name>
+
+	<properties>
+		<!-- PROJET -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!-- DEPENDANCES -->
+		<querydsl.jpa.version>4.2.1</querydsl.jpa.version>
+		<spring.data.version>2.0.7.RELEASE</spring.data.version>
+        <hikaricp.version>2.7.8</hikaricp.version>
+        <mysql.version>5.1.44</mysql.version>
+                
+		<!-- TESTS et LOGS -->
+		<junit.version>4.11</junit.version>
+		<mockito.version>2.18.3</mockito.version>
+		<slf4j.version>1.7.25</slf4j.version>
+
+	</properties>
+
+	<dependencies>
+
+		<!-- DEPENDANCE MODULE -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring.data.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.jpa.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+		<!-- JUNIT ET LOGS -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.excilys.cdb.multimodule</groupId>
+		    <artifactId>core</artifactId>
+		    <version>${parent.version}</version>
+		</dependency>
+	</dependencies>
+
+</project>

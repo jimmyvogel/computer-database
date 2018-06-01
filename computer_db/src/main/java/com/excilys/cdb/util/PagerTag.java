@@ -7,7 +7,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import com.excilys.cdb.persistence.CDBPage;
+import com.excilys.cdb.dao.CDBPage;
 
 
 /**
