@@ -16,16 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import com.excilys.cdb.exception.MessageHandler;
-import com.excilys.cdb.exception.MessageHandler.CDBMessage;
+import com.excilys.cdb.controllermessage.ControllerMessage;
+import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.exceptions.DaoConfigurationException;
-import com.excilys.cdb.persistence.exceptions.DaoException;
 import com.excilys.cdb.ressources.Action;
-import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -42,7 +40,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws ServiceException service exception
 	 */
 	@BeforeClass
-	public static void beforeClass() throws DaoConfigurationException, ServiceException {
+	public static void beforeClass() throws ServiceException {
 		ajout = new Computer(NAMEVALID, Computer.BEGIN_DATE_VALID.plus(Period.ofDays(1)),
 				Computer.END_DATE_VALID.minus(Period.ofDays(1)), new Company(2, "Thinking Machines"));
 	}
@@ -53,6 +51,13 @@ public class AjouterComputerIT extends SeleniumSuite {
 	public void afterClass() {
 		LOGGER.info("AfterClass in IT ajouter computer");
 		this.closeInstance();
+	}
+	
+	@BeforeTest
+	public void verif() {
+		if(driver == null) {
+			LOGGER.info("Le driver est null");
+		}
 	}
 
 	/**
@@ -84,7 +89,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @param discontinued date discontinued à insérer.
 	 */
 	public void ajoutTextDiscontinued(LocalDate discontinued) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DefaultValues.PATTERN_DATE);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Computer.PATTERN_DATE);
 		String date = discontinued.format(formatter);
 		je.executeScript("return document.getElementById('discontinued').value = '" + date + "';");
 		Assert.assertEquals((String) je.executeScript("return document.getElementById('discontinued').value;"), date);
@@ -121,10 +126,10 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	@Test
-	public void verifyAjouterButtonAjoutOk() throws ServiceException, DaoException {
+	public void verifyAjouterButtonAjoutOk() throws ServiceException {
 		LOGGER.info("ajoutButtonAjoutOk");
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
+		driver.get("http://localhost:" + PORT + "/webapp/computer/" + Action.ADD_FORM_COMPUTER.getValue());
 		this.ajoutTextComputerName(ajout.getName());
 		this.ajoutTextIntroduced(ajout.getIntroduced());
 		this.ajoutTextDiscontinued(ajout.getDiscontinued());
@@ -139,7 +144,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.SUCCESS_CREATE, null));
+		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.SUCCESS_CREATE, null));
 	}
 
 	/**
@@ -148,10 +153,10 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	@Test
-	public void verifyAjouterButtonAjoutFailForName() throws ServiceException, DaoException {
+	public void verifyAjouterButtonAjoutFailForName() throws ServiceException {
 		LOGGER.info("verifyAjouterButtonAjoutFailForName");
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
+		driver.get("http://localhost:" + PORT + "/webapp/computer/" + Action.ADD_FORM_COMPUTER.getValue());
 		this.ajoutTextComputerName(NAMEINVALID);
 		this.ajoutTextIntroduced(ajout.getIntroduced());
 		this.ajoutTextDiscontinued(ajout.getDiscontinued());
@@ -165,9 +170,9 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		LOGGER.info(MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_LENGTH,
+		LOGGER.info(MessageHandler.getMessage(ControllerMessage.VALIDATION_NAME_LENGTH,
 				Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray()));
-		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.VALIDATION_NAME_LENGTH,
+		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_NAME_LENGTH,
 				Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray()));
 	}
 
@@ -177,10 +182,10 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	@Test
-	public void verifyAjouterButtonAjoutFailForIntroduced() throws ServiceException, DaoException {
+	public void verifyAjouterButtonAjoutFailForIntroduced() throws ServiceException {
 		LOGGER.info("verifyAjouterButtonAjoutFailForIntroduced");
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
+		driver.get("http://localhost:" + PORT + "/webapp/computer/" + Action.ADD_FORM_COMPUTER.getValue());
 		this.ajoutTextComputerName(ajout.getName());
 		this.ajoutTextIntroduced(ajout.getIntroduced().minus(Period.ofYears(100)));
 		this.ajoutTextDiscontinued(ajout.getDiscontinued());
@@ -195,9 +200,9 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		LOGGER.info(MessageHandler.getMessage(CDBMessage.VALIDATION_DATE_INTRODUCED,
+		LOGGER.info(MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
-		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.VALIDATION_DATE_INTRODUCED,
+		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -207,10 +212,10 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	@Test
-	public void verifyAjouterButtonAjoutFailForDiscontinued() throws ServiceException, DaoException {
+	public void verifyAjouterButtonAjoutFailForDiscontinued() throws ServiceException {
 		LOGGER.info("verifyAjouterButtonAjoutFailForDiscontinued");
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
+		driver.get("http://localhost:" + PORT + "/webapp/computer/" + Action.ADD_FORM_COMPUTER.getValue());
 		this.ajoutTextComputerName(ajout.getName());
 		this.ajoutTextIntroduced(ajout.getIntroduced());
 		this.ajoutTextDiscontinued(ajout.getDiscontinued().minus(Period.ofYears(100)));
@@ -225,7 +230,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.VALIDATION_DATE_DISCONTINUED,
+		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_DISCONTINUED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -235,10 +240,10 @@ public class AjouterComputerIT extends SeleniumSuite {
 	 * @throws DaoException erreur de reqûete.
 	 */
 	@Test
-	public void verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced() throws ServiceException, DaoException {
+	public void verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced() throws ServiceException {
 		LOGGER.info("verifyAjouterButtonAjoutFailForDiscontinuedBeforeIntroduced");
 		driver.manage().timeouts().implicitlyWait(1000, TimeUnit.SECONDS);
-		driver.get("http://localhost:" + PORT + "/computer_db/computer/" + Action.ADD_FORM_COMPUTER.getValue());
+		driver.get("http://localhost:" + PORT + "/webapp/computer/" + Action.ADD_FORM_COMPUTER.getValue());
 		this.ajoutTextComputerName(ajout.getName());
 		this.ajoutTextIntroduced(ajout.getDiscontinued());
 		this.ajoutTextDiscontinued(ajout.getIntroduced());
@@ -253,7 +258,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		Assert.assertEquals(result, MessageHandler.getMessage(CDBMessage.COMPUTER_INTRODUCED_AFTER, null));
+		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.COMPUTER_INTRODUCED_AFTER, null));
 	}
 
 }
