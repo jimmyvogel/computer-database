@@ -52,7 +52,7 @@
             <artifactId>spring-data-jpa</artifactId>
             <version>${spring.data.version}</version>
         </dependency>
-
+        
         <!-- JUNIT ET LOGS -->
         <dependency>
             <groupId>junit</groupId>
@@ -84,6 +84,11 @@
         <dependency>
             <groupId>com.excilys.cdb.multimodule</groupId>
             <artifactId>binding</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.excilys.cdb.multimodule</groupId>
+            <artifactId>persistence</artifactId>
             <version>${parent.version}</version>
         </dependency>
     </dependencies>

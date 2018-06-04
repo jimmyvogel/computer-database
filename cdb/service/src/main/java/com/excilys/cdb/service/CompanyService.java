@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
@@ -34,7 +32,7 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 @Service
 public class CompanyService implements ICompanyService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
 
 	@Autowired
 	private CompanyCrudDao companyDao;

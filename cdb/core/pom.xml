@@ -22,14 +22,14 @@
 	    <junit.version>4.11</junit.version>
     
         <!--  Hibernate for jpa -->
-		<hibernate.core.version>${5.2.16.Final}</hibernate.core.version>
+		<hibernate.core.version>5.2.16.Final</hibernate.core.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.2.16.Final</version>
+			<version>${hibernate.core.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>

@@ -1,13 +1,10 @@
 package com.excilys.cdb.testmodel;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDate;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
 
 /**
  * Unit test for simple App.
