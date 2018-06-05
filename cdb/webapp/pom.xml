@@ -21,6 +21,7 @@
 
 		<!-- DEPENDANCES -->
 		<spring.webmvc.version>5.0.6.RELEASE</spring.webmvc.version>
+		<spring.security.version>5.0.5.RELEASE</spring.security.version>
 		<querydsl.jpa.version>4.2.1</querydsl.jpa.version>
 		<spring.data.version>2.0.7.RELEASE</spring.data.version>
 		<javax.servlet.version>4.0.0</javax.servlet.version>
@@ -44,7 +45,19 @@
 	</properties>
 
 	<dependencies>
-		<!-- DEPENDANCE MODULE -->
+		<!-- SECURITY -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>5.0.5.RELEASE</version>
+		</dependency>
+		
+		<!--  WEB -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -72,6 +85,8 @@
 			<version>${servlet.jsp.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!--  SPRING  -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>

@@ -2,7 +2,7 @@ package com.excilys.cdb.ressources;
 
 import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.controller.ComputerController;
-import com.excilys.cdb.defaultvalues.DefaultValues;
+import com.excilys.cdb.controller.HomeController;
 
 /**
  * Lien java action name -> url_action_value
@@ -10,7 +10,10 @@ import com.excilys.cdb.defaultvalues.DefaultValues;
  *
  */
 public enum Action {
-	HOME(DefaultValues.HOME),
+	HOME(HomeController.HOME),
+	LOGIN_FORM(HomeController.LOGIN_FORM),
+	LOGIN(HomeController.LOGIN),
+	LOGOUT(HomeController.LOGOUT),
 	ADD_COMPUTER(ComputerController.ADD_COMPUTER),
 	EDIT_COMPUTER(ComputerController.EDIT_COMPUTER),
 	SEARCH_COMPUTER(ComputerController.SEARCH_COMPUTER),

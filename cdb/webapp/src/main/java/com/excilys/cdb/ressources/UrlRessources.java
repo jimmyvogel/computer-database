@@ -18,5 +18,6 @@ public class UrlRessources {
     public static final String PAGE_NOT_FOUND = "errors/404";
     public static final String PAGE_DENIED = "errors/403";
     public static final String PAGE_FAIL = "errors/500";
+	public static final String LOGIN = "login";
 
 }

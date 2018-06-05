@@ -357,6 +357,7 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test(expected = ServiceException.class)
 	public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException {
+		computerValid.setDiscontinued(DATE_DISCONTINUED_VALID);
 		Assert.assertNotNull(computerValid.getDiscontinued());
 		Assert.assertTrue(computerValid.getDiscontinued().isBefore(DI_INVALID_AFTER_DD));
 		serviceComputer.update(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
