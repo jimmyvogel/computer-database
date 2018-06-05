@@ -18,10 +18,10 @@ public class CompanyValidator {
 	 */
 	public static String validName(final String name) throws ValidatorStringException {
 		if (name == null) {
-			throw new ValidatorStringException();
+			throw new ValidatorStringException(ValidatorStringException.TypeError.NULL_STRING);
 		}
 		if (name.length() < Company.TAILLE_MIN_NAME || name.length() > Company.TAILLE_MAX_NAME) {
-			throw new ValidatorStringException();
+			throw new ValidatorStringException(ValidatorStringException.TypeError.BAD_LENGTH);
 		}
 		return name;
 	}

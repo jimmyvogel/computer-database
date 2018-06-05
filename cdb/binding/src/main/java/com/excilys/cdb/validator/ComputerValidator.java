@@ -26,11 +26,11 @@ public class ComputerValidator {
 		validIntroduced(computer.getIntroduced());
 		validDiscontinued(computer.getDiscontinued());
 		if (computer.getDiscontinued() != null && computer.getIntroduced() == null) {
-			throw new ValidatorDateException();
+			throw new ValidatorDateException(ValidatorDateException.TypeError.SECOND_DATE_ALONE);
 		}
 		if (computer.getIntroduced() != null && computer.getDiscontinued() != null
 				&& computer.getIntroduced().isAfter(computer.getDiscontinued())) {
-			throw new ValidatorDateException();
+			throw new ValidatorDateException(ValidatorDateException.TypeError.SECOND_DATE_AFTER_FAIL);
 		}
 		return computer;
 	}
@@ -43,13 +43,13 @@ public class ComputerValidator {
 	 */
 	public static String validName(String name) throws ValidatorStringException {
 		if (name == null) {
-			throw new ValidatorStringException();
+			throw new ValidatorStringException(ValidatorStringException.TypeError.NULL_STRING);
 		}
 		if (!SecurityTextValidation.valideString(name)) {
-			throw new ValidatorStringException();
+			throw new ValidatorStringException(ValidatorStringException.TypeError.ILLEGAL_CHARACTERS);
 		}
 		if (name.length() < Computer.TAILLE_MIN_NAME || name.length() > Computer.TAILLE_MAX_NAME) {
-			throw new ValidatorStringException();
+			throw new ValidatorStringException(ValidatorStringException.TypeError.BAD_LENGTH);
 		}
 		return name;
 	}
@@ -63,7 +63,7 @@ public class ComputerValidator {
 	public static LocalDate validIntroduced(final LocalDate introduced) throws ValidatorDateException {
 		if (introduced != null) {
 			if (!DateValidation.validDateInBetween(introduced, Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID)) {
-				throw new ValidatorDateException();
+				throw new ValidatorDateException(ValidatorDateException.TypeError.ILLEGAL_DATE);
 			}
 		}
 		return introduced;
@@ -78,7 +78,7 @@ public class ComputerValidator {
 	public static LocalDate validDiscontinued(final LocalDate discontinued) throws ValidatorDateException {
 		if (discontinued != null) {
 			if (!DateValidation.validDateInBetween(discontinued, Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID)) {
-				throw new ValidatorDateException();
+				throw new ValidatorDateException(ValidatorDateException.TypeError.ILLEGAL_DATE_2);
 			}
 		}
 		return discontinued;

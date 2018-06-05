@@ -1,6 +1,8 @@
 package com.excilys.cdb.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -85,17 +87,11 @@ public class ComputerService implements IComputerService {
 	@Override
 	public long create(final String name) throws ServiceException {
 		long result = -1;
-		if (name == null) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
-		}
-		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null));
-		}
 		try {
 			ComputerValidator.validName(name);
 			result = computerDao.save(new Computer(name)).getId();
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(e.getMessage());
+			throw new NameInvalidException(manageStringTypeError(e));
 		}
 		return result;
 	}
@@ -112,12 +108,6 @@ public class ComputerService implements IComputerService {
 	@Override
 	public long create(String name, LocalDate introduced, LocalDate discontinued, long companyId)
 			throws ServiceException {
-		if (name == null) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
-		}
-		if (!SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null));
-		}
 		long result = -1;
 		try {
 			Company inter = null;
@@ -128,9 +118,9 @@ public class ComputerService implements IComputerService {
 			ComputerValidator.validComputer(c);
 			result = computerDao.save(c).getId();
 		} catch (ValidatorDateException e) {
-			throw new DateInvalidException(e.getMessage());
-		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(e.getMessage());
+			throw new DateInvalidException(manageDateTypeError(e));
+		} catch (ValidatorStringException e2) {
+			throw new NameInvalidException(manageStringTypeError(e2));
 		}
 
 		return result;
@@ -172,9 +162,6 @@ public class ComputerService implements IComputerService {
 		if (name == null && introduced == null && discontinued == null && companyId == -1) {
 			throw new IllegalArgumentException();
 		}
-		if (name != null && !SecurityTextValidation.valideString(name)) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null));
-		}
 		Computer nouveau = new Computer();
 		Computer initial = computerDao.findById(id).orElseThrow(() -> new ComputerNotFoundException(id));
 		nouveau.setId(initial.getId());
@@ -192,9 +179,9 @@ public class ComputerService implements IComputerService {
 		try {
 			ComputerValidator.validComputer(nouveau);
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(e.getMessage());
+			throw new NameInvalidException(manageStringTypeError(e));
 		} catch (ValidatorDateException e) {
-			throw new DateInvalidException(e.getMessage());
+			throw new DateInvalidException(manageDateTypeError(e));
 		}
 
 		return computerDao.save(nouveau) != null;
@@ -203,5 +190,44 @@ public class ComputerService implements IComputerService {
 	@Override
 	public long count() throws ServiceException {
 		return computerDao.count();
+	}
+
+	private String manageDateTypeError(ValidatorDateException e) {
+		String res = "";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Computer.PATTERN_DATE);
+		Object[] o = Arrays
+				.asList(Computer.BEGIN_DATE_VALID.format(formatter), Computer.END_DATE_VALID.format(formatter))
+				.toArray();
+		switch (e.getTypeError()) {
+		case SECOND_DATE_ALONE:
+			res = MessageHandler.getMessage(ServiceMessage.COMPUTER_DISCONTINUED_ALONE, null);
+			break;
+		case ILLEGAL_DATE:
+			res = MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_INTRODUCED, o);
+			break;
+		case ILLEGAL_DATE_2:
+			res = MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_DISCONTINUED, o);
+			break;
+		case SECOND_DATE_AFTER_FAIL:
+			res = MessageHandler.getMessage(ServiceMessage.COMPUTER_INTRODUCED_AFTER, null);
+			break;
+		}
+		return res;
+	}
+
+	private String manageStringTypeError(ValidatorStringException e) {
+		String res = "";
+		switch (e.getTypeError()) {
+		case BAD_LENGTH:
+			res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_LENGTH,
+					Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray());
+			break;
+		case ILLEGAL_CHARACTERS:
+			res = MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null);
+			break;
+		case NULL_STRING: res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null);
+			break;
+		}
+		return res;
 	}
 }

@@ -1,5 +1,7 @@
 package com.excilys.cdb.service;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,7 @@ import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.defaultvalues.DefaultValues;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.exceptions.CharacterSpeciauxException;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
@@ -21,6 +24,7 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.servicemessage.ServiceMessage;
 import com.excilys.cdb.validator.CompanyValidator;
 import com.excilys.cdb.validator.SecurityTextValidation;
+import com.excilys.cdb.validator.exceptions.ValidatorDateException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
@@ -91,18 +95,12 @@ public class CompanyService implements ICompanyService {
 	@Override
 	public long create(final String name) throws ServiceException {
 		long result = -1;
-		if (name == null || name.isEmpty()) {
-			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
-		}
-		if (!SecurityTextValidation.valideString(name)) {
-			throw new CharacterSpeciauxException();
-		}
 		try {
 			CompanyValidator.validName(name);
 			Company c = new Company(name);
 			result = companyDao.save(c).getId();
 		} catch (ValidatorStringException e) {
-			throw new NameInvalidException(e.getMessage());
+			throw new NameInvalidException(manageStringTypeError(e));
 		}
 		return result;
 	}
@@ -139,5 +137,21 @@ public class CompanyService implements ICompanyService {
 	public boolean update(Company update) throws ServiceException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	private String manageStringTypeError(ValidatorStringException e) {
+		String res = "";
+		switch (e.getTypeError()) {
+		case BAD_LENGTH:
+			res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_LENGTH,
+					Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray());
+			break;
+		case ILLEGAL_CHARACTERS:
+			res = MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null);
+			break;
+		case NULL_STRING: res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null);
+			break;
+		}
+		return res;
 	}
 }

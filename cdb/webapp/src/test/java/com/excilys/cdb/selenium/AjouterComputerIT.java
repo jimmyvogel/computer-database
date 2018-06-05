@@ -195,11 +195,15 @@ public class AjouterComputerIT extends SeleniumSuite {
 		LOGGER.info("Modification work: test result");
 		try {
 			Thread.sleep(300L);
+			LOGGER.info("Avant driver findElement");
 			result = driver.findElement(By.id(JspRessources.ERROR)).getText();
+			LOGGER.info("Après driver findElement");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
+		LOGGER.info("Result: " + MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
+				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 		LOGGER.info(MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
@@ -225,7 +229,9 @@ public class AjouterComputerIT extends SeleniumSuite {
 		LOGGER.info("Modification work: test result");
 		try {
 			Thread.sleep(300L);
+			LOGGER.info("Avant driver findElement");
 			result = driver.findElement(By.id(JspRessources.ERROR)).getText();
+			LOGGER.info("Après driver findElement");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
