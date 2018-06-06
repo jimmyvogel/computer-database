@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.dao.ComputerCrudDao;
-import com.excilys.cdb.defaultvalues.DefaultValues;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -37,17 +35,17 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 @Service
 public class ComputerService implements IComputerService {
 
-	@Autowired
 	private ComputerCrudDao computerDao;
-	@Autowired
 	private CompanyCrudDao companyDao;
 
+	public ComputerService(ComputerCrudDao computerDao, CompanyCrudDao companyDao) {
+		this.computerDao = computerDao;
+		this.companyDao = companyDao;
+	}
+	
 	@Override
 	public List<Computer> getAll() throws ServiceException {
 		return computerDao.findAll();
-	}
-
-	private ComputerService() {
 	}
 
 	@Override

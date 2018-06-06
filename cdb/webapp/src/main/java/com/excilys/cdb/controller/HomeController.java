@@ -2,7 +2,6 @@ package com.excilys.cdb.controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +26,12 @@ public class HomeController {
 	public static final String INSCRIPTION_FORM = "inscription";
 	public static final String INSCRIPTION = "signin";
 	
-	
-	@Autowired
 	private IUserService serviceUser;
-	@Autowired
-	private BCryptPasswordEncoder encoder;
 
+	public HomeController(IUserService userService) {
+		this.serviceUser = userService;
+	}
+	
 	/**
 	 * Direction accueil.
 	 * @return nom de la jsp
@@ -84,10 +83,10 @@ public class HomeController {
 			modelview = new ModelAndView(UrlRessources.SIGNIN);
 			modelview.addObject(JspRessources.ERROR, "Password verification different.");
 		} else {
-			String encoded=encoder.encode(password);
+			String encoded=new BCryptPasswordEncoder().encode(password);
 			serviceUser.inscription(username, encoded);
 			modelview = new ModelAndView(UrlRessources.LOGIN);
-			modelview.addObject(JspRessources.ERROR, "Inscription effectued");
+			modelview.addObject(JspRessources.ERROR, "Inscription done");
 		}
 		return modelview;
 	}

@@ -13,29 +13,18 @@
 	<packaging>jar</packaging>
 	<name>core</name>
 
-	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <maven.compiler.source>1.8</maven.compiler.source>
-	    <maven.compiler.target>1.8</maven.compiler.target>
-    
-	    <!-- TESTS -->
-	    <junit.version>4.11</junit.version>
-    
-        <!--  Hibernate for jpa -->
-		<hibernate.core.version>5.2.16.Final</hibernate.core.version>
-	</properties>
+	<properties></properties>
 
 	<dependencies>
+	    <!--  JPA / ORM -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.core.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<!--  JUNIT -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -19,12 +19,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.excilys.cdb.controllermessage.ControllerMessage;
-import com.excilys.cdb.defaultvalues.DefaultValues;
-import com.excilys.cdb.messagehandler.CDBMessage;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.ressources.Action;
+import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.DateValidation;

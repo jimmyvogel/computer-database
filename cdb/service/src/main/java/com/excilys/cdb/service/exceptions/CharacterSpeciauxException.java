@@ -1,7 +1,5 @@
 package com.excilys.cdb.service.exceptions;
 
-import java.util.Collections;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

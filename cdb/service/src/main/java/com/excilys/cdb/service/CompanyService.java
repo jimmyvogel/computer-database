@@ -1,19 +1,16 @@
 package com.excilys.cdb.service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.dao.CompanyCrudDao;
-import com.excilys.cdb.defaultvalues.DefaultValues;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -24,7 +21,6 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.servicemessage.ServiceMessage;
 import com.excilys.cdb.validator.CompanyValidator;
 import com.excilys.cdb.validator.SecurityTextValidation;
-import com.excilys.cdb.validator.exceptions.ValidatorDateException;
 import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
@@ -36,14 +32,12 @@ import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 @Service
 public class CompanyService implements ICompanyService {
 
-	//private static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
-
-	@Autowired
 	private CompanyCrudDao companyDao;
-	@Autowired
 	private IComputerService computerService;
 
-	private CompanyService() {
+	public CompanyService(CompanyCrudDao companyDao, IComputerService computerService) {
+		this.companyDao = companyDao;
+		this.computerService = computerService;
 	}
 
 	@Override

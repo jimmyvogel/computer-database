@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -20,12 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.controllermessage.ControllerMessage;
 import com.excilys.cdb.dao.CDBPage;
-import com.excilys.cdb.defaultvalues.DefaultValues;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.PageMapper;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.ressources.UrlID;
 import com.excilys.cdb.ressources.UrlRessources;
@@ -37,11 +36,14 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 @RequestMapping("/computer")
 public class ComputerController {
 
-	@Autowired
 	private IComputerService serviceComputer;
-	@Autowired
 	private ICompanyService serviceCompany;
 
+	public ComputerController(ICompanyService companyService, IComputerService computerService) {
+		this.serviceCompany = companyService;
+		this.serviceComputer = computerService;
+	}
+	
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
 	public static final String SEARCH_COMPUTER = "searchComputer";

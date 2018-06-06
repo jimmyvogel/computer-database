@@ -3,7 +3,6 @@ package com.excilys.cdb.service;
 import java.util.Collections;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,9 +18,12 @@ import com.excilys.cdb.service.exceptions.UserNotFoundException;
 @Transactional
 public class UserService implements IUserService{
 
-	@Autowired
 	private UserCrudDao userDao;
 
+	public UserService(UserCrudDao userDao) {
+		this.userDao = userDao;
+	}
+	
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

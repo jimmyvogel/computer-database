@@ -12,7 +12,7 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 @Service
 @Transactional
 public interface IService<T> {
-
+	
 	/**
 	 * Retourne tous les objets de type T de la bdd.
 	 * @return une liste

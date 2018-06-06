@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -41,7 +40,6 @@ public class CompanyServiceTest extends JunitSuite {
      */
     @Before
     public void initialisation() throws ServiceException{
-        MockitoAnnotations.initMocks(this);
         nbCompany = serviceCompany.count();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
