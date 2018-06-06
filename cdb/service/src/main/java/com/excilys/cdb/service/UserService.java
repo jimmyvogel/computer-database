@@ -1,20 +1,23 @@
 package com.excilys.cdb.service;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.dao.UserCrudDao;
+import com.excilys.cdb.model.Authorities;
 import com.excilys.cdb.model.User;
 import com.excilys.cdb.service.exceptions.UserNotFoundException;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
+public class UserService implements IUserService{
 
 	@Autowired
 	private UserCrudDao userDao;
@@ -36,5 +39,12 @@ public class UserService implements UserDetailsService {
 			throw new UserNotFoundException();
 		}
 		return builder.build();
+	}
+	
+	public User inscription(String username, String password) {
+		User user = new User(username, password);
+		Set<Authorities> authorities = Collections.singleton(new Authorities(Authorities.Role.ROLE_USER, user));
+		user.setAuthorities(authorities);
+		return userDao.save(user);
 	}
 }

@@ -30,8 +30,24 @@ public class User {
 	 * Constructor par défaut.
 	 */
 	public User() {
+		this(null, null);
 	}
 	
+	public User(String username, String password, Set<Authorities> authorities, boolean enabled) {
+		this.username = username;
+		this.password = password;
+		this.authorities = authorities;
+		this.enabled = enabled;
+	}
+	
+	public User(String username, String password) {
+		this(username, password, new HashSet<Authorities>(), true);
+	}
+	
+	public void addAuthority(Authorities authority) {
+		this.authorities.add(authority);
+	}
+
 	public String getUsername() {
 		return username;
 	}

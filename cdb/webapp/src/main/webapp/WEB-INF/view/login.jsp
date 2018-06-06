@@ -13,8 +13,11 @@
 					for="password" class="sr-only">Password</label> <input
 					type="password" id="password" name="password" class="form-control"
 					placeholder="Password" required>
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+				<button class="btn btn-lg btn-primary btn-block" name="buttonLogin" id="buttonLogin" type="submit">Login</button>
 			</form>
+			Or 
+	        <a href="${applicationScope.actions.SIGN_IN_FORM}">Sign in</a>
+			
 		</div>
 	</div>
 </div>

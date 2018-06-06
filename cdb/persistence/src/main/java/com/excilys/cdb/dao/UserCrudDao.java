@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.excilys.cdb.model.User;
 
 @Repository
-public interface UserCrudDao extends PagingAndSortingRepository<User, Long> {
-
+public interface UserCrudDao extends PagingAndSortingRepository<User, String> {
 	User findByUsername(String username);
 }

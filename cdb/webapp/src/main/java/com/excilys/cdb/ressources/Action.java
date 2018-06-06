@@ -14,6 +14,8 @@ public enum Action {
 	LOGIN_FORM(HomeController.LOGIN_FORM),
 	LOGIN(HomeController.LOGIN),
 	LOGOUT(HomeController.LOGOUT),
+	SIGN_IN(HomeController.INSCRIPTION),
+	SIGN_IN_FORM(HomeController.INSCRIPTION_FORM),
 	ADD_COMPUTER(ComputerController.ADD_COMPUTER),
 	EDIT_COMPUTER(ComputerController.EDIT_COMPUTER),
 	SEARCH_COMPUTER(ComputerController.SEARCH_COMPUTER),
