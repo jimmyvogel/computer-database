@@ -3,10 +3,10 @@ package com.excilys.cdb.service;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -31,7 +31,7 @@ public interface IComputerService extends IService<Computer> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	CDBPage<Computer> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	Page<Computer> getPageSearch(String search, int page, Integer limit) throws ServiceException;
 
 	/**
 	 * Créer un computer.

@@ -1,9 +1,9 @@
 package com.excilys.cdb.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -27,7 +27,7 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws ServiceException erreur de service
 	 */
 	@Transactional(readOnly = true)
-	CDBPage<Company> getPage(int page) throws ServiceException;
+	Page<Company> getPage(int page) throws ServiceException;
 
 	/**
 	 * Recherche de compagnie par nom.
@@ -38,7 +38,7 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	CDBPage<Company> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	Page<Company> getPageSearch(String search, int page, Integer limit) throws ServiceException;
 
 	/**
 	 * Créer une company.

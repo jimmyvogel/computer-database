@@ -3,12 +3,11 @@ package com.excilys.cdb.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Class pour gérer la pagination des données.
- * @author vogel
- * @param <T> le type de donnée à charger
- */
-public class CDBPage<T> {
+public class AnciennePage<T> {
+
+	public AnciennePage() {
+		// TODO Auto-generated constructor stub
+	}
 
 	private List<T> objects;
 
@@ -32,7 +31,7 @@ public class CDBPage<T> {
 	 * @param limit le nombre d'objets par bloc
 	 * @param l le nombre d'éléments en bdd
 	 */
-	public CDBPage(int limit, long l) {
+	public AnciennePage(int limit, long l) {
 		objects = new ArrayList<T>();
 		this.limit = limit;
 		this.count = l;
@@ -146,5 +145,4 @@ public class CDBPage<T> {
 		}
 		return res;
 	}
-
 }

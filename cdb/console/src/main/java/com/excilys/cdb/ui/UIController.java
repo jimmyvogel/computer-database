@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.data.domain.Page;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.ICompanyService;
@@ -603,9 +603,9 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException {
-		CDBPage<Computer> pageComputer = serviceComputer.getPage(page, null);
+		Page<Computer> pageComputer = serviceComputer.getPage(page, null);
 		int taille = (int) serviceComputer.count();
-		int limit = pageComputer.getLimit();
+		int limit = (int) pageComputer.getTotalElements();
 		int endBloc = taille / limit;
 		if (taille % limit > 0) {
 			endBloc++;
@@ -621,9 +621,9 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private String pageurCompanyShow(final int page) throws ServiceException {
-		CDBPage<Company> pageCompany = serviceCompany.getPage(page);
+		Page<Company> pageCompany = serviceCompany.getPage(page);
 		int taille = (int) serviceCompany.count();
-		int limit = pageCompany.getLimit();
+		int limit = (int) pageCompany.getTotalElements();
 		int endBloc = taille / limit;
 		if (taille % limit > 0) {
 			endBloc++;

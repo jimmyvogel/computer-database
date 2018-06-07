@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.messagehandler.MessageHandler;
@@ -49,17 +48,13 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	public CDBPage<Computer> getPage(final int page, final Integer limit) throws ServiceException {
-		CDBPage<Computer> pageComputer = null;
+	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		Page<Computer> qpage = computerDao.findAll(new QPageRequest(page - 1, nbElements));
-		pageComputer = new CDBPage<Computer>(nbElements, qpage.getTotalElements());
-		pageComputer.charge(qpage.getContent(), page);
-		return pageComputer;
+		return computerDao.findAll(new QPageRequest(page - 1, nbElements));
 	}
 
 	@Override
-	public CDBPage<Computer> getPageSearch(final String search, final int page, final Integer limit)
+	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
@@ -67,13 +62,9 @@ public class ComputerService implements IComputerService {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null));
 		}
-		CDBPage<Computer> pageComputer = null;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		Page<Computer> qpage = computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
+		return computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
 				new QPageRequest(page - 1, nbElements));
-		pageComputer = new CDBPage<Computer>(nbElements, qpage.getTotalElements());
-		pageComputer.charge(qpage.getContent(), page);
-		return pageComputer;
 	}
 
 	@Override

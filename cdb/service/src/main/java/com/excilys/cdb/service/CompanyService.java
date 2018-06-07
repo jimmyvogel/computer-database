@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
@@ -46,22 +45,18 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public CDBPage<Company> getPage(final int page) throws ServiceException {
+	public Page<Company> getPage(final int page) throws ServiceException {
 		return getPage(page, null);
 	}
 
 	@Override
-	public CDBPage<Company> getPage(final int page, final Integer limit) throws ServiceException {
-		CDBPage<Company> pageCompany = null;
+	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
 		int nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		Page<Company> qpage = companyDao.findAll(new QPageRequest(page - 1, nbElements));
-		pageCompany = new CDBPage<Company>(nbElements, qpage.getTotalElements());
-		pageCompany.charge(qpage.getContent(), page);
-		return pageCompany;
+		return companyDao.findAll(new QPageRequest(page - 1, nbElements));
 	}
 
 	@Override
-	public CDBPage<Company> getPageSearch(final String search, final int page, final Integer limit)
+	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
@@ -70,14 +65,11 @@ public class CompanyService implements ICompanyService {
 			throw new CharacterSpeciauxException();
 		}
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		CDBPage<Company> pageCompany = new CDBPage<Company>(nbElements, 0);
+		Page<Company> qpage = null;
 		if (search != null) {
-			Page<Company> qpage = companyDao.findByNameContainingOrderByName(search,
-					new QPageRequest(page - 1, nbElements));
-			pageCompany = new CDBPage<Company>(nbElements, qpage.getTotalElements());
-			pageCompany.charge(qpage.getContent(), page);
+			qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(page - 1, nbElements));
 		}
-		return pageCompany;
+		return qpage;
 	}
 
 	@Override

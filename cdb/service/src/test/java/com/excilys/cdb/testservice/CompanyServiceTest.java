@@ -43,8 +43,8 @@ public class CompanyServiceTest extends JunitSuite {
         nbCompany = serviceCompany.count();
 
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
-        companyValid = serviceCompany.getPage(1).getObjects().get(0);
-        computerValid = serviceComputer.getPage(1, null).getObjects().get(0);
+        companyValid = serviceCompany.getPage(1).getContent().get(0);
+        computerValid = serviceComputer.getPage(1, null).getContent().get(0);
         computerValid.setCompany(companyValid);
         serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),

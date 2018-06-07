@@ -3,10 +3,10 @@ package com.excilys.cdb.service;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.cdb.dao.CDBPage;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
 @Service
@@ -78,5 +78,5 @@ public interface IService<T> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	CDBPage<T> getPage(int page, Integer limit) throws ServiceException;
+	Page<T> getPage(int page, Integer limit) throws ServiceException;
 }

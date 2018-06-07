@@ -2,7 +2,7 @@
 <%@ taglib uri="../tags.tld" prefix="pg" %> 
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <h1 id="homeTitle" class="text-center">
-    ${ page.count } <spring:message code="computers"/>
+    ${ page.totalElements } <spring:message code="computers"/>
 </h1>
 
 <form id="deleteForm" action="${applicationScope.actions.DELETE_COMPUTER}" method="POST">
@@ -35,7 +35,7 @@
 		</thead>
 		<!-- Browse attribute computers -->
 		<tbody id="results">
-		    <c:forEach items="${page.objects}" var="computer">
+		    <c:forEach items="${page.content}" var="computer">
 				<tr>
 					<td>
 						<input type="checkbox" name="cb" class="cb" value="${computer.id}">
