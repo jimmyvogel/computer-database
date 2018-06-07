@@ -1,7 +1,6 @@
 package com.excilys.cdb.service;
 
 import java.util.Collections;
-import java.util.Set;
 
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,8 +44,7 @@ public class UserService implements IUserService{
 	
 	public User inscription(String username, String password) {
 		User user = new User(username, password);
-		Set<Authorities> authorities = Collections.singleton(new Authorities(Authorities.Role.ROLE_USER, user));
-		user.setAuthorities(authorities);
+		user.setAuthorities(Collections.singleton(new Authorities(Authorities.Role.ROLE_USER)));
 		return userDao.save(user);
 	}
 }

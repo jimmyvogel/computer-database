@@ -3,15 +3,14 @@ package com.excilys.cdb.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "User")
 public class User {
 	@Id
 	@Column(name = "username")
@@ -23,7 +22,7 @@ public class User {
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@ManyToMany
 	private Set<Authorities> authorities = new HashSet<>();
 
 	/**

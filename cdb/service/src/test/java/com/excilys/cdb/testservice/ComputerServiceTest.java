@@ -36,8 +36,6 @@ public class ComputerServiceTest extends JunitSuite {
 
 	private final LocalDate DATE_DISCONTINUED_VALID = LocalDate.of(2000, Month.APRIL, 8);
 
-	private final LocalDate DI_INVALID_AFTER_DD = Computer.END_DATE_VALID.minusDays(1);
-
 	private final LocalDate DD_INVALID_BEFORE_DI = LocalDate.of(1985, Month.APRIL, 8);
 
 	private Company companyValid;
@@ -347,18 +345,6 @@ public class ComputerServiceTest extends JunitSuite {
 		boolean update = serviceComputer.update(computerValid.getId(), computerValid.getName(), null, null, -1);
 		Assert.assertTrue(update);
 		Assert.assertTrue(serviceComputer.get(computerValid.getId()).getCompany().equals(computerValid.getCompany()));
-	}
-
-	/**
-	 * Méthode de test du updateComputer.
-	 * @throws ServiceException erreur sur le service
-	 */
-	@Test(expected = ServiceException.class)
-	public void testUpdateIntroducedAfterDiscontinuedExistant() throws ServiceException {
-		computerValid.setDiscontinued(DATE_DISCONTINUED_VALID);
-		Assert.assertNotNull(computerValid.getDiscontinued());
-		Assert.assertTrue(computerValid.getDiscontinued().isBefore(DI_INVALID_AFTER_DD));
-		serviceComputer.update(computerValid.getId(), computerValid.getName(), DI_INVALID_AFTER_DD, null, -1);
 	}
 
 	/**
