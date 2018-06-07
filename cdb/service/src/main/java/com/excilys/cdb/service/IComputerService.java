@@ -71,5 +71,5 @@ public interface IComputerService extends IService<Computer> {
 	 * @param ids ids des compagnies à délier.
 	 * @throws ServiceException erreur de paramètres
 	 */
-	void deleteAllByCompanyId(Set<Long> ids) throws ServiceException;
+	Long deleteAllByCompanyId(Set<Long> ids) throws ServiceException;
 }

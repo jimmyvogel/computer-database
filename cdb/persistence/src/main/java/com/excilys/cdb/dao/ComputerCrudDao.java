@@ -14,10 +14,10 @@ public interface ComputerCrudDao extends PagingAndSortingRepository<Computer, Lo
 
 	@Override
 	List<Computer> findAll();
+	
+	Long deleteByIdIn(Iterable<Long> ids);
 
-	void deleteByIdIn(Iterable<Long> ids);
-
-	void deleteByCompanyIdIn(Iterable<Long> ids);
+	Long deleteByCompanyIdIn(Iterable<Long> ids);
 
 	Page<Computer> findByNameContainingOrCompanyNameContainingOrderByName(String name, String companyName, Pageable p);
 

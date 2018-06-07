@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
+import org.jboss.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
@@ -116,24 +118,28 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	public void delete(long id) throws ServiceException {
+	public Long delete(long id) throws ServiceException {
 		computerDao.deleteById(id);
+		return (long) 1;
 	}
 
 	@Override
-	public void deleteAll(Set<Long> ids) throws ServiceException {
+	public Long deleteAll(Set<Long> ids) throws ServiceException {
 		if (ids == null || ids.size() == 0) {
 			throw new IllegalArgumentException();
 		}
-		computerDao.deleteByIdIn(ids);
-		// throw new
-		// ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL,
-		// null));
+		Logger log = LoggerFactory.logger(ComputerService.class);
+		Long res = computerDao.deleteByIdIn(ids);
+		log.info("Passage ici le nombre d'éléments supprimés est : " + res);
+		return res;
 	}
 
 	@Override
-	public void deleteAllByCompanyId(Set<Long> ids) throws ServiceException {
-		computerDao.deleteByCompanyIdIn(ids);
+	public Long deleteAllByCompanyId(Set<Long> ids) throws ServiceException {
+		Logger log = LoggerFactory.logger(ComputerService.class);
+		Long res = computerDao.deleteByCompanyIdIn(ids);
+		log.info("Passage ici le nombre d'éléments supprimés est : " + res);
+		return res;
 	}
 
 	@Override

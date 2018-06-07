@@ -41,10 +41,11 @@ public interface IService<T> {
 	/**
 	 * Détruire plusieurs T.
 	 * @param ids id(s) des T à supprimer
+	 * @return 
 	 * @throws ServiceException set en paramètre vide
 	 */
 	@Transactional(rollbackFor = RuntimeException.class)
-	void deleteAll(Set<Long> ids) throws ServiceException;
+	Long deleteAll(Set<Long> ids) throws ServiceException;
 
 	/**
 	 * Détruire un T.
@@ -52,7 +53,7 @@ public interface IService<T> {
 	 * @return un boolean représentant le résultat
 	 * @throws ServiceException erreur de service
 	 */
-	void delete(long id) throws ServiceException;
+	Long delete(long id) throws ServiceException;
 
 	/**
 	 * Récupérer le nombre de T.

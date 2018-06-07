@@ -92,21 +92,19 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public void delete(long id) throws ServiceException {
-		computerService.deleteAllByCompanyId(Collections.singleton(id));
+	public Long delete(long id) throws ServiceException {
+		Long elems = computerService.deleteAllByCompanyId(Collections.singleton(id));
 		companyDao.deleteById(id);
+		return elems + 1;
 	}
 
 	@Override
-	public void deleteAll(Set<Long> ids) throws ServiceException {
+	public Long deleteAll(Set<Long> ids) throws ServiceException {
 		if (ids == null || ids.size() == 0) {
 			throw new IllegalArgumentException();
 		}
-		computerService.deleteAllByCompanyId(ids);
-		companyDao.deleteAllByIdIn(ids);
-		// throw new
-		// ServiceException(ExceptionHandler.getMessage(MessageException.DELETE_FAIL,
-		// null));
+		Long elems = computerService.deleteAllByCompanyId(ids);
+		return companyDao.deleteAllByIdIn(ids) + elems;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.excilys.cdb.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,14 +12,18 @@ import com.excilys.cdb.model.Computer;
  * @author vogel
  *
  */
-public class ComputerDTO {
+public class ComputerDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6595478542640535992L;
+	
 	private long id;
 	private String name;
 
 	@DateTimeFormat(pattern = Computer.PATTERN_DATE)
 	private LocalDate introduced;
-
 	@DateTimeFormat(pattern = Computer.PATTERN_DATE)
 	private LocalDate discontinued;
 

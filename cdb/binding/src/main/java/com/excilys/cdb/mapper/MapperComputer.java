@@ -17,6 +17,11 @@ public class MapperComputer {
 
 	//private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputer.class);
 
+	public static Optional<ComputerDTO> map(Computer computer) {
+		return Optional.ofNullable(new ComputerDTO(computer));
+	}
+
+	
 	/**
 	 * Mapping to certifiate string format.
 	 * @param name le nom du computer

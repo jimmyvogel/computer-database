@@ -19,7 +19,6 @@ public class WebSpringInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 		context.register(SpringConfigWeb.class);
-		context.register(WebSecurityConfig.class);
 
 		ServletRegistration.Dynamic servlet = servletContext.addServlet(SERVLET_NAME, new DispatcherServlet(context));
 		servlet.setLoadOnStartup(1);

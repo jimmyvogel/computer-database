@@ -1,12 +1,12 @@
 package com.excilys.cdb.webservices.ressources;
 
-public class JspRessources {
+public class UrlParams {
 
-	/**
-	 */
-	private JspRessources() {
-	}
-
+	public static final String SEARCH = "search";
+	public static final String LIMIT = "limit";
+    public static final String PAGE = "page";
+    public static final String DELETE_SELECT = "deletes";
+    
 	// ALERTS ID
 	public static final String ERROR = "error";
 	public static final String SUCCESS = "success";
@@ -17,7 +17,6 @@ public class JspRessources {
 	public static final String FORM_COMPUTER_PARAM_DISCONTINUED = "discontinued";
 	public static final String FORM_COMPUTER_PARAM_IDCOMPANY = "companyId";
 	public static final String COMPUTER_ID = "id";
-	public static final String DELETE_SELECT = "selection";
 	public static final String FORM_LOGIN_USERNAME = "username";
 	public static final String FORM_LOGIN_PASSWORD = "password";
 	public static final String FORM_SIGNIN_USERNAME = FORM_LOGIN_USERNAME;
@@ -33,5 +32,10 @@ public class JspRessources {
 	public static final String BUTTON_LOGIN = "buttonLogin";
 	public static final String BUTTON_ADD = "buttonAdd";
 	public static final String BUTTON_SIGN_IN = "buttonSignIn";
+
+    /**
+     * No constructor.
+     */
+    private UrlParams() { }
 
 }
