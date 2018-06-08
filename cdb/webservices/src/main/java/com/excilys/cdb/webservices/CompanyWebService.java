@@ -42,9 +42,6 @@ public class CompanyWebService {
 		this.serviceCompany = companyService;
 	}
 
-	public static final String SEARCH_COMPANY = "searchCompany";
-	public static final String LIST_COMPANIES = "listCompanies";
-
 	@GetMapping(params= {UrlParams.COMPANY_ID})
 	public ResponseEntity<CompanyDTO> get(@RequestParam(name = UrlParams.COMPANY_ID) Long id){
 		Optional<CompanyDTO> company = null;

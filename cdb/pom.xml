@@ -16,6 +16,7 @@
 
         <!--  JSON -->
         <jackson.core.version>2.9.5</jackson.core.version>
+        <json.web.token>0.9.0</json.web.token>
         <!-- WEB -->
         <javax.servlet.version>4.0.0</javax.servlet.version>
         <jstl.version>1.2</jstl.version>
@@ -38,6 +39,7 @@
 		<!-- TESTS -->
 		<junit.version>4.11</junit.version>
 		<mockito.version>2.18.3</mockito.version>
+		<spring.boot.test.version>2.0.2.RELEASE</spring.boot.test.version>
 		<!-- LOGS -->
 		<slf4j.version>1.7.25</slf4j.version>
 		<!-- TI SELENIUM TESTNG -->
@@ -74,7 +76,12 @@
 				<artifactId>spring-security-config</artifactId>
 				<version>${spring.security.version}</version>
 			</dependency>
-
+	        <dependency>
+	            <groupId>org.springframework.security</groupId>
+	            <artifactId>spring-security-core</artifactId>
+	            <version>${spring.security.version}</version>
+	        </dependency>
+        
 			<!-- VALIDATION -->
 			<dependency>
 				<groupId>javax.validation</groupId>
@@ -123,6 +130,13 @@
 				<version>${servlet.jsp.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+			<dependency>
+			    <groupId>io.jsonwebtoken</groupId>
+			    <artifactId>jjwt</artifactId>
+			    <version>${json.web.token}</version>
+			</dependency>
+						
 
 			<!-- BDD -->
 			<dependency>
@@ -165,7 +179,12 @@
 				<artifactId>mockito-junit-jupiter</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
-
+	        <dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-test</artifactId>
+	            <version>${spring.boot.test.version}</version>
+	        </dependency>
+	        
 			<!-- SELENIUM -->
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
