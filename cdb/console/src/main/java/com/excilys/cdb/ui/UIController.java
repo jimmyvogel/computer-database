@@ -664,6 +664,7 @@ public class UIController {
 	 */
 	public static void main(final String[] args) {
 		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(SpringConfigApplication.class);
+		
 		UIController controller = new UIController(appConfig);
 		controller.run();
 	}
