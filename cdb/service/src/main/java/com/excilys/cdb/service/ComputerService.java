@@ -52,7 +52,8 @@ public class ComputerService implements IComputerService {
 	@Override
 	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		return computerDao.findAll(new QPageRequest(page - 1, nbElements));
+		int tpage = page < 1 ? 1 : page;
+		return computerDao.findAll(new QPageRequest(tpage - 1, nbElements));
 	}
 
 	@Override
@@ -64,9 +65,10 @@ public class ComputerService implements IComputerService {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null));
 		}
+		int tpage = page < 1 ? 1 : page;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		return computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
-				new QPageRequest(page - 1, nbElements));
+				new QPageRequest(tpage - 1, nbElements));
 	}
 
 	@Override

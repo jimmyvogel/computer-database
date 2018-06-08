@@ -22,7 +22,7 @@ import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
 import com.excilys.cdb.service.ComputerService;
-import com.excilys.cdb.webservices.controller.ComputerWebService;
+import com.excilys.cdb.webservices.ComputerWebService;
 
 @Configuration
 @EnableWebMvc

@@ -52,7 +52,8 @@ public class CompanyService implements ICompanyService {
 	@Override
 	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
 		int nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		return companyDao.findAll(new QPageRequest(page - 1, nbElements));
+		int tpage = page < 1 ? 1 : page;
+		return companyDao.findAll(new QPageRequest(tpage - 1, nbElements));
 	}
 
 	@Override
@@ -65,9 +66,10 @@ public class CompanyService implements ICompanyService {
 			throw new CharacterSpeciauxException();
 		}
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
+		int tpage = page < 1 ? 1 : page;
 		Page<Company> qpage = null;
 		if (search != null) {
-			qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(page - 1, nbElements));
+			qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(tpage - 1, nbElements));
 		}
 		return qpage;
 	}
@@ -119,8 +121,7 @@ public class CompanyService implements ICompanyService {
 
 	@Override
 	public boolean update(Company update) throws ServiceException {
-		// TODO Auto-generated method stub
-		return false;
+		return companyDao.save(update) != null;
 	}
 
 	private String manageStringTypeError(ValidatorStringException e) {

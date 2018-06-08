@@ -181,7 +181,6 @@ public class ComputerController {
 		Optional<Computer> c = MapperComputer.map(computer);
 		if (c.isPresent()) {
 			try {
-				System.out.println(c);
 				serviceComputer.update(c.get());
 				mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_UPDATE, null));
 			} catch (ServiceException e) {
