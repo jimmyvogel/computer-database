@@ -16,6 +16,11 @@
 	<properties></properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+            
 		<!-- SECURITY -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -44,9 +49,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-client</artifactId>
+	    </dependency>
 
 		<!-- BDD -->
 		<dependency>

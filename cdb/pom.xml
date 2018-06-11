@@ -17,6 +17,7 @@
         <!--  JSON -->
         <jackson.core.version>2.9.5</jackson.core.version>
         <json.web.token>0.9.0</json.web.token>
+        <glassfish.jersey.media.version>2.25.1</glassfish.jersey.media.version>
         <!-- WEB -->
         <javax.servlet.version>4.0.0</javax.servlet.version>
         <jstl.version>1.2</jstl.version>
@@ -29,7 +30,7 @@
 		<javax.validation.version>1.1.0.Final</javax.validation.version>
 		<!-- SPRING -->
 		<spring.webmvc.version>5.0.6.RELEASE</spring.webmvc.version>
-        <httpclient.version>4.5.5</httpclient.version>
+        <glassfish.jersey.core.version>2.25.1</glassfish.jersey.core.version>
 		<!--BDD -->
 		<hikaricp.version>2.7.8</hikaricp.version>
 		<mysql.version>5.1.44</mysql.version>
@@ -65,6 +66,11 @@
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.core.version}</version>
             </dependency>
+            <dependency>
+			    <groupId>org.glassfish.jersey.media</groupId>
+			    <artifactId>jersey-media-json-jackson</artifactId>
+			    <version>${glassfish.jersey.media.version}</version>
+			</dependency>
         
 			<!-- SECURITY -->
 			<dependency>
@@ -102,11 +108,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-	        <dependency>
-	           <groupId>org.apache.httpcomponents</groupId>
-	           <artifactId>httpclient</artifactId>
-	           <version>${httpclient.version}</version>
-	        </dependency>
+			<dependency>
+			    <groupId>org.glassfish.jersey.core</groupId>
+			    <artifactId>jersey-client</artifactId>
+			    <version>${glassfish.jersey.core.version}</version>
+			</dependency>
 	            
 			<!-- WEB -->
 			<dependency>

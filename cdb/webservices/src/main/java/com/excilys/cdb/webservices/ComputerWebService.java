@@ -1,8 +1,8 @@
 package com.excilys.cdb.webservices;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -122,7 +122,7 @@ public class ComputerWebService {
 	 * @return la réponse en json.
 	 */
 	@DeleteMapping
-	public ResponseEntity<Long> delete(@RequestBody(required = true) HashSet<Long> deletes) {
+	public ResponseEntity<Long> delete(@RequestParam(name = UrlParams.DELETE_SELECT, required = true) Set<Long> deletes) {
 		Long elements = 0L;
 		try {
 			elements = serviceComputer.deleteAll(deletes);

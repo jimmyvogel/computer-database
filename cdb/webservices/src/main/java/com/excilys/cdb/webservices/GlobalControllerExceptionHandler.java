@@ -36,9 +36,9 @@ class GlobalControllerExceptionHandler {
 		return new ResponseEntity<String>(se.getMessage(), HttpStatus.BAD_REQUEST);
     }
     
-    @ExceptionHandler({ Exception.class })
-    public ResponseEntity<Object> handleAll(Exception ex) {
-    	String mess = MessageHandler.getMessage(WebServiceMessage.UNCHECK_EXCEPTION, null);
-        return new ResponseEntity<Object>(mess, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler({ Exception.class })
+//    public ResponseEntity<Object> handleAll(Exception ex) {
+//    	String mess = MessageHandler.getMessage(WebServiceMessage.UNCHECK_EXCEPTION, null);
+//        return new ResponseEntity<Object>(mess, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

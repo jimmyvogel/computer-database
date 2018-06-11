@@ -1,6 +1,7 @@
 package com.excilys.cdb.ui;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -9,9 +10,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.data.domain.Page;
 
-import com.excilys.cdb.model.Company;
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.service.ICompanyService;
+import com.excilys.cdb.service.DefaultValues;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.uiconfig.SpringConfigApplication;
@@ -27,13 +29,17 @@ import com.excilys.cdb.vue.UIView;
 public class UIController {
 
 	private IComputerService serviceComputer;
-	private ICompanyService serviceCompany;
+	//private ICompanyService serviceCompany;
 
+	private static ClientCompanyWebService companyClient;
+	private static ClientComputerWebService computerClient;
+	
 	// Les énumérations permettant la gestion comme un automate du processus.
 	private enum State {
 		INITIAL(0), LIST_COMPANY(2), LIST_COMPUTER(1), FORM_UPDATE(5), FORM_AJOUT(4), DELETE_COMPUTER(
 				6), DELETE_COMPANY(7), SHOW(3), RETOUR(0);
 		private Integer value;
+		
 		/**
 		 * Constructor.
 		 * @param value valeur correspondant à l'action.
@@ -95,7 +101,7 @@ public class UIController {
 		logger.info("Création d'un objet de type UIController");
 		initialize();
 		serviceComputer = (IComputerService) context.getBean(IComputerService.class);
-		serviceCompany = (ICompanyService) context.getBean(ICompanyService.class);
+		//serviceCompany = (ICompanyService) context.getBean(ICompanyService.class);
 	}
 
 	/**
@@ -443,8 +449,9 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				Company c = serviceCompany.get(Integer.valueOf(ligne));
-				inter.setCompany(c);
+				//Company c = serviceCompany.get(Integer.valueOf(ligne));
+				CompanyDTO c = companyClient.get(Long.valueOf(ligne));
+				inter.setCompany(MapperCompany.map(c).get());
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -514,8 +521,8 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				Company c = serviceCompany.get(Integer.valueOf(ligne));
-				inter.setCompany(c);
+				CompanyDTO c = companyClient.get(Long.valueOf(ligne));
+				inter.setCompany(MapperCompany.map(c).get());
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -570,7 +577,7 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private void supprimerCompany(final long id) throws ServiceException {
-		serviceCompany.delete(id);
+		companyClient.delete(Collections.singleton(id));
 	}
 
 	/**
@@ -603,14 +610,12 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException {
+		String res = "";
 		Page<Computer> pageComputer = serviceComputer.getPage(page, null);
-		int taille = (int) serviceComputer.count();
-		int limit = (int) pageComputer.getTotalElements();
-		int endBloc = taille / limit;
-		if (taille % limit > 0) {
-			endBloc++;
+		for(Computer c : pageComputer) {
+			res += c.toString() + "\n";
 		}
-		return pageComputer.toString() + "\n Page:" + page + "/" + endBloc + "\n" + UITextes.LIST_PAGINATION;
+		return res + "\n Page:" + (pageComputer.getNumber()+1) + "/" + pageComputer.getTotalPages() + "\n" + UITextes.LIST_PAGINATION;
 	}
 
 	/**
@@ -621,14 +626,12 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private String pageurCompanyShow(final int page) throws ServiceException {
-		Page<Company> pageCompany = serviceCompany.getPage(page);
-		int taille = (int) serviceCompany.count();
-		int limit = (int) pageCompany.getTotalElements();
-		int endBloc = taille / limit;
-		if (taille % limit > 0) {
-			endBloc++;
+		String res = "";
+		Page<CompanyDTO> pageCompany = companyClient.page(page, DefaultValues.DEFAULT_LIMIT);
+		for(CompanyDTO c : pageCompany) {
+			res += c.toString() + "\n";
 		}
-		return pageCompany.toString() + "\n Page:" + page + "/" + endBloc + "\n" + UITextes.LIST_PAGINATION;
+		return res + "\n Page:" + (pageCompany.getNumber()+1) + "/" + pageCompany.getTotalPages() + "\n" + UITextes.LIST_PAGINATION;
 	}
 
 	/**
@@ -664,7 +667,8 @@ public class UIController {
 	 */
 	public static void main(final String[] args) {
 		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(SpringConfigApplication.class);
-		
+		companyClient = new ClientCompanyWebService();
+		computerClient = new ClientComputerWebService();
 		UIController controller = new UIController(appConfig);
 		controller.run();
 	}

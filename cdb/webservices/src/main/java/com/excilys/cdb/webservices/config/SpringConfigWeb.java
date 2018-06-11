@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import javax.sql.DataSource;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -25,8 +23,6 @@ import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.webservices.ComputerWebService;
-import com.excilys.cdb.webservices.security.TokenProvider;
-import com.excilys.cdb.webservices.testsecurity.SecurityTest;
 
 @Configuration
 @EnableWebMvc

@@ -11,8 +11,7 @@
 	</parent>
 	<artifactId>webservices</artifactId>
 	<packaging>war</packaging>
-	<name>webservices Maven Webapp</name>
-	<url>http://maven.apache.org</url>
+	<name>webservices</name>
 
 	<dependencies>
 
