@@ -26,7 +26,9 @@ public class SeleniumSuite {
      * Constructor des variables partagés des tests selenium, ici avec le singleton driver.
      */
     public SeleniumSuite() {
+    	
         if (driver == null) {
+        	System.setProperty("webdriver.gecko.driver", ClassLoader.getSystemClassLoader().getResource("geckodriver").getFile());
             driver = new FirefoxDriver();
             je = (JavascriptExecutor) driver;
     		MessageHandler.init(context);
