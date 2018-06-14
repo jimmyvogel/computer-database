@@ -12,8 +12,10 @@ import org.springframework.data.domain.Page;
 
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.mapper.MapperCompany;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.DefaultValues;
+import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.uiconfig.SpringConfigApplication;
@@ -29,10 +31,10 @@ import com.excilys.cdb.vue.UIView;
 public class UIController {
 
 	private IComputerService serviceComputer;
-	//private ICompanyService serviceCompany;
+	private ICompanyService serviceCompany;
 
-	private static ClientCompanyWebService companyClient;
-	private static ClientComputerWebService computerClient;
+//	private static ClientCompanyWebService companyClient;
+//	private static ClientComputerWebService computerClient;
 	
 	// Les énumérations permettant la gestion comme un automate du processus.
 	private enum State {
@@ -449,9 +451,10 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				//Company c = serviceCompany.get(Integer.valueOf(ligne));
-				CompanyDTO c = companyClient.get(Long.valueOf(ligne));
-				inter.setCompany(MapperCompany.map(c).get());
+				Company c = serviceCompany.get(Integer.valueOf(ligne));
+				//CompanyDTO c = companyClient.get(Long.valueOf(ligne));
+				//inter.setCompany(MapperCompany.map(c).get());
+				inter.setCompany(c);
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -521,8 +524,9 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				CompanyDTO c = companyClient.get(Long.valueOf(ligne));
-				inter.setCompany(MapperCompany.map(c).get());
+				//CompanyDTO c = companyClient.get(Long.valueOf(ligne));
+				//inter.setCompany(MapperCompany.map(c).get());
+				inter.setCompany(serviceCompany.get(Long.valueOf(ligne)));
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -577,7 +581,8 @@ public class UIController {
 	 * @throws  erreur de reqûete.
 	 */
 	private void supprimerCompany(final long id) throws ServiceException {
-		companyClient.delete(Collections.singleton(id));
+		//companyClient.delete(Collections.singleton(id));
+		this.serviceCompany.delete(id);
 	}
 
 	/**
@@ -627,8 +632,10 @@ public class UIController {
 	 */
 	private String pageurCompanyShow(final int page) throws ServiceException {
 		String res = "";
-		Page<CompanyDTO> pageCompany = companyClient.page(page, DefaultValues.DEFAULT_LIMIT);
-		for(CompanyDTO c : pageCompany) {
+		//Page<CompanyDTO> pageCompany = companyClient.page(page, DefaultValues.DEFAULT_LIMIT);
+//		for(CompanyDTO c : pageCompany) {
+		Page<Company> pageCompany = serviceCompany.getPage(page, DefaultValues.DEFAULT_LIMIT);
+		for(Company c : pageCompany) {
 			res += c.toString() + "\n";
 		}
 		return res + "\n Page:" + (pageCompany.getNumber()+1) + "/" + pageCompany.getTotalPages() + "\n" + UITextes.LIST_PAGINATION;
@@ -667,8 +674,8 @@ public class UIController {
 	 */
 	public static void main(final String[] args) {
 		AnnotationConfigApplicationContext appConfig = new AnnotationConfigApplicationContext(SpringConfigApplication.class);
-		companyClient = new ClientCompanyWebService();
-		computerClient = new ClientComputerWebService();
+//		companyClient = new ClientCompanyWebService();
+//		computerClient = new ClientComputerWebService();
 		UIController controller = new UIController(appConfig);
 		controller.run();
 	}
