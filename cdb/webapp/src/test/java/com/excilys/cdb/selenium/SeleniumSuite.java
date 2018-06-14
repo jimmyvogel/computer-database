@@ -1,5 +1,6 @@
 package com.excilys.cdb.selenium;
 
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -27,6 +28,8 @@ public class SeleniumSuite {
      */
     public SeleniumSuite() {
         if (driver == null) {
+            ResourceBundle config = ResourceBundle.getBundle("config");
+            System.setProperty("webdriver.gecko.driver", config.getString("driverPath"));
             driver = new FirefoxDriver();
             je = (JavascriptExecutor) driver;
     		MessageHandler.init(context);
