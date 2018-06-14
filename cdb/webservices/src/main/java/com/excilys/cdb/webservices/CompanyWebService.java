@@ -33,7 +33,7 @@ import com.excilys.cdb.webservices.ressources.DefaultValues;
 import com.excilys.cdb.webservices.ressources.UrlParams;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/v1/company")
 public class CompanyWebService {
 
 	private ICompanyService serviceCompany;
