@@ -2,6 +2,7 @@ package com.excilys.cdb.webservices.ressources;
 
 public class UrlParams {
 
+	public static final String FILTER = "filter";
 	public static final String SEARCH = "search";
 	public static final String LIMIT = "limit";
     public static final String PAGE = "page";

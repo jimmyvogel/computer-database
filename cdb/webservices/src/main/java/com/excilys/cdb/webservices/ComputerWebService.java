@@ -97,7 +97,7 @@ public class ComputerWebService {
 	 * @param limit nombres de résultats par bloc
 	 * @return la réponse en json.
 	 */
-	@GetMapping(params= {UrlParams.SEARCH})
+	@GetMapping(value= "/" + UrlParams.FILTER, params={UrlParams.SEARCH})
 	public ResponseEntity<Page<ComputerDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=true) Integer iNumpage, @RequestParam(UrlParams.LIMIT) Integer paramLimit) {
 		if (!SecurityTextValidation.valideString(search)) {

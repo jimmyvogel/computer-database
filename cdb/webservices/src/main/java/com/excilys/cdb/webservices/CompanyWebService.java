@@ -75,7 +75,7 @@ public class CompanyWebService {
 		return new ResponseEntity<Page<CompanyDTO>>(pageImpl, HttpStatus.OK);
 	}
 
-	@GetMapping(params= {UrlParams.SEARCH})
+	@GetMapping(value= "/" + UrlParams.FILTER, params= {UrlParams.SEARCH})
 	public ResponseEntity<Page<CompanyDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=true) Integer iNumpage, @RequestParam(UrlParams.LIMIT) Integer paramLimit) {
 		if (!SecurityTextValidation.valideString(search)) {
