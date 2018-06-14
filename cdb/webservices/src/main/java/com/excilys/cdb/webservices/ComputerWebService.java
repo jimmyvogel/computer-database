@@ -75,13 +75,14 @@ public class ComputerWebService {
 	 * @return la réponse en json.
 	 */
 	@GetMapping
-	public ResponseEntity<Page<ComputerDTO>> page(@RequestParam(name = UrlParams.PAGE, required=true) Integer iNumpage,
-			@RequestParam(UrlParams.LIMIT) Integer paramLimit) {
+	public ResponseEntity<Page<ComputerDTO>> page(@RequestParam(name = UrlParams.PAGE, required=false) Integer iNumpage,
+			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit) {
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Computer> page = null;
 		Page<ComputerDTO> pageImpl = null;
 		try {
-			page = serviceComputer.getPage(iNumpage, limit);
+			page = serviceComputer.getPage(iPage, limit);
 			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
@@ -99,15 +100,17 @@ public class ComputerWebService {
 	 */
 	@GetMapping(params= {UrlParams.SEARCH})
 	public ResponseEntity<Page<ComputerDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
-			@RequestParam(name=UrlParams.PAGE, required=true) Integer iNumpage, @RequestParam(UrlParams.LIMIT) Integer paramLimit) {
+			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
+			@RequestParam(name=UrlParams.LIMIT,  required=false) Integer paramLimit) {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new IllegalSearchException();
 		}
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Computer> page = null;
 		Page<ComputerDTO> pageImpl = null;
 		try {
-			page = serviceComputer.getPageSearch(search, iNumpage, limit);
+			page = serviceComputer.getPageSearch(search, iPage, limit);
 			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
