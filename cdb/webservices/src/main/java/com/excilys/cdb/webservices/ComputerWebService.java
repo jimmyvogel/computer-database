@@ -33,7 +33,7 @@ import com.excilys.cdb.webservices.ressources.DefaultValues;
 import com.excilys.cdb.webservices.ressources.UrlParams;
 
 @Controller
-@RequestMapping("/computer")
+@RequestMapping("/v1/computer")
 public class ComputerWebService {
 
 	private IComputerService serviceComputer;
