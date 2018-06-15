@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -10,8 +9,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.data.domain.Page;
 
-import com.excilys.cdb.dto.CompanyDTO;
-import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.DefaultValues;

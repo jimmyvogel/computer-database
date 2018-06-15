@@ -60,13 +60,14 @@ public class CompanyWebService {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<CompanyDTO>> page(@RequestParam(name = UrlParams.PAGE, required=true) Integer iNumpage,
-			@RequestParam(UrlParams.LIMIT) Integer paramLimit) {
+	public ResponseEntity<Page<CompanyDTO>> page(@RequestParam(name = UrlParams.PAGE, required=false) Integer iNumpage,
+			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit) {
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Company> page = null;
 		Page<CompanyDTO> pageImpl = null;
 		try {
-			page = serviceCompany.getPage(iNumpage, limit);
+			page = serviceCompany.getPage(iPage, limit);
 			List<CompanyDTO> list = page.getContent().stream().map(c -> MapperCompany.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<CompanyDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
@@ -77,16 +78,18 @@ public class CompanyWebService {
 
 	@GetMapping(value= "/" + UrlParams.FILTER, params= {UrlParams.SEARCH})
 	public ResponseEntity<Page<CompanyDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
-			@RequestParam(name=UrlParams.PAGE, required=true) Integer iNumpage, @RequestParam(UrlParams.LIMIT) Integer paramLimit) {
+			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
+			@RequestParam(name=UrlParams.LIMIT, required=false) Integer paramLimit) {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new IllegalSearchException();
 		}
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
+		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Company> page = null;
 		Page<CompanyDTO> pageImpl = null;
 		ResponseEntity<Page<CompanyDTO>> res;
 		try {
-			page = serviceCompany.getPageSearch(search, iNumpage, limit);
+			page = serviceCompany.getPageSearch(search, iPage, limit);
 			List<CompanyDTO> list = page.getContent().stream().map(c -> MapperCompany.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<CompanyDTO>(list, page.getPageable(), page.getTotalElements());
 			res = new ResponseEntity<Page<CompanyDTO>>(pageImpl, HttpStatus.OK);
