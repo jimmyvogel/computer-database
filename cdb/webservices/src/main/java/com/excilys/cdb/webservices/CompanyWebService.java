@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,8 +43,8 @@ public class CompanyWebService {
 		this.serviceCompany = companyService;
 	}
 
-	@GetMapping(params= {UrlParams.COMPANY_ID})
-	public ResponseEntity<CompanyDTO> get(@RequestParam(name = UrlParams.COMPANY_ID) Long id){
+	@GetMapping("/{id}")
+	public ResponseEntity<CompanyDTO> get(@PathVariable(UrlParams.COMPANY_ID) Long id){
 		Optional<CompanyDTO> company = null;
 		try {
 			company = MapperCompany.map(serviceCompany.get(id));

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,8 +53,8 @@ public class ComputerWebService {
 	public static final String LIST_COMPUTERS = "listComputers";
 
 
-	@GetMapping(params= {UrlParams.COMPUTER_ID})
-	public ResponseEntity<ComputerDTO> get(@RequestParam(name = UrlParams.COMPUTER_ID) Long id){
+	@GetMapping("/{id}")
+	public ResponseEntity<ComputerDTO> get(@PathVariable(UrlParams.COMPUTER_ID) Long id){
 		Optional<ComputerDTO> computer = null;
 		try {
 			computer = MapperComputer.map(serviceComputer.get(id));
