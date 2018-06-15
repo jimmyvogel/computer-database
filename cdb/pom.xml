@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.excilys.cdb.multimodule</groupId>
@@ -14,23 +16,23 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-        <!--  JSON -->
-        <jackson.core.version>2.9.5</jackson.core.version>
-        <json.web.token>0.9.0</json.web.token>
-        <glassfish.jersey.media.version>2.25.1</glassfish.jersey.media.version>
-        <!-- WEB -->
-        <javax.servlet.version>4.0.0</javax.servlet.version>
-        <jstl.version>1.2</jstl.version>
-        <taglibs.version>1.2.5</taglibs.version>
-        <cglib.version>2.2.2</cglib.version>
-        <servlet.jsp.version>2.3.1</servlet.jsp.version>
+		<!-- JSON -->
+		<jackson.core.version>2.9.5</jackson.core.version>
+		<json.web.token>0.9.0</json.web.token>
+		<glassfish.jersey.media.version>2.25.1</glassfish.jersey.media.version>
+		<!-- WEB -->
+		<javax.servlet.version>4.0.0</javax.servlet.version>
+		<jstl.version>1.2</jstl.version>
+		<taglibs.version>1.2.5</taglibs.version>
+		<cglib.version>2.2.2</cglib.version>
+		<servlet.jsp.version>2.3.1</servlet.jsp.version>
 		<!-- SECURITY -->
 		<spring.security.version>5.0.5.RELEASE</spring.security.version>
 		<!-- VALIDATION -->
 		<javax.validation.version>1.1.0.Final</javax.validation.version>
 		<!-- SPRING -->
 		<spring.webmvc.version>5.0.6.RELEASE</spring.webmvc.version>
-        <glassfish.jersey.core.version>2.25.1</glassfish.jersey.core.version>
+		<glassfish.jersey.core.version>2.25.1</glassfish.jersey.core.version>
 		<!--BDD -->
 		<hikaricp.version>2.7.8</hikaricp.version>
 		<mysql.version>5.1.44</mysql.version>
@@ -54,24 +56,34 @@
 
 		<dependencies>
 
-        
-	        <!--  JSON -->
-	        <dependency>
-	            <groupId>com.fasterxml.jackson.core</groupId>
-	            <artifactId>jackson-databind</artifactId>
-	            <version>${jackson.core.version}</version>
-	        </dependency>
-	        <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.core.version}</version>
-            </dependency>
-            <dependency>
-			    <groupId>org.glassfish.jersey.media</groupId>
-			    <artifactId>jersey-media-json-jackson</artifactId>
-			    <version>${glassfish.jersey.media.version}</version>
+
+			<!-- JSON -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.core.version}</version>
 			</dependency>
-        
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jackson</artifactId>
+				<version>${glassfish.jersey.media.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jdk8</artifactId>
+				<version>${jackson.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.core.version}</version>
+			</dependency>
+
 			<!-- SECURITY -->
 			<dependency>
 				<groupId>org.springframework.security</groupId>
@@ -83,12 +95,12 @@
 				<artifactId>spring-security-config</artifactId>
 				<version>${spring.security.version}</version>
 			</dependency>
-	        <dependency>
-	            <groupId>org.springframework.security</groupId>
-	            <artifactId>spring-security-core</artifactId>
-	            <version>${spring.security.version}</version>
-	        </dependency>
-        
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
 			<!-- VALIDATION -->
 			<dependency>
 				<groupId>javax.validation</groupId>
@@ -109,11 +121,11 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-			    <groupId>org.glassfish.jersey.core</groupId>
-			    <artifactId>jersey-client</artifactId>
-			    <version>${glassfish.jersey.core.version}</version>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${glassfish.jersey.core.version}</version>
 			</dependency>
-	            
+
 			<!-- WEB -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -144,11 +156,11 @@
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 			<dependency>
-			    <groupId>io.jsonwebtoken</groupId>
-			    <artifactId>jjwt</artifactId>
-			    <version>${json.web.token}</version>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>${json.web.token}</version>
 			</dependency>
-						
+
 
 			<!-- BDD -->
 			<dependency>
@@ -191,12 +203,12 @@
 				<artifactId>mockito-junit-jupiter</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
-	        <dependency>
-	            <groupId>org.springframework.boot</groupId>
-	            <artifactId>spring-boot-test</artifactId>
-	            <version>${spring.boot.test.version}</version>
-	        </dependency>
-	        
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-test</artifactId>
+				<version>${spring.boot.test.version}</version>
+			</dependency>
+
 			<!-- SELENIUM -->
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
@@ -246,6 +258,6 @@
 		<module>binding</module>
 		<module>console</module>
 		<module>webapp</module>
-    <module>webservices</module>
-  </modules>
+		<module>webservices</module>
+	</modules>
 </project>

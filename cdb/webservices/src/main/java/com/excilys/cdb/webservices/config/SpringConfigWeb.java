@@ -23,12 +23,13 @@ import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
 import com.excilys.cdb.service.ComputerService;
 import com.excilys.cdb.webservices.ComputerWebService;
+import com.excilys.cdb.webservices.jacksonconfig.JacksonConfig;
 
 @Configuration
 @EnableWebMvc
 @EnableJpaRepositories(basePackageClasses = ComputerCrudDao.class)
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerWebService.class, HibernateConfig.class})
+@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerWebService.class, HibernateConfig.class, JacksonConfig.class})
 public class SpringConfigWeb implements WebMvcConfigurer {
 
 	private static final String MESSAGE_CLASSPATH = "classpath:strings";
