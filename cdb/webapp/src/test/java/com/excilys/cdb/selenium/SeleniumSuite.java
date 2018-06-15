@@ -20,7 +20,6 @@ public class SeleniumSuite {
     protected static WebDriver driver;
     private static int nombreClients;
     protected static final int PORT = 8080;
-    
     private static final String ADMIN_TEST_NAME = "admin";
     private static final String ADMIN_TEST_PASSWORD = "admin@123";
     /**
