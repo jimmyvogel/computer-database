@@ -33,7 +33,7 @@ import com.excilys.cdb.webservices.ressources.DefaultValues;
 import com.excilys.cdb.webservices.ressources.UrlParams;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/v1/company")
 public class CompanyWebService {
 
 	private ICompanyService serviceCompany;
@@ -76,7 +76,7 @@ public class CompanyWebService {
 		return new ResponseEntity<Page<CompanyDTO>>(pageImpl, HttpStatus.OK);
 	}
 
-	@GetMapping(params= {UrlParams.SEARCH})
+	@GetMapping(value= "/" + UrlParams.FILTER, params= {UrlParams.SEARCH})
 	public ResponseEntity<Page<CompanyDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
 			@RequestParam(name=UrlParams.LIMIT, required=false) Integer paramLimit) {

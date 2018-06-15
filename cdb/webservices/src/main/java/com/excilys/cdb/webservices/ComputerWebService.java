@@ -33,7 +33,7 @@ import com.excilys.cdb.webservices.ressources.DefaultValues;
 import com.excilys.cdb.webservices.ressources.UrlParams;
 
 @Controller
-@RequestMapping("/computer")
+@RequestMapping("/v1/computer")
 public class ComputerWebService {
 
 	private IComputerService serviceComputer;
@@ -98,7 +98,7 @@ public class ComputerWebService {
 	 * @param limit nombres de résultats par bloc
 	 * @return la réponse en json.
 	 */
-	@GetMapping(params= {UrlParams.SEARCH})
+	@GetMapping(value= "/" + UrlParams.FILTER, params={UrlParams.SEARCH})
 	public ResponseEntity<Page<ComputerDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
 			@RequestParam(name=UrlParams.LIMIT,  required=false) Integer paramLimit) {
