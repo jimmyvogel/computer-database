@@ -29,12 +29,9 @@ public class SeleniumSuite {
     public SeleniumSuite() {
     	
         if (driver == null) {
-<<<<<<< HEAD
-        	System.setProperty("webdriver.gecko.driver", ClassLoader.getSystemClassLoader().getResource("geckodriver").getFile());
-=======
             ResourceBundle config = ResourceBundle.getBundle("config");
             System.setProperty("webdriver.gecko.driver", config.getString("driverPath"));
->>>>>>> upstream/developpement
+
             driver = new FirefoxDriver();
             je = (JavascriptExecutor) driver;
     		MessageHandler.init(context);
