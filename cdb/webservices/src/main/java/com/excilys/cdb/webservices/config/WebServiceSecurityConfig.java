@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@EnableWebSecurity
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+//@EnableWebSecurity
 public class WebServiceSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public final static String AUTHORIZATION_HEADER = "authorization";
