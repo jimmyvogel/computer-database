@@ -42,7 +42,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         logger.debug("processing authentication for '{}'", request.getRequestURL());
 
         final String requestHeader = request.getHeader(this.tokenHeader);
-
+        //logger.info(requestHeader);
         String username = null;
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
