@@ -15,6 +15,7 @@ import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
 import com.excilys.cdb.service.CompanyService;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 
 @Configuration
 @EnableTransactionManagement
@@ -38,7 +39,7 @@ public class TestSpringConfig implements WebMvcConfigurer {
 	@Bean("messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("classpath:strings");
+		messageSource.setBasename(ServiceMessage.MESSAGE_CLASSPATH_SERVICE);
 		messageSource.setDefaultEncoding("UTF-8");
 		messageSource.setUseCodeAsDefaultMessage(true);
 		return messageSource;
