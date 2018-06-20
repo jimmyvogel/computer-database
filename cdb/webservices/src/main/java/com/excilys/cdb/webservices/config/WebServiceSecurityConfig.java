@@ -1,27 +1,43 @@
 package com.excilys.cdb.webservices.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-//@EnableWebSecurity
+import com.excilys.cdb.service.IUserService;
+import com.excilys.cdb.webservices.security.JwtAuthorizationTokenFilter;
+import com.excilys.cdb.webservices.security.JwtTokenUtil;
+
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@PropertySource("classpath:security.properties")
+@Configuration
 public class WebServiceSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public final static String AUTHORIZATION_HEADER = "authorization";
+	public final static String AUTHORIZATION_HEADER = "authorization";
 
-    //@Autowired
-    //private TokenProvider tokenProvider;
+	private JwtTokenUtil jwtTokenUtil;
 
-	private UserDetailsService userDetailsService;
+	private IUserService userDetailsService;
 
-	public WebServiceSecurityConfig(UserDetailsService userDetailsService) {
+	@Value("${jwt.header}")
+	private String tokenHeader;
+
+	@Value("${jwt.route.authentication.path}")
+	private String authenticationPath;
+
+	public WebServiceSecurityConfig(IUserService userDetailsService, JwtTokenUtil jwtTokenUtil) {
 		this.userDetailsService = userDetailsService;
+		this.jwtTokenUtil = jwtTokenUtil;
 	}
 
 	@Bean
@@ -34,24 +50,19 @@ public class WebServiceSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-//        JWTFilter customFilter = new JWTFilter(this.tokenProvider);
-//        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
-        // @formatter:off
-        http.httpBasic()
-        .and()
-        .authorizeRequests()
-        .antMatchers("/**")
-        .authenticated();
-        // @formatter:on
-        http.csrf().disable();
-    }
-    
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception        
-//    {
-//        return super.authenticationManagerBean();
-//    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.cors().and()
+				.authorizeRequests().antMatchers("/authenticate/**").permitAll().anyRequest().authenticated().and().csrf().disable();
+		JwtAuthorizationTokenFilter authenticationTokenFilter = new JwtAuthorizationTokenFilter(userDetailsService,
+				jwtTokenUtil, tokenHeader);
+		http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 }
