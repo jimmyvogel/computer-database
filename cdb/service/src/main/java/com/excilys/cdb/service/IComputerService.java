@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -32,6 +33,18 @@ public interface IComputerService extends IService<Computer> {
 	 */
 	@Transactional(readOnly = true)
 	Page<Computer> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	
+	/**
+	 * Recherche de computer par nom avec un ordre précis.
+	 * @param search le nom a chercher
+	 * @param page le numero de la page
+	 * @param limit le nombre d'éléments à récupérer, si null: valeur default.
+	 * @param order l'ordre demandé.
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<Computer> getPageSearch(String search, int page, Integer limit, PageComputerOrder order) throws ServiceException;
 
 	/**
 	 * Créer un computer.

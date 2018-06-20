@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Company;
@@ -62,13 +63,15 @@ public class CompanyWebService {
 	
 	@GetMapping
 	public ResponseEntity<Page<CompanyDTO>> page(@RequestParam(name = UrlParams.PAGE, required=false) Integer iNumpage,
-			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit) {
+			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
+		PageCompanyOrder pageOrder = (order == null) ? PageCompanyOrder.BY_NAME : PageCompanyOrder.valueOf(order);
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
 		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Company> page = null;
 		Page<CompanyDTO> pageImpl = null;
 		try {
-			page = serviceCompany.getPage(iPage, limit);
+			page = serviceCompany.getPage(iPage, limit, pageOrder);
 			List<CompanyDTO> list = page.getContent().stream().map(c -> MapperCompany.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<CompanyDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
@@ -80,17 +83,19 @@ public class CompanyWebService {
 	@GetMapping(value= "/" + UrlParams.FILTER, params= {UrlParams.SEARCH})
 	public ResponseEntity<Page<CompanyDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
-			@RequestParam(name=UrlParams.LIMIT, required=false) Integer paramLimit) {
+			@RequestParam(name=UrlParams.LIMIT, required=false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new IllegalSearchException();
 		}
+		PageCompanyOrder pageOrder = (order == null) ? PageCompanyOrder.BY_NAME  : PageCompanyOrder.valueOf(order);
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
 		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Company> page = null;
 		Page<CompanyDTO> pageImpl = null;
 		ResponseEntity<Page<CompanyDTO>> res;
 		try {
-			page = serviceCompany.getPageSearch(search, iPage, limit);
+			page = serviceCompany.getPageSearch(search, iPage, limit, pageOrder);
 			List<CompanyDTO> list = page.getContent().stream().map(c -> MapperCompany.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<CompanyDTO>(list, page.getPageable(), page.getTotalElements());
 			res = new ResponseEntity<Page<CompanyDTO>>(pageImpl, HttpStatus.OK);
