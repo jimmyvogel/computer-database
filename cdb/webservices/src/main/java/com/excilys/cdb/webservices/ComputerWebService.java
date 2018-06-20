@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
@@ -79,13 +80,15 @@ public class ComputerWebService {
 	 */
 	@GetMapping
 	public ResponseEntity<Page<ComputerDTO>> page(@RequestParam(name = UrlParams.PAGE, required=false) Integer iNumpage,
-			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit) {
+			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
+		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME  : PageComputerOrder.valueOf(order);
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
 		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
 		Page<Computer> page = null;
 		Page<ComputerDTO> pageImpl = null;
 		try {
-			page = serviceComputer.getPage(iPage, limit);
+			page = serviceComputer.getPage(iPage, limit, pageOrder);
 			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
@@ -104,7 +107,9 @@ public class ComputerWebService {
 	@GetMapping(value= "/" + UrlParams.FILTER, params={UrlParams.SEARCH})
 	public ResponseEntity<Page<ComputerDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
-			@RequestParam(name=UrlParams.LIMIT,  required=false) Integer paramLimit) {
+			@RequestParam(name=UrlParams.LIMIT,  required=false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
+		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME  : PageComputerOrder.valueOf(order);
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new IllegalSearchException();
 		}
@@ -113,7 +118,7 @@ public class ComputerWebService {
 		Page<Computer> page = null;
 		Page<ComputerDTO> pageImpl = null;
 		try {
-			page = serviceComputer.getPageSearch(search, iPage, limit);
+			page = serviceComputer.getPageSearch(search, iPage, limit, pageOrder);
 			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
 			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {

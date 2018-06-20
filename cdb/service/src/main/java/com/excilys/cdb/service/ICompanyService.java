@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -39,6 +40,18 @@ public interface ICompanyService extends IService<Company> {
 	 */
 	@Transactional(readOnly = true)
 	Page<Company> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	
+	/**
+	 * Recherche de compagnie par nom avec un ordre précis.
+	 * @param search le nom à chercher.
+	 * @param page le numero de la page
+	 * @param limit le nombre d'éléments à récupérer, si null: valeur default.
+	 * @param order l'ordre demandé
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<Company> getPageSearch(String search, int page, Integer limit, PageCompanyOrder o) throws ServiceException;
 
 	/**
 	 * Créer une company.

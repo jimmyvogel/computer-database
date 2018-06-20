@@ -10,6 +10,8 @@ import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.dao.CompanyCrudDao;
+import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
+import com.excilys.cdb.dao.DaoOrder;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -51,13 +53,38 @@ public class CompanyService implements ICompanyService {
 
 	@Override
 	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
+		return getPage(page, limit, PageCompanyOrder.BY_NAME);
+	}
+
+	@Override
+	public Page<Company> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+		if (!(order instanceof PageCompanyOrder)) {
+			throw new ServiceException("Bad order enum uses");
+		}
+
 		int nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		int tpage = page < 1 ? 1 : page;
-		return companyDao.findAll(new QPageRequest(tpage - 1, nbElements));
+
+		Page<Company> companies = null;
+		switch ((PageCompanyOrder) order) {
+		case BY_NAME:
+			companies = companyDao.findAllByOrderByName(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_NAME_DESC:
+			companies = companyDao.findAllByOrderByNameDesc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		}
+		return companies;
 	}
 
 	@Override
 	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
+			throws ServiceException {
+		return getPageSearch(search, page, limit, PageCompanyOrder.BY_NAME);
+	}
+	
+	@Override
+	public Page<Company> getPageSearch(final String search, final int page, final Integer limit, final PageCompanyOrder order)
 			throws ServiceException {
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
@@ -69,7 +96,11 @@ public class CompanyService implements ICompanyService {
 		int tpage = page < 1 ? 1 : page;
 		Page<Company> qpage = null;
 		if (search != null) {
-			qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(tpage - 1, nbElements));
+			
+			switch (order) {
+				case BY_NAME: qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(tpage - 1, nbElements)); break;
+				case BY_NAME_DESC: qpage = companyDao.findByNameContainingOrderByNameDesc(search, new QPageRequest(tpage - 1, nbElements)); break;
+			}
 		}
 		return qpage;
 	}
@@ -134,7 +165,8 @@ public class CompanyService implements ICompanyService {
 		case ILLEGAL_CHARACTERS:
 			res = MessageHandler.getMessage(ServiceMessage.SPECIAL_CHARACTERS, null);
 			break;
-		case NULL_STRING: res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null);
+		case NULL_STRING:
+			res = MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null);
 			break;
 		}
 		return res;

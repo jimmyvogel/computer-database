@@ -23,22 +23,24 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.excilys.cdb.controller.ComputerController;
+import com.excilys.cdb.controllermessage.ControllerMessage;
 import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
+import com.excilys.cdb.security.UserSecurityService;
 import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 
 @Configuration
 @EnableWebMvc
 @EnableJpaRepositories(basePackageClasses = ComputerCrudDao.class)
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerController.class, HibernateConfig.class})
+@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerController.class, HibernateConfig.class, UserSecurityService.class})
 public class SpringConfigWeb implements WebMvcConfigurer {
 
 	private static final String VIEW_PREFIX = "/WEB-INF/view/";
 	private static final String VIEW_SUFFIX = ".jsp";
 
-	private static final String MESSAGE_CLASSPATH = "classpath:strings";
 	private static final String MESSAGE_ENCODING = "UTF-8";
 
 	private static final String RESSOURCE_CLASSPATH = "/**";
@@ -79,8 +81,8 @@ public class SpringConfigWeb implements WebMvcConfigurer {
 	 */
 	@Bean("messageSource")
 	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_CLASSPATH);
+	    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasenames(ServiceMessage.MESSAGE_CLASSPATH_SERVICE, ControllerMessage.MESSAGE_CLASSPATH_WEBAPP);
 		messageSource.setDefaultEncoding(MESSAGE_ENCODING);
 		messageSource.setUseCodeAsDefaultMessage(true);
 		return messageSource;
@@ -103,9 +105,4 @@ public class SpringConfigWeb implements WebMvcConfigurer {
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
 	}
-	
-//	@Override
-//	public void addViewControllers(ViewControllerRegistry registry) {
-//		registry.addViewController("/login").setViewName("login");
-//	}
 }

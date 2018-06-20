@@ -12,7 +12,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "company")
+@Table(name = "Company")
 public class Company {
 
 	// VALIDATION DATAS

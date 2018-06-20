@@ -26,6 +26,7 @@ import com.excilys.cdb.ressources.Action;
 import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 import com.excilys.cdb.validator.DateValidation;
 
 public class EditComputerIT extends SeleniumSuite {
@@ -190,7 +191,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result,MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
+		Assert.assertEquals(result,MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -213,7 +214,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result,MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_DISCONTINUED,
+		Assert.assertEquals(result,MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_DISCONTINUED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -240,7 +241,7 @@ public class EditComputerIT extends SeleniumSuite {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.COMPUTER_INTRODUCED_AFTER, null));
+		Assert.assertEquals(result, MessageHandler.getMessage(ServiceMessage.COMPUTER_INTRODUCED_AFTER, null));
 	}
 
 }

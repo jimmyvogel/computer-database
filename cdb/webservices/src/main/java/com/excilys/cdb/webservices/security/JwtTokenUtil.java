@@ -1,13 +1,13 @@
 package com.excilys.cdb.webservices.security;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -32,12 +32,7 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public JwtTokenUtil(){}
     public String getUsernameFromToken(String token) {
-    	if(token == null) {
-    		Logger log = LoggerFactory.getLogger(JwtTokenUtil.class);
-    		log.info("le token est null");
-    	}
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -66,8 +61,9 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(clock.now());
     }
 
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-        return (lastPasswordReset != null && created.before(lastPasswordReset));
+    private Boolean isCreatedBeforeLastPasswordReset(Date created, LocalDateTime localDateTime) {
+    	LocalDateTime ldt = LocalDateTime.ofInstant(created.toInstant(), ZoneId.systemDefault());
+        return (localDateTime != null && ldt.isBefore(localDateTime));
     }
 
     private Boolean ignoreTokenExpiration(String token) {
@@ -77,8 +73,6 @@ public class JwtTokenUtil implements Serializable {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        Logger log = LoggerFactory.getLogger(JwtTokenUtil.class);
-        log.info("Génération du token pour : " + userDetails.getUsername() + " " + userDetails.getPassword());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
@@ -95,7 +89,7 @@ public class JwtTokenUtil implements Serializable {
             .compact();
     }
 
-    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
+    public Boolean canTokenBeRefreshed(String token, LocalDateTime lastPasswordReset) {
         final Date created = getIssuedAtDateFromToken(token);
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
             && (!isTokenExpired(token) || ignoreTokenExpiration(token));
@@ -115,12 +109,20 @@ public class JwtTokenUtil implements Serializable {
             .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails) throws JwtTokenExpireException {
+    	JwtUser user = (JwtUser)userDetails;
         final String username = getUsernameFromToken(token);
+        final Date created = getIssuedAtDateFromToken(token);
+        final Date expiration = getExpirationDateFromToken(token);
+        
+        if(LocalDateTime.now().isAfter(LocalDateTime.ofInstant(expiration.toInstant(), ZoneId.systemDefault()))) {
+        	throw new JwtTokenExpireException();
+        }
         return (
             username.equals(userDetails.getUsername())
-                && !isTokenExpired(token))
-        ;
+                && !isTokenExpired(token)
+                && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())
+        );
     }
 
     private Date calculateExpirationDate(Date createdDate) {

@@ -17,7 +17,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "computer")
+@Table(name = "Computer")
 public class Computer {
 
 	// VALIDATION DATAS

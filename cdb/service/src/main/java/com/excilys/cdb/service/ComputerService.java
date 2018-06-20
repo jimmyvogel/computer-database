@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.dao.ComputerCrudDao;
+import com.excilys.cdb.dao.DaoOrder;
+import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
+import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -51,13 +54,49 @@ public class ComputerService implements IComputerService {
 
 	@Override
 	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
+		return getPage(page, limit, PageComputerOrder.BY_NAME);
+	}
+	
+	@Override
+	public Page<Computer> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+		if (!(order instanceof PageComputerOrder)) {
+			throw new ServiceException("Bad order enum uses");
+		}
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
 		int tpage = page < 1 ? 1 : page;
-		return computerDao.findAll(new QPageRequest(tpage - 1, nbElements));
+
+		Page<Computer> computers = null;
+		switch ((PageComputerOrder) order) {
+		case BY_NAME:
+			computers = computerDao.findAllByOrderByName(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_NAME_DESC:
+			computers = computerDao.findAllByOrderByNameDesc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_DISCONTINUED_DATE:
+			computers = computerDao.findAllByOrderByDiscontinuedAsc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_DISCONTINUED_DATE_DESC:
+			computers = computerDao.findAllByOrderByDiscontinuedDesc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_INTRODUCED_DATE:
+			computers = computerDao.findAllByOrderByIntroducedAsc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		case BY_INTRODUCED_DATE_DESC:
+			computers = computerDao.findAllByOrderByIntroducedDesc(new QPageRequest(tpage - 1, nbElements));
+			break;
+		}
+		return computers;
 	}
 
 	@Override
 	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
+			throws ServiceException {
+		return getPageSearch(search, page, limit, PageComputerOrder.BY_NAME);
+	}
+	
+	@Override
+	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit, final PageComputerOrder order)
 			throws ServiceException {
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
@@ -67,8 +106,35 @@ public class ComputerService implements IComputerService {
 		}
 		int tpage = page < 1 ? 1 : page;
 		Integer nbElements = (limit == null) ? DefaultValues.DEFAULT_LIMIT : limit;
-		return computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
-				new QPageRequest(tpage - 1, nbElements));
+		
+		Page<Computer> computers = null;
+		switch (order)  {
+			case BY_DISCONTINUED_DATE: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByDiscontinuedAsc(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break;
+			case BY_DISCONTINUED_DATE_DESC: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByDiscontinuedDesc(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break;
+			case BY_INTRODUCED_DATE: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByIntroducedAsc(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break;
+			case BY_INTRODUCED_DATE_DESC: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByIntroducedDesc(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break;
+			case BY_NAME: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByName(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break; 
+			case BY_NAME_DESC: 
+				computers = computerDao.findByNameContainingOrCompanyNameContainingOrderByNameDesc(search, search,
+						new QPageRequest(tpage - 1, nbElements));
+				break;
+		}
+		return computers;
 	}
 
 	@Override

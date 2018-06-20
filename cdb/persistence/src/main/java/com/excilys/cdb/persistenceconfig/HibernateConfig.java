@@ -21,7 +21,7 @@ public class HibernateConfig {
 	private static final String MODEL_PACKAGE = "com.excilys.cdb.model";
 
 	private static final String HIBERNATE_AUTO_PROPERTY = "hibernate.hbm2ddl.auto";
-	private static final String HIBERNATE_AUTO_VALUE = "validate";
+	private static final String HIBERNATE_AUTO_VALUE = "update";
 	private static final String HIBERNATE_DIALECT_PROPERTY = "hibernate.dialect";
 	private static final String HIBERNATE_DIALECT_VALUE = "org.hibernate.dialect.MySQL5Dialect";
 

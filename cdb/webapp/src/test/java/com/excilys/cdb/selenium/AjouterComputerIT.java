@@ -26,6 +26,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.ressources.Action;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 
 public class AjouterComputerIT extends SeleniumSuite {
 
@@ -170,9 +171,9 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		LOGGER.info(MessageHandler.getMessage(ControllerMessage.VALIDATION_NAME_LENGTH,
+		LOGGER.info(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_LENGTH,
 				Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray()));
-		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_NAME_LENGTH,
+		Assert.assertEquals(result, MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_LENGTH,
 				Arrays.asList(Computer.TAILLE_MIN_NAME, Computer.TAILLE_MAX_NAME).toArray()));
 	}
 
@@ -202,11 +203,11 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		LOGGER.info("Result: " + MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
+		LOGGER.info("Result: " + MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
-		LOGGER.info(MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
+		LOGGER.info(MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
-		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_INTRODUCED,
+		Assert.assertEquals(result, MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_INTRODUCED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -236,7 +237,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.VALIDATION_DATE_DISCONTINUED,
+		Assert.assertEquals(result, MessageHandler.getMessage(ServiceMessage.VALIDATION_DATE_DISCONTINUED,
 				Arrays.asList(Computer.BEGIN_DATE_VALID, Computer.END_DATE_VALID).toArray()));
 	}
 
@@ -264,7 +265,7 @@ public class AjouterComputerIT extends SeleniumSuite {
 			e.printStackTrace();
 		}
 		LOGGER.info("Result: " + result);
-		Assert.assertEquals(result, MessageHandler.getMessage(ControllerMessage.COMPUTER_INTRODUCED_AFTER, null));
+		Assert.assertEquals(result, MessageHandler.getMessage(ServiceMessage.COMPUTER_INTRODUCED_AFTER, null));
 	}
 
 }

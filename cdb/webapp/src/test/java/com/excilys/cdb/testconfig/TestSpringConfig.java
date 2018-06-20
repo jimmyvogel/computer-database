@@ -16,17 +16,22 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import com.excilys.cdb.controller.ComputerController;
+import com.excilys.cdb.controllermessage.ControllerMessage;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
+import com.excilys.cdb.security.UserSecurityService;
 import com.excilys.cdb.service.CompanyService;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackageClasses = CompanyCrudDao.class)
-@ComponentScan(basePackageClasses = {CompanyCrudDao.class, CompanyService.class, ComputerController.class, HibernateConfig.class})
+@ComponentScan(basePackageClasses = {CompanyCrudDao.class, CompanyService.class, ComputerController.class, HibernateConfig.class, UserSecurityService.class})
 public class TestSpringConfig implements WebMvcConfigurer {
 
+	private static final String MESSAGE_ENCODING = "UTF-8";
+	
 	/**
 	 * Initialisation de hikaridatasource.
 	 * @throws DaoConfigurationException erreur de configuration.
@@ -43,9 +48,9 @@ public class TestSpringConfig implements WebMvcConfigurer {
 	 */
 	@Bean("messageSource")
 	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("classpath:strings");
-		messageSource.setDefaultEncoding("UTF-8");
+	    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasenames(ServiceMessage.MESSAGE_CLASSPATH_SERVICE, ControllerMessage.MESSAGE_CLASSPATH_WEBAPP);
+		messageSource.setDefaultEncoding(MESSAGE_ENCODING);
 		messageSource.setUseCodeAsDefaultMessage(true);
 		return messageSource;
 	}

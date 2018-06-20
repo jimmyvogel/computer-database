@@ -2,6 +2,7 @@ package com.excilys.cdb.controller;
 
 import java.security.Principal;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.ressources.UrlRessources;
-import com.excilys.cdb.service.IUserService;
+import com.excilys.cdb.security.UserSecurityService;
 
 @Controller
 @RequestMapping("/")
@@ -26,9 +27,9 @@ public class HomeController {
 	public static final String INSCRIPTION_FORM = "inscription";
 	public static final String INSCRIPTION = "signin";
 	
-	private IUserService serviceUser;
+	private UserDetailsService serviceUser;
 
-	public HomeController(IUserService userService) {
+	public HomeController(UserDetailsService userService) {
 		this.serviceUser = userService;
 	}
 	
@@ -84,7 +85,9 @@ public class HomeController {
 			modelview.addObject(JspRessources.ERROR, "Password verification different.");
 		} else {
 			String encoded=new BCryptPasswordEncoder().encode(password);
-			serviceUser.inscription(username, encoded);
+			
+			//Injection replace interface by first implem: userSecurityService
+			((UserSecurityService)serviceUser).inscription(username, encoded);
 			modelview = new ModelAndView(UrlRessources.LOGIN);
 			modelview.addObject(JspRessources.ERROR, "Inscription done");
 		}
