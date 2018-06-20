@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +24,6 @@ import com.excilys.cdb.webservices.security.JwtAuthenticationRequest;
 import com.excilys.cdb.webservices.security.JwtAuthenticationResponse;
 import com.excilys.cdb.webservices.security.JwtTokenUtil;
 import com.excilys.cdb.webservices.security.JwtUser;
-import com.excilys.cdb.webservices.security.JwtUserFactory;
 import com.excilys.cdb.webservices.security.UserSecurityService;
 
 @RestController
@@ -72,10 +70,12 @@ public class AuthenticateWebService {
 	 * @return nom de la jsp
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<JwtUser> signin(@RequestBody JwtAuthenticationRequest auth) {
+	public ResponseEntity<?> signin(@RequestBody JwtAuthenticationRequest auth) {
 		User user = ((UserSecurityService) userDetailsService).inscription(auth.getPassword(), new BCryptPasswordEncoder().encode(auth.getPassword()));
-		JwtUser userJwt = JwtUserFactory.create(user);
-		return new ResponseEntity<JwtUser>(userJwt, HttpStatus.CREATED);
+		authenticate(user.getUsername(), user.getPassword());
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+		return ResponseEntity.ok(new JwtAuthenticationResponse(token));
 	}
 
 	/**
