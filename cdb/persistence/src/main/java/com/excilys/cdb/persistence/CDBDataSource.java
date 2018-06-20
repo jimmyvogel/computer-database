@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,7 @@ public class CDBDataSource {
 	private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 	private static final String FICHIER_PROPERTIES = "dao.properties";
 
-	public static HikariDataSource dataSource() {
+	public static DataSource dataSource() {
 		HikariConfig config = new HikariConfig();
 		HikariDataSource ds = null;
 		try {

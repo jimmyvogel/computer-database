@@ -26,13 +26,14 @@ import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
+import com.excilys.cdb.security.UserSecurityService;
 import com.excilys.cdb.service.ComputerService;
 
 @Configuration
 @EnableWebMvc
 @EnableJpaRepositories(basePackageClasses = ComputerCrudDao.class)
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerController.class, HibernateConfig.class})
+@ComponentScan(basePackageClasses = { ComputerCrudDao.class, ComputerService.class, ComputerController.class, HibernateConfig.class, UserSecurityService.class})
 public class SpringConfigWeb implements WebMvcConfigurer {
 
 	private static final String VIEW_PREFIX = "/WEB-INF/view/";
@@ -103,9 +104,4 @@ public class SpringConfigWeb implements WebMvcConfigurer {
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
 	}
-	
-//	@Override
-//	public void addViewControllers(ViewControllerRegistry registry) {
-//		registry.addViewController("/login").setViewName("login");
-//	}
 }

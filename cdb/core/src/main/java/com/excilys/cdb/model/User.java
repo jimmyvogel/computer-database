@@ -1,10 +1,13 @@
 package com.excilys.cdb.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -12,7 +15,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "User")
 public class User {
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
 	@Column(name = "username")
 	private String username;
 
@@ -25,6 +32,9 @@ public class User {
 	@ManyToMany
 	private Set<Authorities> authorities = new HashSet<>();
 
+    @Column(name = "lastPasswordResetDate")
+    private LocalDateTime lastPasswordResetDate;
+    
 	/**
 	 * Constructor par défaut.
 	 */
@@ -33,10 +43,15 @@ public class User {
 	}
 	
 	public User(String username, String password, Set<Authorities> authorities, boolean enabled) {
+		this(username, password, authorities, LocalDateTime.now(), enabled);
+	}
+	
+	public User(String username, String password, Set<Authorities> authorities, LocalDateTime lastDate, boolean enabled) {
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
 		this.enabled = enabled;
+		this.lastPasswordResetDate = lastDate;
 	}
 	
 	public User(String username, String password) {
@@ -78,5 +93,22 @@ public class User {
 	public void setAuthorities(Set<Authorities> authorities) {
 		this.authorities = authorities;
 	}
+
+	public LocalDateTime getLastPasswordResetDate() {
+		return lastPasswordResetDate;
+	}
+
+	public void setLastPasswordResetDate(LocalDateTime lastPasswordResetDate) {
+		this.lastPasswordResetDate = lastPasswordResetDate;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 
 }

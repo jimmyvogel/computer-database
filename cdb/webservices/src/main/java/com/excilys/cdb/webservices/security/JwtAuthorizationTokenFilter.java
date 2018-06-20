@@ -12,10 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.excilys.cdb.service.IUserService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -23,16 +22,12 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private IUserService userDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenUtil jwtTokenUtil;
     private String tokenHeader;
 
-    public JwtAuthorizationTokenFilter(IUserService userDetailsService, JwtTokenUtil jwtTokenUtil, String tokenHeader) {
+    public JwtAuthorizationTokenFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, String tokenHeader) {
         this.userDetailsService = userDetailsService;
-    	if(jwtTokenUtil == null) {
-    		Logger log = LoggerFactory.getLogger(JwtAuthorizationTokenFilter.class);
-    		log.info("jwtToken null");
-    	}
         this.jwtTokenUtil = jwtTokenUtil;
         this.tokenHeader = tokenHeader;
     }
@@ -42,7 +37,6 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         logger.debug("processing authentication for '{}'", request.getRequestURL());
 
         final String requestHeader = request.getHeader(this.tokenHeader);
-        //logger.info(requestHeader);
         String username = null;
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
@@ -61,19 +55,21 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         logger.debug("checking authentication for user '{}'", username);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             logger.debug("security context was null, so authorizating user");
-
-            // It is not compelling necessary to load the use details from the database. You could also store the information
-            // in the token and read it from it. It's up to you ;)
+            
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
+            
             // For simple validation it is completely sufficient to just check the token integrity. You don't have to call
             // the database compellingly. Again it's up to you ;)
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                logger.info("authorizated user '{}', setting security context", username);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            try {
+				if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+				    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				    logger.info("authorizated user '{}', setting security context", username);
+				    SecurityContextHolder.getContext().setAuthentication(authentication);
+				}
+			} catch (JwtTokenExpireException e) {
+				throw new ServletException(e.getMessage());
+			}
         }
 
         chain.doFilter(request, response);

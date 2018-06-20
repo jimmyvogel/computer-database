@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,7 +28,7 @@ public class WebServiceSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private JwtTokenUtil jwtTokenUtil;
 
-	private IUserService userDetailsService;
+	private UserDetailsService userDetailsService;
 
 	@Value("${jwt.header}")
 	private String tokenHeader;
@@ -35,7 +36,7 @@ public class WebServiceSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${jwt.route.authentication.path}")
 	private String authenticationPath;
 
-	public WebServiceSecurityConfig(IUserService userDetailsService, JwtTokenUtil jwtTokenUtil) {
+	public WebServiceSecurityConfig(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
 		this.userDetailsService = userDetailsService;
 		this.jwtTokenUtil = jwtTokenUtil;
 	}

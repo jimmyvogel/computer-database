@@ -19,12 +19,13 @@ import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
+import com.excilys.cdb.security.UserSecurityService;
 import com.excilys.cdb.service.CompanyService;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackageClasses = CompanyCrudDao.class)
-@ComponentScan(basePackageClasses = {CompanyCrudDao.class, CompanyService.class, ComputerController.class, HibernateConfig.class})
+@ComponentScan(basePackageClasses = {CompanyCrudDao.class, CompanyService.class, ComputerController.class, HibernateConfig.class, UserSecurityService.class})
 public class TestSpringConfig implements WebMvcConfigurer {
 
 	/**
