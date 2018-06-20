@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
@@ -80,7 +82,7 @@ public class CompanyWebService {
 		return new ResponseEntity<Page<CompanyDTO>>(pageImpl, HttpStatus.OK);
 	}
 
-	@GetMapping(value= "/" + UrlParams.FILTER, params= {UrlParams.SEARCH})
+	@GetMapping(params = {UrlParams.SEARCH})
 	public ResponseEntity<Page<CompanyDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
 			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
 			@RequestParam(name=UrlParams.LIMIT, required=false) Integer paramLimit,
@@ -94,6 +96,9 @@ public class CompanyWebService {
 		Page<Company> page = null;
 		Page<CompanyDTO> pageImpl = null;
 		ResponseEntity<Page<CompanyDTO>> res;
+		
+		Logger logger = LoggerFactory.getLogger(CompanyWebService.class);
+		logger.info(search + iPage + limit + pageOrder);
 		try {
 			page = serviceCompany.getPageSearch(search, iPage, limit, pageOrder);
 			List<CompanyDTO> list = page.getContent().stream().map(c -> MapperCompany.map(c).get()).collect(Collectors.toList());
