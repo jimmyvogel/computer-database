@@ -78,7 +78,6 @@ public class AuthenticateWebService {
 		Logger logger = LoggerFactory.getLogger(AuthenticateWebService.class);
 		logger.info("signup");
 		serviceUser.inscription(auth.getUsername(), new BCryptPasswordEncoder().encode(auth.getPassword()));
-		
 		return createAuthenticationToken(auth);
 		
 	}
