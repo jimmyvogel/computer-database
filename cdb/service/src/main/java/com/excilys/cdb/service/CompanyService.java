@@ -96,7 +96,6 @@ public class CompanyService implements ICompanyService {
 		int tpage = page < 1 ? 1 : page;
 		Page<Company> qpage = null;
 		if (search != null) {
-			
 			switch (order) {
 				case BY_NAME: qpage = companyDao.findByNameContainingOrderByName(search, new QPageRequest(tpage - 1, nbElements)); break;
 				case BY_NAME_DESC: qpage = companyDao.findByNameContainingOrderByNameDesc(search, new QPageRequest(tpage - 1, nbElements)); break;

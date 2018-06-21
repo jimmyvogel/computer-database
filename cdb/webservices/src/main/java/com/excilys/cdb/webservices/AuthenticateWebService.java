@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.excilys.cdb.model.User;
+import com.excilys.cdb.service.IUserService;
 import com.excilys.cdb.webservices.security.JwtAuthenticationRequest;
 import com.excilys.cdb.webservices.security.JwtAuthenticationResponse;
 import com.excilys.cdb.webservices.security.JwtTokenUtil;
 import com.excilys.cdb.webservices.security.JwtUser;
-import com.excilys.cdb.webservices.security.UserSecurityService;
 
 @RestController
 @RequestMapping("/authenticate")
@@ -41,6 +42,9 @@ public class AuthenticateWebService {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private IUserService serviceUser;
 
 	@PostMapping(value = "${jwt.route.authentication.path}")
 	public ResponseEntity<JwtAuthenticationResponse> createAuthenticationToken(
@@ -70,12 +74,13 @@ public class AuthenticateWebService {
 	 * @return nom de la jsp
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?> signin(@RequestBody JwtAuthenticationRequest auth) {
-		User user = ((UserSecurityService) userDetailsService).inscription(auth.getPassword(), new BCryptPasswordEncoder().encode(auth.getPassword()));
-		authenticate(user.getUsername(), user.getPassword());
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-		final String token = jwtTokenUtil.generateToken(userDetails);
-		return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+	public ResponseEntity<?> signup(@RequestBody JwtAuthenticationRequest auth) {
+		Logger logger = LoggerFactory.getLogger(AuthenticateWebService.class);
+		logger.info("signup");
+		serviceUser.inscription(auth.getUsername(), new BCryptPasswordEncoder().encode(auth.getPassword()));
+		
+		return createAuthenticationToken(auth);
+		
 	}
 
 	/**
