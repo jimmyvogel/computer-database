@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,10 +50,16 @@ public class AuthenticateWebService {
 	@PostMapping(value = "${jwt.route.authentication.path}")
 	public ResponseEntity<JwtAuthenticationResponse> createAuthenticationToken(
 			@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-		final String token = jwtTokenUtil.generateToken(userDetails);
-		return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+		try {
+			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+			final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+			final String token = jwtTokenUtil.generateToken(userDetails);
+			return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+		} catch (AuthenticationException e) {
+			return ResponseEntity.badRequest().body(null);
+		}
+		
+		
 	}
 
 	@GetMapping(value = "${jwt.route.authentication.refresh}")
@@ -86,7 +93,7 @@ public class AuthenticateWebService {
 	 * Authenticates the user. If something is wrong, an
 	 * {@link AuthenticationException} will be thrown
 	 */
-	private void authenticate(String username, String password) {
+	private void authenticate(String username, String password) throws AuthenticationException {
 		Objects.requireNonNull(username);
 		Objects.requireNonNull(password);
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
