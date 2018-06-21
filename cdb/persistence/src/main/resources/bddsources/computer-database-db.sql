@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 19, 2018 at 06:15 PM
+-- Generation Time: Jun 21, 2018 at 11:55 AM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `Authorities` (
   `id` bigint(20) NOT NULL,
-  `authority` varchar(50) DEFAULT NULL
+  `authority` varchar(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -716,19 +716,19 @@ INSERT INTO `User` (`id`, `enabled`, `lastPasswordResetDate`, `password`, `usern
 -- --------------------------------------------------------
 
 --
--- Table structure for table `User_Authorities`
+-- Table structure for table `User_authority`
 --
 
-CREATE TABLE `User_Authorities` (
-  `User_id` bigint(20) NOT NULL,
-  `authorities_id` bigint(20) NOT NULL
+CREATE TABLE `User_authority` (
+  `user_id` bigint(20) NOT NULL,
+  `authority_id` bigint(20) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `User_Authorities`
+-- Dumping data for table `User_authority`
 --
 
-INSERT INTO `User_Authorities` (`User_id`, `authorities_id`) VALUES
+INSERT INTO `User_authority` (`user_id`, `authority_id`) VALUES
 (1, 2);
 
 --
@@ -761,11 +761,11 @@ ALTER TABLE `User`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `User_Authorities`
+-- Indexes for table `User_authority`
 --
-ALTER TABLE `User_Authorities`
-  ADD PRIMARY KEY (`User_id`,`authorities_id`),
-  ADD KEY `FKkx5dp7gt4wdy4mskfm9rue71k` (`authorities_id`);
+ALTER TABLE `User_authority`
+  ADD PRIMARY KEY (`user_id`,`authority_id`),
+  ADD KEY `FKax5lsyregto6c1v0bhpdytfn3` (`authority_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -775,7 +775,7 @@ ALTER TABLE `User_Authorities`
 -- AUTO_INCREMENT for table `Authorities`
 --
 ALTER TABLE `Authorities`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `Company`
 --
@@ -790,7 +790,7 @@ ALTER TABLE `Computer`
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

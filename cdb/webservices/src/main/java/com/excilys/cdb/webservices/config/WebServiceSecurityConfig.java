@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.excilys.cdb.service.IUserService;
 import com.excilys.cdb.webservices.security.JwtAuthorizationTokenFilter;
 import com.excilys.cdb.webservices.security.JwtTokenUtil;
 
