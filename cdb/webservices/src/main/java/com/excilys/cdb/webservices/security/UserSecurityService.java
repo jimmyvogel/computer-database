@@ -1,32 +1,29 @@
 package com.excilys.cdb.webservices.security;
 
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.cdb.dao.UserCrudDao;
 import com.excilys.cdb.model.User;
-import com.excilys.cdb.service.UserService;
+import com.excilys.cdb.service.IUserService;
 
 @Service
-@Transactional
-public class UserSecurityService extends UserService implements UserDetailsService {
+public class UserSecurityService implements UserDetailsService {
 
-	public UserSecurityService(UserCrudDao userDao) {
-		super(userDao);
+	private IUserService userService;
+	
+	public UserSecurityService(IUserService userService) {
+		this.userService = userService;
 	}
-
-	@Transactional(readOnly = true)
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
-        } else {
-            return JwtUserFactory.create(user);
-        }
+		Optional<User> opt = userService.findByUsername(username);
+		User user = opt.orElseThrow(()-> new UsernameNotFoundException(username + "not found."));
+		return JwtUserFactory.create(user);
 	}
 
 }
