@@ -126,7 +126,7 @@ public class CompanyWebService {
 	 */
 	@DeleteMapping
 	public ResponseEntity<Long> delete(
-			@RequestParam(name = UrlParams.DELETE_SELECT, required = true) Set<Long> deletes) {
+			@RequestParam(name = UrlParams.DELETE, required = true) Set<Long> deletes) {
 		Long elements = 0L;
 		try {
 			elements = serviceCompany.deleteAll(deletes);
@@ -135,7 +135,23 @@ public class CompanyWebService {
 		}
 		return new ResponseEntity<Long>(elements, HttpStatus.OK);
 	}
-
+	
+	/**
+	 * Suppression d'un computer
+	 * @param id l'id du computer à supprimer
+	 * @return la réponse en json.
+	 */
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Long> delete(@PathVariable(UrlParams.COMPANY_ID) Long id) {
+		Long elements = 0L;
+		try {
+			elements = serviceCompany.delete(id);
+		} catch (ServiceException e) {
+			throw new WebServiceException(e);
+		}
+		return new ResponseEntity<Long>(elements, HttpStatus.OK);
+	}
+	
 	/**
 	 * Ajouter d'un computer.
 	 * @param computer computerdto

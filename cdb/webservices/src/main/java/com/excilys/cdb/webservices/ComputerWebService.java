@@ -1,9 +1,12 @@
 package com.excilys.cdb.webservices;
 
+import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -121,6 +124,22 @@ public class ComputerWebService {
 		Long elements = 0L;
 		try {
 			elements = serviceComputer.deleteAll(deletes);
+		} catch (ServiceException e) {
+			throw new WebServiceException(e);
+		}
+		return new ResponseEntity<Long>(elements, HttpStatus.OK);
+	}
+	
+	/**
+	 * Suppression d'un computer
+	 * @param id l'id du computer à supprimer
+	 * @return la réponse en json.
+	 */
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Long> delete(@PathVariable(UrlParams.COMPUTER_ID) Long id) {
+		Long elements = 0L;
+		try {
+			elements = serviceComputer.delete(id);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
