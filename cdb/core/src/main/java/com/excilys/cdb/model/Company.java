@@ -1,9 +1,12 @@
 package com.excilys.cdb.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -26,6 +29,9 @@ public class Company {
 	// Nom de la compagnie
 	private String name;
 
+	@OneToMany(mappedBy="company")
+	private List<Computer> computers;
+	
 	/**
 	 * Constructor. no arguments
 	 */
@@ -65,6 +71,16 @@ public class Company {
 
 	public void setId(final long id) {
 		this.id = id;
+	}
+	
+	
+
+	public List<Computer> getComputers() {
+		return computers;
+	}
+
+	public void setComputers(List<Computer> computers) {
+		this.computers = computers;
 	}
 
 	@Override

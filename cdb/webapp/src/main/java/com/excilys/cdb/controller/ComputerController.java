@@ -1,7 +1,6 @@
 package com.excilys.cdb.controller;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ public class ComputerController {
 		this.serviceCompany = companyService;
 		this.serviceComputer = computerService;
 	}
-	
+
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
 	public static final String SEARCH_COMPUTER = "searchComputer";
@@ -59,7 +58,7 @@ public class ComputerController {
 	 */
 	@GetMapping("/" + LIST_COMPUTERS)
 	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<Computer> page=null;
+		Page<ComputerDTO> page = null;
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
 			page = serviceComputer.getPage(numeropage, limit);
@@ -84,7 +83,7 @@ public class ComputerController {
 			@RequestParam(value = UrlID.LIMIT, required = false) Integer paramLimit) {
 		int numpage = (iNumpage == null) ? 1 : iNumpage;
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
-		Page<Computer> page=null;
+		Page<ComputerDTO> page = null;
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPUTERS);
 		try {
 			page = serviceComputer.getPageSearch(search, numpage, limit);
@@ -132,17 +131,13 @@ public class ComputerController {
 			}
 			return mv;
 		}
-		Optional<Computer> c = MapperComputer.map(computer);
+		Computer c = MapperComputer.map(computer);
 		ModelAndView mv = formAdd();
-		if (c.isPresent()) {
-			try {
-				serviceComputer.create(c.get());
-				mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_CREATE, null));
-			} catch (ServiceException e) {
-				mv.addObject(JspRessources.ERROR, e.getMessage());
-			}
-		} else {
-			mv.addObject(JspRessources.ERROR, MessageHandler.getMessage(ControllerMessage.ILLEGAL_ARGUMENTS, null));
+		try {
+			serviceComputer.create(c);
+			mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_CREATE, null));
+		} catch (ServiceException e) {
+			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
 		return mv;
 	}
@@ -178,16 +173,12 @@ public class ComputerController {
 			return mv;
 		}
 		ModelAndView mv = formEdit(computer.getId());
-		Optional<Computer> c = MapperComputer.map(computer);
-		if (c.isPresent()) {
-			try {
-				serviceComputer.update(c.get());
-				mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_UPDATE, null));
-			} catch (ServiceException e) {
-				mv.addObject(JspRessources.ERROR, e.getMessage());
-			}
-		} else {
-			mv.addObject(JspRessources.ERROR, MessageHandler.getMessage(ControllerMessage.ILLEGAL_ARGUMENTS, null));
+		Computer c = MapperComputer.map(computer);
+		try {
+			serviceComputer.update(c);
+			mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_UPDATE, null));
+		} catch (ServiceException e) {
+			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
 		return mv;
 	}
@@ -201,7 +192,7 @@ public class ComputerController {
 	public ModelAndView formEdit(@RequestParam(JspRessources.COMPUTER_ID) long id) {
 		ModelAndView mv = new ModelAndView(UrlRessources.FORM_EDIT_COMPUTER);
 		try {
-			mv.addObject(JspRessources.COMPUTER, new ComputerDTO(serviceComputer.get(id)));
+			mv.addObject(JspRessources.COMPUTER, serviceComputer.get(id));
 			mv.addObject(JspRessources.ALL_COMPANY, serviceCompany.getAll());
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());

@@ -1,13 +1,16 @@
 package com.excilys.cdb.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.excilys.cdb.dao.DaoOrder;
 import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.exceptions.ServiceException;
 
@@ -23,6 +26,10 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 @Transactional
 public interface IComputerService extends IService<Computer> {
 
+
+	@Transactional(readOnly = true)
+	ComputerDTO get(long id) throws ServiceException;
+	
 	/**
 	 * Recherche de computer par nom.
 	 * @param search le nom a chercher
@@ -32,7 +39,7 @@ public interface IComputerService extends IService<Computer> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	Page<Computer> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	Page<ComputerDTO> getPageSearch(String search, int page, Integer limit) throws ServiceException;
 	
 	/**
 	 * Recherche de computer par nom avec un ordre précis.
@@ -44,7 +51,7 @@ public interface IComputerService extends IService<Computer> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	Page<Computer> getPageSearch(String search, int page, Integer limit, PageComputerOrder order) throws ServiceException;
+	Page<ComputerDTO> getPageSearch(String search, int page, Integer limit, PageComputerOrder order) throws ServiceException;
 
 	/**
 	 * Créer un computer.
@@ -85,4 +92,33 @@ public interface IComputerService extends IService<Computer> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	Long deleteAllByCompanyId(Set<Long> ids) throws ServiceException;
+	
+	/**
+	 * Retourne tous les objets de type T de la bdd.
+	 * @return une liste
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	List<ComputerDTO> getAll() throws ServiceException;
+
+	/**
+	 * Optenir une page d'objets avec un nombre d'éléments spécifié.
+	 * @param page le numero de la page
+	 * @param limit le nombre d'objets à instancié, if null: valeur default.
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<ComputerDTO> getPage(int page, Integer limit) throws ServiceException;
+	
+	/**
+	 * Optenir une page d'objets avec un nombre d'éléments spécifié dans un order précis.
+	 * @param page le numero de la page
+	 * @param limit le nombre d'objets à instancié, if null: valeur default.
+	 * @param order l'ordre demandé
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<ComputerDTO> getPage(int page, Integer limit, DaoOrder order) throws ServiceException;
 }

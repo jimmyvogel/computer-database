@@ -10,8 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
 import com.excilys.cdb.service.exceptions.NameInvalidException;
 import com.excilys.cdb.service.exceptions.ServiceException;
@@ -30,8 +30,8 @@ public class CompanyServiceTest extends JunitSuite {
             + "ffff ffff ffff ffff" + "ffff ffff ffff ffff"
             + "ffff ffff ffff fffff" + "ffffffffffffffffffff";
 
-    private Company companyValid;
-    private Computer computerValid;
+    private CompanyDTO companyValid;
+    private ComputerDTO computerValid;
 
     /**
      * Initialisation des données avant les tests.
@@ -45,12 +45,12 @@ public class CompanyServiceTest extends JunitSuite {
         assert (nbCompany > 0) : "Il faut des compagnies pour les tests";
         companyValid = serviceCompany.getPage(1).getContent().get(0);
         computerValid = serviceComputer.getPage(1, null).getContent().get(0);
-        computerValid.setCompany(companyValid);
+        computerValid.setCompanyId(companyValid.getId());;
         serviceComputer.update(computerValid.getId(),
                 computerValid.getName(),
                 computerValid.getIntroduced(),
                 computerValid.getDiscontinued(),
-                computerValid.getCompany().getId());
+                computerValid.getCompanyId());
     }
 
     /**
@@ -59,7 +59,7 @@ public class CompanyServiceTest extends JunitSuite {
      */
     @Test
     public void testGetAllCompany() throws ServiceException {
-        List<Company> companies = serviceCompany.getAll();
+        List<CompanyDTO> companies = serviceCompany.getAllLazy();
         Assert.assertEquals(companies.size(), nbCompany);
     }
 
@@ -69,9 +69,9 @@ public class CompanyServiceTest extends JunitSuite {
      */
     @Test
     public void testGetCompany() throws ServiceException {
-        List<Company> companies = serviceCompany.getAll();
-        Company comp;
-        for (Company c : companies) {
+        List<CompanyDTO> companies = serviceCompany.getAllLazy();
+        CompanyDTO comp;
+        for (CompanyDTO c : companies) {
             comp = serviceCompany.get(c.getId());
             Assert.assertEquals(c.getName(), comp.getName());
         }

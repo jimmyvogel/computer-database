@@ -9,6 +9,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.data.domain.Page;
 
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.DefaultValues;
@@ -88,7 +90,7 @@ public class UIController {
 	private UIView view;
 
 	// Un objet de type computer pour avoir en mémoire les dernières demandes.
-	private Computer inter;
+	private ComputerDTO inter;
 
 	/**
 	 * Constructor sans arguments initiant les variables d'états, la vue et les
@@ -418,7 +420,7 @@ public class UIController {
 		LocalDate timeInter;
 		switch (stateAjout) {
 		case NAME:
-			inter = new Computer();
+			inter = new ComputerDTO();
 			inter.setName(ligne);
 			view.setAffichage(UITextes.AJOUT_INTRODUCED);
 			break;
@@ -448,10 +450,11 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				Company c = serviceCompany.get(Integer.valueOf(ligne));
+				CompanyDTO c = serviceCompany.get(Integer.valueOf(ligne));
 				//CompanyDTO c = companyClient.get(Long.valueOf(ligne));
 				//inter.setCompany(MapperCompany.map(c).get());
-				inter.setCompany(c);
+				inter.setCompanyId(c.getId());
+				inter.setCompany(c.getName());
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -481,7 +484,7 @@ public class UIController {
 		case ID:
 			value = Long.valueOf(ligne);
 			if (serviceComputer.get(value) != null) {
-				inter = new Computer();
+				inter = new ComputerDTO();
 				inter.setId(value);
 				view.setAffichage(UITextes.UPDATE_NAME);
 			} else {
@@ -521,9 +524,9 @@ public class UIController {
 			break;
 		case COMPANY_ID:
 			if (!ligne.equals("no")) {
-				//CompanyDTO c = companyClient.get(Long.valueOf(ligne));
-				//inter.setCompany(MapperCompany.map(c).get());
-				inter.setCompany(serviceCompany.get(Long.valueOf(ligne)));
+				CompanyDTO c = serviceCompany.get(Long.valueOf(ligne));
+				inter.setCompany(c.getName());
+				inter.setCompanyId(c.getId());
 			}
 			view.setAffichage(UITextes.VALIDATION);
 			break;
@@ -548,7 +551,7 @@ public class UIController {
 	private String ajouterComputer() throws ServiceException {
 		long id = -1;
 		if (inter.getCompany() != null) {
-			id = inter.getCompany().getId();
+			id = inter.getCompanyId();
 		}
 		boolean ajout = serviceComputer.create(inter.getName(), inter.getIntroduced(), inter.getDiscontinued(),
 				id) != -1;
@@ -591,7 +594,7 @@ public class UIController {
 	private String updateComputer() throws ServiceException {
 		long id = -1;
 		if (inter.getCompany() != null) {
-			id = inter.getCompany().getId();
+			id = inter.getCompanyId();
 		}
 
 		boolean update = serviceComputer.update(inter.getId(), inter.getName(), inter.getIntroduced(),
@@ -613,8 +616,8 @@ public class UIController {
 	 */
 	private String pageurComputerShow(final int page) throws ServiceException {
 		String res = "";
-		Page<Computer> pageComputer = serviceComputer.getPage(page, null);
-		for(Computer c : pageComputer) {
+		Page<ComputerDTO> pageComputer = serviceComputer.getPage(page, null);
+		for(ComputerDTO c : pageComputer) {
 			res += c.toString() + "\n";
 		}
 		return res + "\n Page:" + (pageComputer.getNumber()+1) + "/" + pageComputer.getTotalPages() + "\n" + UITextes.LIST_PAGINATION;
@@ -631,8 +634,8 @@ public class UIController {
 		String res = "";
 		//Page<CompanyDTO> pageCompany = companyClient.page(page, DefaultValues.DEFAULT_LIMIT);
 //		for(CompanyDTO c : pageCompany) {
-		Page<Company> pageCompany = serviceCompany.getPage(page, DefaultValues.DEFAULT_LIMIT);
-		for(Company c : pageCompany) {
+		Page<CompanyDTO> pageCompany = serviceCompany.getPage(page, DefaultValues.DEFAULT_LIMIT);
+		for(CompanyDTO c : pageCompany) {
 			res += c.toString() + "\n";
 		}
 		return res + "\n Page:" + (pageCompany.getNumber()+1) + "/" + pageCompany.getTotalPages() + "\n" + UITextes.LIST_PAGINATION;
@@ -646,7 +649,7 @@ public class UIController {
 	 * @throws  erreur de requête.
 	 */
 	private String detailComputer(final long id) throws ServiceException {
-		Computer c = serviceComputer.get(id);
+		ComputerDTO c = serviceComputer.get(id);
 		if (c == null) {
 			return "Erreur d'id";
 		}
@@ -660,7 +663,7 @@ public class UIController {
 			affichage += c.getDiscontinued() + " \n ";
 		}
 		if (c.getCompany() != null) {
-			affichage += c.getCompany().getName() + "\n ";
+			affichage += c.getCompany() + "\n ";
 		}
 		return affichage;
 	}

@@ -28,4 +28,5 @@ public interface CompanyCrudDao extends PagingAndSortingRepository<Company, Long
 	Page<Company> findAllByOrderByName(Pageable pageable);
 
 	Page<Company> findAllByOrderByNameDesc(Pageable pageable);
+
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.excilys.cdb.model.Company;
+import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.ressources.DefaultValues;
 import com.excilys.cdb.ressources.JspRessources;
 import com.excilys.cdb.ressources.UrlID;
@@ -36,10 +36,10 @@ public class CompanyController {
 	 */
 	@GetMapping("/" + LIST_COMPANIES)
 	public ModelAndView liste(@RequestParam(UrlID.PAGE) Integer numeropage, @RequestParam(UrlID.LIMIT) Integer limit) {
-		Page<Company> page=null;
+		Page<CompanyDTO> page=null;
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPANIES);
 		try {
-			page = serviceCompany.getPage(numeropage, limit);
+			page = serviceCompany.getPageLazy(numeropage, limit);
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}
@@ -61,10 +61,10 @@ public class CompanyController {
 			@RequestParam(value = UrlID.LIMIT, required = false) Integer paramLimit) {
 		int numpage = (iNumpage == null) ? 1 : iNumpage;
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
-		Page<Company> page=null;
+		Page<CompanyDTO> page=null;
 		ModelAndView mv = new ModelAndView(UrlRessources.LIST_COMPANIES);
 		try {
-			page = serviceCompany.getPageSearch(search, numpage, limit);
+			page = serviceCompany.getPageSearchLazy(search, numpage, limit);
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
 		}

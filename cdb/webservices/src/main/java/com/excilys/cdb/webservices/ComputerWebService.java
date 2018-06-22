@@ -1,14 +1,10 @@
 package com.excilys.cdb.webservices;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,7 +39,7 @@ public class ComputerWebService {
 	public ComputerWebService(ICompanyService companyService, IComputerService computerService) {
 		this.serviceComputer = computerService;
 	}
-	
+
 	public static final String ADD_COMPUTER = "addComputer";
 	public static final String EDIT_COMPUTER = "editComputer";
 	public static final String SEARCH_COMPUTER = "searchComputer";
@@ -52,24 +48,17 @@ public class ComputerWebService {
 	public static final String EDIT_FORM_COMPUTER = "editFormComputer";
 	public static final String LIST_COMPUTERS = "listComputers";
 
-
 	@GetMapping("/{id}")
-	public ResponseEntity<ComputerDTO> get(@PathVariable(UrlParams.COMPUTER_ID) Long id){
-		Optional<ComputerDTO> computer = null;
+	public ResponseEntity<ComputerDTO> get(@PathVariable(UrlParams.COMPUTER_ID) Long id) {
+		ComputerDTO computer = null;
 		try {
-			computer = MapperComputer.map(serviceComputer.get(id));
+			computer = serviceComputer.get(id);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
-		ResponseEntity<ComputerDTO> e;
-		if(computer.isPresent()) {
-			e = new ResponseEntity<ComputerDTO>(computer.get(), HttpStatus.OK);
-		} else {
-			e = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-		return e;
+		return new ResponseEntity<ComputerDTO>(computer, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Liste des compagnies.
 	 * @param numeropage le numero de la page à afficher (required).
@@ -77,22 +66,20 @@ public class ComputerWebService {
 	 * @return la réponse en json.
 	 */
 	@GetMapping
-	public ResponseEntity<Page<ComputerDTO>> page(@RequestParam(name = UrlParams.PAGE, required=false) Integer iNumpage,
-			@RequestParam(name = UrlParams.LIMIT, required=false) Integer paramLimit,
-			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
-		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME  : PageComputerOrder.valueOf(order);
+	public ResponseEntity<Page<ComputerDTO>> page(
+			@RequestParam(name = UrlParams.PAGE, required = false) Integer iNumpage,
+			@RequestParam(name = UrlParams.LIMIT, required = false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required = false) String order) {
+		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME : PageComputerOrder.valueOf(order);
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
 		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
-		Page<Computer> page = null;
-		Page<ComputerDTO> pageImpl = null;
+		Page<ComputerDTO> page = null;
 		try {
 			page = serviceComputer.getPage(iPage, limit, pageOrder);
-			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
-			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
-		return new ResponseEntity<Page<ComputerDTO>>(pageImpl, HttpStatus.OK);
+		return new ResponseEntity<Page<ComputerDTO>>(page, HttpStatus.OK);
 	}
 
 	/**
@@ -102,27 +89,25 @@ public class ComputerWebService {
 	 * @param limit nombres de résultats par bloc
 	 * @return la réponse en json.
 	 */
-	@GetMapping(params={UrlParams.SEARCH})
-	public ResponseEntity<Page<ComputerDTO>> searchPage(@RequestParam(name=UrlParams.SEARCH, required=true) String search,
-			@RequestParam(name=UrlParams.PAGE, required=false) Integer iNumpage, 
-			@RequestParam(name=UrlParams.LIMIT,  required=false) Integer paramLimit,
-			@RequestParam(name = UrlParams.ORDER, required=false) String order) {
-		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME  : PageComputerOrder.valueOf(order);
+	@GetMapping(params = { UrlParams.SEARCH })
+	public ResponseEntity<Page<ComputerDTO>> searchPage(
+			@RequestParam(name = UrlParams.SEARCH, required = true) String search,
+			@RequestParam(name = UrlParams.PAGE, required = false) Integer iNumpage,
+			@RequestParam(name = UrlParams.LIMIT, required = false) Integer paramLimit,
+			@RequestParam(name = UrlParams.ORDER, required = false) String order) {
+		PageComputerOrder pageOrder = (order == null) ? PageComputerOrder.BY_NAME : PageComputerOrder.valueOf(order);
 		if (!SecurityTextValidation.valideString(search)) {
 			throw new IllegalSearchException();
 		}
 		int limit = (paramLimit == null) ? DefaultValues.DEFAULT_LIMIT : paramLimit;
 		int iPage = (iNumpage == null) ? DefaultValues.DEFAULT_PAGE : iNumpage;
-		Page<Computer> page = null;
-		Page<ComputerDTO> pageImpl = null;
+		Page<ComputerDTO> page = null;
 		try {
 			page = serviceComputer.getPageSearch(search, iPage, limit, pageOrder);
-			List<ComputerDTO> list = page.getContent().stream().map(c -> MapperComputer.map(c).get()).collect(Collectors.toList());
-			pageImpl = new PageImpl<ComputerDTO>(list, page.getPageable(), page.getTotalElements());
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
-		return new ResponseEntity<Page<ComputerDTO>>(pageImpl, HttpStatus.OK);
+		return new ResponseEntity<Page<ComputerDTO>>(page, HttpStatus.OK);
 	}
 
 	/**
@@ -131,7 +116,8 @@ public class ComputerWebService {
 	 * @return la réponse en json.
 	 */
 	@DeleteMapping
-	public ResponseEntity<Long> delete(@RequestParam(name = UrlParams.DELETE_SELECT, required = true) Set<Long> deletes) {
+	public ResponseEntity<Long> delete(
+			@RequestParam(name = UrlParams.DELETE_SELECT, required = true) Set<Long> deletes) {
 		Long elements = 0L;
 		try {
 			elements = serviceComputer.deleteAll(deletes);
@@ -149,16 +135,12 @@ public class ComputerWebService {
 	 */
 	@PostMapping
 	public ResponseEntity<Long> add(@RequestBody @Valid ComputerDTO computer) {
-		Optional<Computer> c = MapperComputer.map(computer);
+		Computer c = MapperComputer.map(computer);
 		Long res = 0L;
-		if (c.isPresent()) {
-			try {
-				res = serviceComputer.create(c.get());
-			} catch (ServiceException e) {
-				throw new WebServiceException(e);
-			}
-		} else {
-			return new ResponseEntity<Long>(res, HttpStatus.NOT_FOUND);
+		try {
+			res = serviceComputer.create(c);
+		} catch (ServiceException e) {
+			throw new WebServiceException(e);
 		}
 		return new ResponseEntity<Long>(res, HttpStatus.OK);
 	}
@@ -171,16 +153,12 @@ public class ComputerWebService {
 	 */
 	@PutMapping
 	public ResponseEntity<Boolean> edit(@RequestBody @Valid ComputerDTO computer) {
-		Optional<Computer> c = MapperComputer.map(computer);
+		Computer c = MapperComputer.map(computer);
 		Boolean res = false;
-		if (c.isPresent()) {
-			try {
-				res = serviceComputer.update(c.get());
-			} catch (ServiceException e) {
-				throw new WebServiceException(e);
-			}
-		} else {
-			return new ResponseEntity<Boolean>(res, HttpStatus.NOT_FOUND);
+		try {
+			res = serviceComputer.update(c);
+		} catch (ServiceException e) {
+			throw new WebServiceException(e);
 		}
 		return new ResponseEntity<Boolean>(res, HttpStatus.OK);
 	}

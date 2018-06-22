@@ -1,12 +1,22 @@
 package com.excilys.cdb.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
+import com.excilys.cdb.dao.DaoOrder;
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.mapper.MapperCompany;
+import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.service.exceptions.CharacterSpeciauxException;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.servicemessage.ServiceMessage;
+import com.excilys.cdb.validator.SecurityTextValidation;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer et
@@ -28,7 +38,7 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws ServiceException erreur de service
 	 */
 	@Transactional(readOnly = true)
-	Page<Company> getPage(int page) throws ServiceException;
+	Page<CompanyDTO> getPage(int page) throws ServiceException;
 
 	/**
 	 * Recherche de compagnie par nom.
@@ -39,7 +49,10 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	Page<Company> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	Page<CompanyDTO> getPageSearch(String search, int page, Integer limit) throws ServiceException;
+	
+	@Transactional(readOnly = true)
+	CompanyDTO get(long id) throws ServiceException;
 	
 	/**
 	 * Recherche de compagnie par nom avec un ordre précis.
@@ -51,7 +64,7 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws ServiceException erreur de paramètres
 	 */
 	@Transactional(readOnly = true)
-	Page<Company> getPageSearch(String search, int page, Integer limit, PageCompanyOrder o) throws ServiceException;
+	Page<CompanyDTO> getPageSearch(String search, int page, Integer limit, PageCompanyOrder o) throws ServiceException;
 
 	/**
 	 * Créer une company.
@@ -61,5 +74,49 @@ public interface ICompanyService extends IService<Company> {
 	 * @throws DaoException erreur de requête.
 	 */
 	long create(String name) throws ServiceException;
+
+	/**
+	 * Retourne tous les objets de type T de la bdd.
+	 * @return une liste
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	List<CompanyDTO> getAll() throws ServiceException;
+
+	/**
+	 * Optenir une page d'objets avec un nombre d'éléments spécifié.
+	 * @param page le numero de la page
+	 * @param limit le nombre d'objets à instancié, if null: valeur default.
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<CompanyDTO> getPage(int page, Integer limit) throws ServiceException;
+	
+	/**
+	 * Optenir une page d'objets avec un nombre d'éléments spécifié dans un order précis.
+	 * @param page le numero de la page
+	 * @param limit le nombre d'objets à instancié, if null: valeur default.
+	 * @param order l'ordre demandé
+	 * @return une page chargé.
+	 * @throws ServiceException erreur de paramètres
+	 */
+	@Transactional(readOnly = true)
+	Page<CompanyDTO> getPage(int page, Integer limit, DaoOrder order) throws ServiceException;
+
+	List<CompanyDTO> getAllLazy() throws ServiceException;
+	
+	public Page<CompanyDTO> getPageLazy(final int page) throws ServiceException;
+
+	public Page<CompanyDTO> getPageLazy(final int page, final Integer limit) throws ServiceException;
+	
+	public Page<CompanyDTO> getPageLazy(final int page, final Integer limit, DaoOrder order) throws ServiceException;
+	
+	public Page<CompanyDTO> getPageSearchLazy(final String search, final int page, final Integer limit)
+			throws ServiceException;
+	
+	public Page<CompanyDTO> getPageSearchLazy(final String search, final int page, final Integer limit, final PageCompanyOrder order) throws ServiceException;
+
+	CompanyDTO getLazy(long id) throws ServiceException;
 
 }

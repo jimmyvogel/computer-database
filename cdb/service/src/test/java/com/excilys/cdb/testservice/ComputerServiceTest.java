@@ -13,7 +13,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.cdb.model.Company;
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.exceptions.CompanyNotFoundException;
 import com.excilys.cdb.service.exceptions.ComputerNotFoundException;
@@ -38,8 +39,8 @@ public class ComputerServiceTest extends JunitSuite {
 
 	private final LocalDate DD_INVALID_BEFORE_DI = LocalDate.of(1985, Month.APRIL, 8);
 
-	private Company companyValid;
-	private Computer computerValid;
+	private CompanyDTO companyValid;
+	private ComputerDTO	 computerValid;
 
 	/**
 	 * Initialisation des données avant les tests.
@@ -54,9 +55,9 @@ public class ComputerServiceTest extends JunitSuite {
 
 		companyValid = serviceCompany.getPage(1).getContent().get(0);
 		computerValid = serviceComputer.getPage(1, null).getContent().get(0);
-		computerValid.setCompany(companyValid);
+		computerValid.setCompanyId(companyValid.getId());
 		serviceComputer.update(computerValid.getId(), computerValid.getName(), computerValid.getIntroduced(),
-				computerValid.getDiscontinued(), computerValid.getCompany().getId());
+				computerValid.getDiscontinued(), computerValid.getCompanyId());
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class ComputerServiceTest extends JunitSuite {
 	@Test
 	public void testGetAllComputer() throws ServiceException {
 
-		List<Computer> computers = serviceComputer.getAll();
+		List<ComputerDTO> computers = serviceComputer.getAll();
 		Assert.assertEquals(computers.size(), nbComputers);
 	}
 
@@ -76,9 +77,9 @@ public class ComputerServiceTest extends JunitSuite {
 	 */
 	@Test
 	public void testGetComputer() throws ServiceException {
-		List<Computer> computers = serviceComputer.getAll();
-		Computer comp;
-		for (Computer c : computers) {
+		List<ComputerDTO> computers = serviceComputer.getAll();
+		ComputerDTO comp;
+		for (ComputerDTO c : computers) {
 			comp = serviceComputer.get(c.getId());
 			Assert.assertEquals(c.getName(), comp.getName());
 		}
@@ -252,7 +253,7 @@ public class ComputerServiceTest extends JunitSuite {
 
 		long id = serviceComputer.create("nouveau");
 		assertTrue(id > 0);
-		Computer c = serviceComputer.get(id);
+		ComputerDTO c = serviceComputer.get(id);
 		assertTrue(c != null);
 
 		assertFalse(serviceComputer.update(id, null, null, DATE_DISCONTINUED_VALID, -1));
@@ -267,7 +268,7 @@ public class ComputerServiceTest extends JunitSuite {
 
 		long id = serviceComputer.create("nouveau");
 		assertTrue(id > 0);
-		Computer c = serviceComputer.get(id);
+		ComputerDTO c = serviceComputer.get(id);
 		assertTrue(c != null);
 		assertFalse(serviceComputer.update(id, null, DATE_INTRODUCED_VALID, DD_INVALID_BEFORE_DI, -1));
 	}
@@ -281,7 +282,7 @@ public class ComputerServiceTest extends JunitSuite {
 
 		long id = serviceComputer.create("nouveau");
 		assertTrue(id > 0);
-		Computer c = serviceComputer.get(id);
+		ComputerDTO c = serviceComputer.get(id);
 		assertTrue(c != null);
 
 		assertTrue(serviceComputer.update(id, null, DATE_INTRODUCED_VALID, null, -1));
@@ -297,7 +298,7 @@ public class ComputerServiceTest extends JunitSuite {
 
 		long id = serviceComputer.create("nouveau");
 		assertTrue(id > 0);
-		Computer c = serviceComputer.get(id);
+		ComputerDTO c = serviceComputer.get(id);
 		assertTrue(c != null);
 
 		assertTrue(serviceComputer.update(id, null, null, null, companyValid.getId()));

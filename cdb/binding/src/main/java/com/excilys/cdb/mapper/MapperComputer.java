@@ -1,7 +1,8 @@
 package com.excilys.cdb.mapper;
 
 import java.time.LocalDate;
-import java.util.Optional;
+
+import org.springframework.data.domain.Page;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
@@ -17,8 +18,12 @@ public class MapperComputer {
 
 	//private static final Logger LOGGER = LoggerFactory.getLogger(MapperComputer.class);
 
-	public static Optional<ComputerDTO> map(Computer computer) {
-		return Optional.ofNullable(new ComputerDTO(computer));
+	public static ComputerDTO map(Computer computer) {
+		return new ComputerDTO(computer);
+	}
+	
+	public static Page<ComputerDTO> mapToPage(Page<Computer> computers) {
+		return computers.map(s -> MapperComputer.map(s));
 	}
 
 	
@@ -30,7 +35,7 @@ public class MapperComputer {
 	 * @param idCompany l'id de la compagnie créatrice du computer
 	 * @return un optionnal de computer pouvant être null.
 	 */
-	public static Optional<Computer> map(String name, String introduced, String discontinued, String idCompany) {
+	public static Computer map(String name, String introduced, String discontinued, String idCompany) {
 		return map("0", name, introduced, discontinued, idCompany);
 	}
 
@@ -43,7 +48,7 @@ public class MapperComputer {
 	 * @param idCompany l'id de la compagnie créatrice du computer
 	 * @return un optionnal de computer pouvant être null.
 	 */
-	public static Optional<Computer> map(String id, String name, String introduced, String discontinued,
+	public static Computer map(String id, String name, String introduced, String discontinued,
 			String idCompany) {
 		LocalDate dateIntro = DateValidation.validDateFormat(introduced);
 		LocalDate dateDiscon = DateValidation.validDateFormat(discontinued);
@@ -52,7 +57,7 @@ public class MapperComputer {
 			c = new Computer(Long.valueOf(id), name, dateIntro, dateDiscon, new Company(Long.valueOf(idCompany), ""));
 		} catch (NumberFormatException e) {
 		}
-		return Optional.ofNullable(c);
+		return c;
 	}
 
 	/**
@@ -60,7 +65,7 @@ public class MapperComputer {
 	 * @param computer computerdto
 	 * @return un optionnal computer
 	 */
-	public static Optional<Computer> map(ComputerDTO computer) {
+	public static Computer map(ComputerDTO computer) {
 		String introduced = computer.getIntroduced() == null ? null : computer.getIntroduced().toString();
 		String discontinued = computer.getDiscontinued() == null ? null : computer.getDiscontinued().toString();
 		return map(String.valueOf(computer.getId()), computer.getName(), introduced, discontinued,

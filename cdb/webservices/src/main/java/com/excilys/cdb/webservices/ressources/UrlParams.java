@@ -10,6 +10,7 @@ public class UrlParams {
 	public static final String COMPUTER_ID = "id";
 	public static final String COMPANY_ID = "id";
 	public static final String ORDER = "order";
+	public static final String FETCH = "fetch";
 
     /**
      * No constructor.

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QPageRequest;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dao.DaoOrder;
+import com.excilys.cdb.dto.CompanyDTO;
+import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -42,22 +45,46 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public List<Company> getAll() throws ServiceException {
-		return companyDao.findAll();
+	public List<CompanyDTO> getAllLazy() throws ServiceException {
+		return companyDao.findAll().stream().map(s -> MapperCompany.map(s)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<CompanyDTO> getAll() throws ServiceException {
+		return companyDao.findAll().stream().map(s -> MapperCompany.mapLazy(s)).collect(Collectors.toList());
 	}
 
 	@Override
-	public Page<Company> getPage(final int page) throws ServiceException {
+	public Page<CompanyDTO> getPage(final int page) throws ServiceException {
 		return getPage(page, null);
 	}
 
 	@Override
-	public Page<Company> getPage(final int page, final Integer limit) throws ServiceException {
+	public Page<CompanyDTO> getPage(final int page, final Integer limit) throws ServiceException {
 		return getPage(page, limit, PageCompanyOrder.BY_NAME);
+	}
+	
+	@Override
+	public Page<CompanyDTO> getPageLazy(final int page) throws ServiceException {
+		return getPageLazy(page, null);
 	}
 
 	@Override
-	public Page<Company> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+	public Page<CompanyDTO> getPageLazy(final int page, final Integer limit) throws ServiceException {
+		return getPageLazy(page, limit, PageCompanyOrder.BY_NAME);
+	}
+
+	@Override
+	public Page<CompanyDTO> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+		return MapperCompany.mapToPage(page(page, limit, order));
+	}
+	
+	@Override
+	public Page<CompanyDTO> getPageLazy(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+		return MapperCompany.mapToPageLazy(page(page, limit, order));
+	}
+	
+	private Page<Company> page(final int page, final Integer limit, DaoOrder order) throws ServiceException {
 		if (!(order instanceof PageCompanyOrder)) {
 			throw new ServiceException("Bad order enum uses");
 		}
@@ -78,14 +105,30 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public Page<Company> getPageSearch(final String search, final int page, final Integer limit)
+	public Page<CompanyDTO> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		return getPageSearch(search, page, limit, PageCompanyOrder.BY_NAME);
 	}
 	
 	@Override
-	public Page<Company> getPageSearch(final String search, final int page, final Integer limit, final PageCompanyOrder order)
+	public Page<CompanyDTO> getPageSearchLazy(final String search, final int page, final Integer limit)
 			throws ServiceException {
+		return getPageSearchLazy(search, page, limit, PageCompanyOrder.BY_NAME);
+	}
+	
+	@Override
+	public Page<CompanyDTO> getPageSearch(final String search, final int page, final Integer limit, final PageCompanyOrder order)
+			throws ServiceException {
+		return MapperCompany.mapToPage(pageSearch(search, page, limit, order));
+	}
+	
+	@Override
+	public Page<CompanyDTO> getPageSearchLazy(final String search, final int page, final Integer limit, final PageCompanyOrder order)
+			throws ServiceException {
+		return MapperCompany.mapToPageLazy(pageSearch(search, page, limit, order));
+	}
+	
+	private Page<Company> pageSearch(final String search, final int page, final Integer limit, final PageCompanyOrder order) throws ServiceException{
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
 		}
@@ -105,9 +148,15 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public Company get(long id) throws ServiceException {
+	public CompanyDTO get(long id) throws ServiceException {
 		Company company = companyDao.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
-		return company;
+		return MapperCompany.map(company);
+	}
+	
+	@Override
+	public CompanyDTO getLazy(long id) throws ServiceException {
+		Company company = companyDao.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+		return MapperCompany.mapLazy(company);
 	}
 
 	@Override
@@ -150,7 +199,7 @@ public class CompanyService implements ICompanyService {
 	}
 
 	@Override
-	public boolean update(Company update) throws ServiceException {
+	public boolean update(Company  update) throws ServiceException {
 		return companyDao.save(update) != null;
 	}
 

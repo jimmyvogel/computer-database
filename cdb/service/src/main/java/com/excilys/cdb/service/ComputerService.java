@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.jboss.logging.Logger;
@@ -14,9 +15,10 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.dao.CompanyCrudDao;
 import com.excilys.cdb.dao.ComputerCrudDao;
-import com.excilys.cdb.dao.DaoOrder;
-import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
+import com.excilys.cdb.dao.DaoOrder;
+import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -48,17 +50,17 @@ public class ComputerService implements IComputerService {
 	}
 	
 	@Override
-	public List<Computer> getAll() throws ServiceException {
-		return computerDao.findAll();
+	public List<ComputerDTO> getAll() throws ServiceException {
+		return computerDao.findAll().stream().map(s -> MapperComputer.map(s)).collect(Collectors.toList());
 	}
 
 	@Override
-	public Page<Computer> getPage(final int page, final Integer limit) throws ServiceException {
+	public Page<ComputerDTO> getPage(final int page, final Integer limit) throws ServiceException {
 		return getPage(page, limit, PageComputerOrder.BY_NAME);
 	}
 	
 	@Override
-	public Page<Computer> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
+	public Page<ComputerDTO> getPage(final int page, final Integer limit, DaoOrder order) throws ServiceException {
 		if (!(order instanceof PageComputerOrder)) {
 			throw new ServiceException("Bad order enum uses");
 		}
@@ -86,17 +88,17 @@ public class ComputerService implements IComputerService {
 			computers = computerDao.findAllByOrderByIntroducedDesc(new QPageRequest(tpage - 1, nbElements));
 			break;
 		}
-		return computers;
+		return MapperComputer.mapToPage(computers);
 	}
 
 	@Override
-	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit)
+	public Page<ComputerDTO> getPageSearch(final String search, final int page, final Integer limit)
 			throws ServiceException {
 		return getPageSearch(search, page, limit, PageComputerOrder.BY_NAME);
 	}
 	
 	@Override
-	public Page<Computer> getPageSearch(final String search, final int page, final Integer limit, final PageComputerOrder order)
+	public Page<ComputerDTO> getPageSearch(final String search, final int page, final Integer limit, final PageComputerOrder order)
 			throws ServiceException {
 		if (search == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
@@ -134,13 +136,13 @@ public class ComputerService implements IComputerService {
 						new QPageRequest(tpage - 1, nbElements));
 				break;
 		}
-		return computers;
+		return MapperComputer.mapToPage(computers);
 	}
 
 	@Override
-	public Computer get(long id) throws ServiceException {
+	public ComputerDTO get(long id) throws ServiceException {
 		Computer computer = computerDao.findById(id).orElseThrow(() -> new ComputerNotFoundException(id));
-		return computer;
+		return MapperComputer.map(computer);
 	}
 
 	@Override

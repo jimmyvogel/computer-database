@@ -1,6 +1,8 @@
 package com.excilys.cdb.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe représentant une compagnie de manière simple, sans détails.
@@ -15,6 +17,7 @@ public class CompanyDTO implements Serializable{
 	
 	private long id;
 	private String name;
+	private List<ComputerDTO> computers;
 
 	/**
 	 * Constructor. no arguments
@@ -30,6 +33,18 @@ public class CompanyDTO implements Serializable{
 	public CompanyDTO(final long id, final String name) {
 		this.id = id;
 		this.name = name;
+		this.computers = new ArrayList<ComputerDTO>();
+	}
+	
+	/**
+	 * Constructor.
+	 * @param id l'id de la compagnie
+	 * @param name le nom de la compagnie
+	 */
+	public CompanyDTO(final long id, final String name, final List<ComputerDTO> computers) {
+		this.id = id;
+		this.name = name;
+		this.computers = computers;
 	}
 
 	/**
@@ -55,6 +70,15 @@ public class CompanyDTO implements Serializable{
 
 	public void setId(final long id) {
 		this.id = id;
+	}
+
+	
+	public List<ComputerDTO> getComputers() {
+		return computers;
+	}
+
+	public void setComputers(List<ComputerDTO> computers) {
+		this.computers = computers;
 	}
 
 	@Override
