@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 21, 2018 at 11:55 AM
+-- Generation Time: Jun 22, 2018 at 01:51 PM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -47,56 +47,58 @@ INSERT INTO `Authorities` (`id`, `authority`) VALUES
 
 CREATE TABLE `Company` (
   `id` bigint(20) NOT NULL,
-  `name` varchar(255) DEFAULT NULL
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `image` varchar(2083) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Company`
 --
 
-INSERT INTO `Company` (`id`, `name`) VALUES
-(1, 'Apple Inc.'),
-(2, 'Thinking Machines'),
-(3, 'RCA'),
-(4, 'Netronics'),
-(5, 'Tandy Corporation'),
-(6, 'Commodore International'),
-(7, 'MOS Technology'),
-(8, 'Micro Instrumentation and Telemetry Systems'),
-(9, 'IMS Associates, Inc.'),
-(10, 'Digital Equipment Corporation'),
-(11, 'Lincoln Laboratory'),
-(12, 'Moore School of Electrical Engineering'),
-(13, 'IBM'),
-(14, 'Amiga Corporation'),
-(15, 'Canon'),
-(16, 'Nokia'),
-(17, 'Sony'),
-(18, 'OQO'),
-(19, 'NeXT'),
-(20, 'Atari'),
-(22, 'Acorn Computer'),
-(23, 'Timex Sinclair'),
-(24, 'Nintendo'),
-(25, 'Sinclair Research Ltd'),
-(26, 'Xerox'),
-(27, 'Hewlett-Packard'),
-(28, 'Zemmix'),
-(29, 'ACVS'),
-(30, 'Sanyo'),
-(31, 'Cray'),
-(32, 'Evans & Sutherland'),
-(33, 'E.S.R. Inc.'),
-(34, 'OMRON'),
-(35, 'BBN Technologies'),
-(36, 'Lenovo Group'),
-(37, 'ASUS'),
-(38, 'Amstrad'),
-(39, 'Sun Microsystems'),
-(40, 'Texas Instruments'),
-(41, 'HTC Corporation'),
-(42, 'Research In Motion'),
-(43, 'Samsung Electronics');
+INSERT INTO `Company` (`id`, `name`, `description`, `image`) VALUES
+(1, 'Apple Inc.', NULL, NULL),
+(2, 'Thinking Machines', NULL, NULL),
+(3, 'RCA', NULL, NULL),
+(4, 'Netronics', NULL, NULL),
+(5, 'Tandy Corporation', NULL, NULL),
+(6, 'Commodore International', NULL, NULL),
+(7, 'MOS Technology', NULL, NULL),
+(8, 'Micro Instrumentation and Telemetry Systems', NULL, NULL),
+(9, 'IMS Associates, Inc.', NULL, NULL),
+(10, 'Digital Equipment Corporation', NULL, NULL),
+(11, 'Lincoln Laboratory', NULL, NULL),
+(12, 'Moore School of Electrical Engineering', NULL, NULL),
+(13, 'IBM', NULL, NULL),
+(14, 'Amiga Corporation', NULL, NULL),
+(15, 'Canon', NULL, NULL),
+(16, 'Nokia', NULL, NULL),
+(17, 'Sony', NULL, NULL),
+(18, 'OQO', NULL, NULL),
+(19, 'NeXT', NULL, NULL),
+(20, 'Atari', NULL, NULL),
+(22, 'Acorn Computer', NULL, NULL),
+(23, 'Timex Sinclair', NULL, NULL),
+(24, 'Nintendo', NULL, NULL),
+(25, 'Sinclair Research Ltd', NULL, NULL),
+(26, 'Xerox', NULL, NULL),
+(27, 'Hewlett-Packard', NULL, NULL),
+(28, 'Zemmix', NULL, NULL),
+(29, 'ACVS', NULL, NULL),
+(30, 'Sanyo', NULL, NULL),
+(31, 'Cray', NULL, NULL),
+(32, 'Evans & Sutherland', NULL, NULL),
+(33, 'E.S.R. Inc.', NULL, NULL),
+(34, 'OMRON', NULL, NULL),
+(35, 'BBN Technologies', NULL, NULL),
+(36, 'Lenovo Group', NULL, NULL),
+(37, 'ASUS', NULL, NULL),
+(38, 'Amstrad', NULL, NULL),
+(39, 'Sun Microsystems', NULL, NULL),
+(40, 'Texas Instruments', NULL, NULL),
+(41, 'HTC Corporation', NULL, NULL),
+(42, 'Research In Motion', NULL, NULL),
+(43, 'Samsung Electronics', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -162,7 +164,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (43, NULL, '1993-10-21', 'Macintosh Quadra 605', 1),
 (44, NULL, NULL, 'Macintosh LC 500 series', NULL),
 (45, NULL, '1980-01-01', 'TRS-80 Color Computer', 5),
-(46, NULL, NULL, 'Acorn System 2', NULL),
+(46, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (47, NULL, NULL, 'Dragon 32/64', NULL),
 (48, NULL, NULL, 'MEK6800D2', NULL),
 (49, NULL, NULL, 'Newbear 77/68', NULL),
@@ -173,7 +175,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (54, NULL, NULL, 'Commodore 128', 6),
 (55, '1977-10-01', '1976-04-01', 'Apple I', 1),
 (56, NULL, '1975-01-01', 'KIM-1', 7),
-(57, NULL, '1974-12-19', 'Altair 8800', 8),
+(57, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (58, NULL, '1975-08-01', 'IMSAI 8080', 9),
 (59, NULL, NULL, 'IMSAI Series Two', NULL),
 (60, NULL, '1977-10-25', 'VAX', 10),
@@ -186,12 +188,12 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (67, NULL, '1981-08-12', 'IBM PC', 13),
 (68, NULL, NULL, 'Macintosh Classic', NULL),
 (69, NULL, '1991-01-01', 'Macintosh Classic II', 1),
-(70, NULL, '1985-01-01', 'Amiga', 14),
-(71, NULL, NULL, 'Amiga 1000', 6),
+(628, NULL, NULL, 'nouveaunomvalid', NULL),
+(71, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (72, NULL, '1987-01-01', 'Amiga 500', 6),
 (73, NULL, NULL, 'Amiga 500+', NULL),
-(74, '1990-01-01', '1986-01-01', 'Amiga 2000', 6),
-(75, NULL, NULL, 'Amiga 3000', 6),
+(74, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
+(75, NULL, NULL, 'modifier', 22),
 (76, NULL, '1992-03-01', 'Amiga 600', 6),
 (77, NULL, '1984-01-01', 'Macintosh 128K', 1),
 (78, '1986-04-14', '1984-09-10', 'Macintosh 512K', 1),
@@ -239,13 +241,12 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (120, NULL, NULL, 'Cray XT3', NULL),
 (121, NULL, NULL, 'Cray CS6400', NULL),
 (122, '1993-01-01', '1985-01-01', 'Atari ST', 20),
-(123, NULL, NULL, 'Amiga 2500', NULL),
-(124, NULL, NULL, 'Amiga 2500', 6),
+(123, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (125, NULL, NULL, 'Amiga 4000', 6),
 (126, NULL, NULL, 'Amiga 3000UX', 6),
 (127, NULL, NULL, 'Amiga 3000T', 6),
 (128, NULL, NULL, 'Amiga 4000T', 6),
-(129, '1996-01-01', '1992-10-01', 'Amiga 1200', 6),
+(129, '1996-01-01', '1992-10-01', 'modifier', 22),
 (130, NULL, '1986-01-01', 'Atari 1040 STf', NULL),
 (131, NULL, '1985-01-01', 'Atari 520 ST', NULL),
 (132, NULL, '1986-01-01', 'Atari 520 STfm', NULL),
@@ -268,7 +269,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (149, NULL, '1982-01-01', 'ZX Spectrum', 25),
 (150, NULL, '1981-01-01', 'Xerox Star', 26),
 (151, NULL, NULL, 'Xerox Alto', NULL),
-(152, NULL, NULL, 'Acorn Archimedes', 22),
+(152, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (153, NULL, NULL, 'Nintendo Entertainment System', 24),
 (154, '1999-01-01', '1991-08-01', 'Super Nintendo Entertainment System', 24),
 (155, NULL, NULL, 'Super Famicom', NULL),
@@ -446,8 +447,8 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (327, NULL, '1986-01-01', 'ZX Spectrum +2', 38),
 (328, NULL, '1987-01-01', 'ZX Spectrum +2A', 38),
 (329, NULL, '1984-06-01', 'ZX Spectrum +', 25),
-(330, NULL, NULL, 'Acer Extensa', NULL),
-(331, NULL, NULL, 'Acer Extensa 5220', NULL),
+(330, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
+(331, NULL, NULL, 'modifier', 22),
 (332, NULL, NULL, 'Dell Latitude', NULL),
 (333, NULL, NULL, 'Toshiba Satellite', NULL),
 (334, NULL, NULL, 'Timex Sinclair 2048', 23),
@@ -464,9 +465,9 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (345, NULL, '1989-01-01', 'STacy', NULL),
 (346, NULL, '1990-01-01', 'ST BOOK', NULL),
 (347, NULL, '1989-01-01', 'Atari 520 STE', NULL),
-(348, NULL, NULL, 'Amiga 2000 Model A', NULL),
-(349, NULL, NULL, 'Amiga 2000 Model B', NULL),
-(350, NULL, NULL, 'Amiga 2000 Model C', NULL),
+(348, NULL, NULL, 'modifier', NULL),
+(653, NULL, NULL, 'nouveaunomvalid', NULL),
+(350, '2000-04-08', '1986-04-08', 'nouveaunomvalid', 22),
 (351, NULL, NULL, 'IBM 3270', NULL),
 (352, NULL, NULL, 'CALDIC', NULL),
 (353, NULL, NULL, 'Modbook', NULL),
@@ -497,7 +498,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (378, NULL, NULL, 'ChipTest', NULL),
 (379, NULL, NULL, 'HiTech', NULL),
 (380, NULL, NULL, 'Bomba', NULL),
-(381, NULL, NULL, 'ACE', NULL),
+(582, NULL, NULL, 'nouveaunomvalid', NULL),
 (382, NULL, NULL, 'ASCI Red', NULL),
 (383, NULL, NULL, 'ASCI Thors Hammer', NULL),
 (384, NULL, '2005-01-01', 'ASCI Purple', 13),
@@ -534,7 +535,6 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (415, NULL, NULL, 'Intergraph', NULL),
 (416, NULL, NULL, 'Enterprise', NULL),
 (417, NULL, NULL, 'MTX500', NULL),
-(418, NULL, NULL, 'Acorn Electron', NULL),
 (419, NULL, '2009-02-01', 'Sony Vaio P', 17),
 (420, NULL, NULL, 'VAIO', 17),
 (421, NULL, NULL, 'Sony Vaio P VGN-P588E/Q', NULL),
@@ -564,7 +564,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (445, NULL, '2009-04-21', 'Sharp Mebius NJ70A', NULL),
 (446, NULL, NULL, 'HTC Snap', 41),
 (447, NULL, NULL, 'Commodore Educator 64', 6),
-(448, NULL, NULL, 'Amiga 1500', 6),
+(640, NULL, NULL, 'nouveaunomvalid', NULL),
 (449, NULL, NULL, 'Commodore 65', 6),
 (450, NULL, NULL, 'Commodore 16', 6),
 (451, NULL, NULL, 'Commodore CBM-II', 6),
@@ -658,8 +658,7 @@ INSERT INTO `Computer` (`id`, `discontinued`, `introduced`, `name`, `company_id`
 (539, NULL, NULL, 'ThinkPad 370 C', NULL),
 (540, NULL, '1983-01-01', 'Coleco Adam', NULL),
 (541, NULL, NULL, 'Nebulae', NULL),
-(542, NULL, NULL, 'Alex eReader', NULL),
-(543, NULL, NULL, 'Acer Iconia', NULL),
+(617, NULL, NULL, 'nouveaunomvalid', NULL),
 (544, NULL, NULL, 'Archos 101', NULL),
 (545, NULL, NULL, 'Fujitsu Lifebook T900', NULL),
 (546, NULL, NULL, 'Motorola Xoom', NULL),
@@ -775,22 +774,22 @@ ALTER TABLE `User_authority`
 -- AUTO_INCREMENT for table `Authorities`
 --
 ALTER TABLE `Authorities`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `Company`
 --
 ALTER TABLE `Company`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 --
 -- AUTO_INCREMENT for table `Computer`
 --
 ALTER TABLE `Computer`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=575;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=667;
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
