@@ -3,6 +3,7 @@ package com.excilys.cdb.webservices;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,6 +34,11 @@ class GlobalControllerExceptionHandler {
     
     @ExceptionHandler(WebServiceException.class)
     public ResponseEntity<String> handleServiceException(WebServiceException se) {
+		return new ResponseEntity<String>(se.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException se) {
 		return new ResponseEntity<String>(se.getMessage(), HttpStatus.BAD_REQUEST);
     }
     
