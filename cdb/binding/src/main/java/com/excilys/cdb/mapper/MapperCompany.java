@@ -36,7 +36,7 @@ public class MapperCompany {
 	 * @return
 	 */
 	public static Company map(CompanyDTO c) {
-		return new Company(c.getId(), c.getName());
+		return new Company(c.getId(), c.getName(), c.getDescription(), c.getImage());
 	}
 	
 	public static Page<CompanyDTO> mapToPage(Page<Company> page) {
