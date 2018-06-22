@@ -32,29 +32,28 @@ public class Company {
 	@OneToMany(mappedBy="company")
 	private List<Computer> computers;
 	
+	private String image;
+	
+	private String description;
 	/**
 	 * Constructor. no arguments
 	 */
 	public Company() {
 	}
-
-	/**
-	 * Constructor.
-	 * @param id l'id de la compagnie
-	 * @param name le nom de la compagnie
-	 */
+	public Company(final String name) {
+		this(0, name);
+	}
 	public Company(final long id, final String name) {
+		this(id, name, null);
+	}
+	public Company(final long id, final String name, final String description) {
+		this(id, name, null, null);
+	}
+	public Company(final long id, final String name, final String description, final String image) {
 		this.id = id;
 		this.name = name;
-	}
-
-	/**
-	 * Constructor company.
-	 * @param name le nom de la company
-	 */
-	public Company(final String name) {
-		super();
-		this.name = name;
+		this.description = description;
+		this.image = image;
 	}
 
 	public String getName() {
@@ -81,6 +80,23 @@ public class Company {
 
 	public void setComputers(List<Computer> computers) {
 		this.computers = computers;
+	}
+
+	
+	public String getImage() {
+		return image;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override

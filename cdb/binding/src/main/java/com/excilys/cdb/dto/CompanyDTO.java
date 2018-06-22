@@ -17,33 +17,26 @@ public class CompanyDTO implements Serializable{
 	
 	private long id;
 	private String name;
+	private String description;
+	private String image;
 	private List<ComputerDTO> computers;
 
-	/**
-	 * Constructor. no arguments
-	 */
 	public CompanyDTO() {
 	}
-
-	/**
-	 * Constructor.
-	 * @param id l'id de la compagnie
-	 * @param name le nom de la compagnie
-	 */
 	public CompanyDTO(final long id, final String name) {
-		this.id = id;
-		this.name = name;
-		this.computers = new ArrayList<ComputerDTO>();
+		this(id, name, null);
 	}
-	
-	/**
-	 * Constructor.
-	 * @param id l'id de la compagnie
-	 * @param name le nom de la compagnie
-	 */
-	public CompanyDTO(final long id, final String name, final List<ComputerDTO> computers) {
+	public CompanyDTO(final long id, final String name, final String description) {
+		this(id, name, null, null);
+	}
+	public CompanyDTO(final long id, final String name, final String description, final String image) {
+		this(id, name, null, null, new ArrayList<ComputerDTO>());
+	}
+	public CompanyDTO(final long id, final String name, final String description, final String image, final List<ComputerDTO> computers) {
 		this.id = id;
 		this.name = name;
+		this.description = description;
+		this.image = image;
 		this.computers = computers;
 	}
 
@@ -81,6 +74,19 @@ public class CompanyDTO implements Serializable{
 		this.computers = computers;
 	}
 
+	
+	public String getDescription() {
+		return description;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

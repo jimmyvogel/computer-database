@@ -18,7 +18,7 @@ public class MapperCompany {
 
 	public static CompanyDTO map(Company c) {
 		List<ComputerDTO> list = c.getComputers().stream().map(s->MapperComputer.map(s)).collect(Collectors.toList());
-		return new CompanyDTO(c.getId(), c.getName(), list);
+		return new CompanyDTO(c.getId(), c.getName(), c.getDescription(), c.getImage(), list);
 	}
 	
 	/**
@@ -27,7 +27,7 @@ public class MapperCompany {
 	 * @return a dto
 	 */
 	public static CompanyDTO mapLazy(Company c) {
-		return new CompanyDTO(c.getId(), c.getName());
+		return new CompanyDTO(c.getId(), c.getName(), c.getDescription(), c.getImage());
 	}
 	
 	/**
