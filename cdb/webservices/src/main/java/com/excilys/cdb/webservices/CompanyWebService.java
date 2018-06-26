@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -161,6 +163,8 @@ public class CompanyWebService {
 	@PostMapping
 	public ResponseEntity<Long> add(@RequestBody @Valid CompanyDTO company) {
 		Company c = MapperCompany.map(company);
+		Logger logger = LoggerFactory.getLogger(CompanyWebService.class);
+		logger.info(c.toString());
 		Long res = 0L;
 		try {
 			res = serviceCompany.create(c);

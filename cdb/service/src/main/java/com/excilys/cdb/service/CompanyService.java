@@ -195,7 +195,7 @@ public class CompanyService implements ICompanyService {
 
 	@Override
 	public long create(Company t) throws ServiceException {
-		return create(t.getName());
+		return companyDao.save(t).getId() ;
 	}
 
 	@Override
