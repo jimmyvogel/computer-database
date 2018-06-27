@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.validator.CompanyValidator;
+import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
  * Mapper de computer sans validation avec optionnal.
@@ -34,8 +36,10 @@ public class MapperCompany {
 	 * We ignore the computers when going from a companyDTO to a company entity.
 	 * @param c
 	 * @return
+	 * @throws ValidatorStringException 
 	 */
-	public static Company map(CompanyDTO c) {
+	public static Company map(CompanyDTO c) throws ValidatorStringException {
+		CompanyValidator.validName(c.getName());
 		return new Company(c.getId(), c.getName(), c.getDescription(), c.getImage());
 	}
 	

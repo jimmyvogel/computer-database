@@ -158,12 +158,12 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	public long create(final Computer computer) throws ServiceException {
+	public long create(final ComputerDTO computer) throws ServiceException {
 		if (computer == null) {
 			throw new IllegalArgumentException();
 		}
 		return create(computer.getName(), computer.getIntroduced(), computer.getDiscontinued(),
-				computer.getCompany().getId());
+				computer.getCompanyId());
 	}
 
 	@Override
@@ -213,12 +213,12 @@ public class ComputerService implements IComputerService {
 	}
 
 	@Override
-	public boolean update(Computer update) throws ServiceException {
+	public boolean update(ComputerDTO update) throws ServiceException {
 		if (update == null) {
 			throw new ServiceException(MessageHandler.getMessage(ServiceMessage.VALIDATION_NAME_NULL, null));
 		}
 		return this.update(update.getId(), update.getName(), update.getIntroduced(), update.getDiscontinued(),
-				update.getCompany().getId());
+				update.getCompanyId());
 	}
 
 	@Override
@@ -295,4 +295,5 @@ public class ComputerService implements IComputerService {
 		}
 		return res;
 	}
+
 }

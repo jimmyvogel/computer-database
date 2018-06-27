@@ -7,7 +7,10 @@ import org.springframework.data.domain.Page;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.validator.ComputerValidator;
 import com.excilys.cdb.validator.DateValidation;
+import com.excilys.cdb.validator.exceptions.ValidatorDateException;
+import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 /**
  * Mapper de computer sans validation avec optionnal.
@@ -34,8 +37,10 @@ public class MapperComputer {
 	 * @param discontinued la date de résiliation
 	 * @param idCompany l'id de la compagnie créatrice du computer
 	 * @return un optionnal de computer pouvant être null.
+	 * @throws ValidatorDateException 
+	 * @throws ValidatorStringException 
 	 */
-	public static Computer map(String name, String introduced, String discontinued, String idCompany) {
+	public static Computer map(String name, String introduced, String discontinued, String idCompany) throws ValidatorStringException, ValidatorDateException {
 		return map("0", name, introduced, discontinued, idCompany);
 	}
 
@@ -47,16 +52,15 @@ public class MapperComputer {
 	 * @param discontinued la date de résiliation
 	 * @param idCompany l'id de la compagnie créatrice du computer
 	 * @return un optionnal de computer pouvant être null.
+	 * @throws ValidatorDateException 
+	 * @throws ValidatorStringException 
 	 */
 	public static Computer map(String id, String name, String introduced, String discontinued,
-			String idCompany) {
+			String idCompany) throws ValidatorStringException, ValidatorDateException {
 		LocalDate dateIntro = DateValidation.validDateFormat(introduced);
 		LocalDate dateDiscon = DateValidation.validDateFormat(discontinued);
-		Computer c = null;
-		try {
-			c = new Computer(Long.valueOf(id), name, dateIntro, dateDiscon, new Company(Long.valueOf(idCompany), ""));
-		} catch (NumberFormatException e) {
-		}
+		Computer c = new Computer(Long.valueOf(id), name, dateIntro, dateDiscon, new Company(Long.valueOf(idCompany), ""));
+		ComputerValidator.validComputer(c);
 		return c;
 	}
 
@@ -64,8 +68,10 @@ public class MapperComputer {
 	 * Mapping from computerdto to computer.
 	 * @param computer computerdto
 	 * @return un optionnal computer
+	 * @throws ValidatorDateException 
+	 * @throws ValidatorStringException 
 	 */
-	public static Computer map(ComputerDTO computer) {
+	public static Computer map(ComputerDTO computer) throws ValidatorStringException, ValidatorDateException {
 		String introduced = computer.getIntroduced() == null ? null : computer.getIntroduced().toString();
 		String discontinued = computer.getDiscontinued() == null ? null : computer.getDiscontinued().toString();
 		return map(String.valueOf(computer.getId()), computer.getName(), introduced, discontinued,

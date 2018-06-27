@@ -29,6 +29,8 @@ import com.excilys.cdb.ressources.UrlRessources;
 import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
+import com.excilys.cdb.validator.exceptions.ValidatorDateException;
+import com.excilys.cdb.validator.exceptions.ValidatorStringException;
 
 @Controller
 @RequestMapping("/computer")
@@ -121,6 +123,8 @@ public class ComputerController {
 	 * @param computer computerdto
 	 * @param bindingResult validation
 	 * @return jsp de redirection.
+	 * @throws ValidatorDateException 
+	 * @throws ValidatorStringException 
 	 */
 	@PostMapping("/" + ADD_COMPUTER)
 	public ModelAndView add(@ModelAttribute @Valid ComputerDTO computer, BindingResult bindingResult) {

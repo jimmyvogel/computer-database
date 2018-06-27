@@ -11,13 +11,6 @@ import com.excilys.cdb.service.exceptions.ServiceException;
 @Transactional
 public interface IService<T> {
 
-	/**
-	 * Créer un T.
-	 * @param t T a ajouter
-	 * @return long l'id de l'élément ou -1 si fail
-	 * @throws ServiceException erreur de paramètres.
-	 */
-	long create(T t) throws ServiceException;
 
 	/**
 	 * Détruire plusieurs T.
@@ -43,13 +36,4 @@ public interface IService<T> {
 	 */
 	@Transactional(readOnly = true)
 	long count() throws ServiceException;
-
-	/**
-	 * Modifié un T.
-	 * @param update le T updaté
-	 * @return un boolean pour le résultat
-	 * @throws ServiceException erreur de paramètres
-	 */
-	boolean update(T update) throws ServiceException;
-
 }

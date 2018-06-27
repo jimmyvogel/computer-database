@@ -3,20 +3,14 @@ package com.excilys.cdb.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dao.DaoOrder;
 import com.excilys.cdb.dto.CompanyDTO;
-import com.excilys.cdb.mapper.MapperCompany;
-import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.service.exceptions.CharacterSpeciauxException;
 import com.excilys.cdb.service.exceptions.ServiceException;
-import com.excilys.cdb.servicemessage.ServiceMessage;
-import com.excilys.cdb.validator.SecurityTextValidation;
 
 /**
  * Service permettant de gérer les requêtes de gestion de la table computer et
@@ -118,5 +112,22 @@ public interface ICompanyService extends IService<Company> {
 	public Page<CompanyDTO> getPageSearchLazy(final String search, final int page, final Integer limit, final PageCompanyOrder order) throws ServiceException;
 
 	CompanyDTO getLazy(long id) throws ServiceException;
+	
+	/**
+	 * Modifié un T.
+	 * @param update le T updaté
+	 * @return un boolean pour le résultat
+	 * @throws ServiceException erreur de paramètres
+	 */
+	boolean update(CompanyDTO update) throws ServiceException;
+	
+	/**
+	 * Créer un T.
+	 * @param t T a ajouter
+	 * @return long l'id de l'élément ou -1 si fail
+	 * @throws ServiceException erreur de paramètres.
+	 */
+	long create(CompanyDTO t) throws ServiceException;
+
 
 }

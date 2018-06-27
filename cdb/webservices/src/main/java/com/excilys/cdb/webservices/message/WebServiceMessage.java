@@ -19,4 +19,6 @@ public enum WebServiceMessage implements CDBMessage {
 		return key;
 	}
 	
+	public static final String MESSAGE_CLASSPATH_CONTROLLER = "classpath:strings";
+	
 }

@@ -23,8 +23,10 @@ import com.excilys.cdb.dao.ComputerCrudDao;
 import com.excilys.cdb.persistence.CDBDataSource;
 import com.excilys.cdb.persistenceconfig.HibernateConfig;
 import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.servicemessage.ServiceMessage;
 import com.excilys.cdb.webservices.ComputerWebService;
 import com.excilys.cdb.webservices.jacksonconfig.JacksonConfig;
+import com.excilys.cdb.webservices.message.WebServiceMessage;
 import com.excilys.cdb.webservices.security.JwtTokenUtil;
 
 @Configuration
@@ -35,7 +37,6 @@ import com.excilys.cdb.webservices.security.JwtTokenUtil;
 		HibernateConfig.class, JacksonConfig.class, JwtTokenUtil.class })
 public class SpringConfigWeb implements WebMvcConfigurer {
 
-	private static final String MESSAGE_CLASSPATH = "classpath:strings";
 	private static final String MESSAGE_ENCODING = "UTF-8";
 
 	/**
@@ -55,7 +56,7 @@ public class SpringConfigWeb implements WebMvcConfigurer {
 	@Bean("messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_CLASSPATH);
+		messageSource.setBasenames(ServiceMessage.MESSAGE_CLASSPATH_SERVICE, WebServiceMessage.MESSAGE_CLASSPATH_CONTROLLER);
 		messageSource.setDefaultEncoding(MESSAGE_ENCODING);
 		messageSource.setUseCodeAsDefaultMessage(true);
 		return messageSource;
