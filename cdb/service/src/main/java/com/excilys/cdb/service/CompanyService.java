@@ -15,7 +15,6 @@ import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dao.DaoOrder;
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.mapper.MapperCompany;
-import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.messagehandler.MessageHandler;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -196,7 +195,13 @@ public class CompanyService implements ICompanyService {
 
 	@Override
 	public long create(CompanyDTO t) throws ServiceException {
-		return create(t.getName());
+		Company create = null;
+		try {
+			create = MapperCompany.map(t);
+		} catch (ValidatorStringException e) {
+			throw new ServiceException(manageStringTypeError(e));
+		}
+		return companyDao.save(create).getId() ;
 	}
 
 	@Override

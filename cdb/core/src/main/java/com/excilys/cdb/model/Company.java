@@ -129,10 +129,11 @@ public class Company {
 		}
 		return true;
 	}
+  @Override
+  public String toString() {
+    return "Company [id=" + id + ", name=" + name + ", computers=" + computers + ", image=" + image + ", description="
+        + description + "]";
+  }
 
-	@Override
-	public String toString() {
-		return "Company [id=" + id + ", name=" + name + "]";
-	}
 
 }

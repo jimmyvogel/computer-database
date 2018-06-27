@@ -27,10 +27,10 @@ public class CompanyDTO implements Serializable{
 		this(id, name, null);
 	}
 	public CompanyDTO(final long id, final String name, final String description) {
-		this(id, name, null, null);
+		this(id, name, description, null);
 	}
 	public CompanyDTO(final long id, final String name, final String description, final String image) {
-		this(id, name, null, null, new ArrayList<ComputerDTO>());
+		this(id, name, description, image, new ArrayList<ComputerDTO>());
 	}
 	public CompanyDTO(final long id, final String name, final String description, final String image, final List<ComputerDTO> computers) {
 		this.id = id;
