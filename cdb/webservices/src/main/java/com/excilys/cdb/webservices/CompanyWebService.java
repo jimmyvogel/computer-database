@@ -1,13 +1,10 @@
 package com.excilys.cdb.webservices;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.cdb.dao.CompanyCrudDao.PageCompanyOrder;
 import com.excilys.cdb.dto.CompanyDTO;
-import com.excilys.cdb.mapper.MapperCompany;
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.exceptions.ServiceException;
 import com.excilys.cdb.validator.SecurityTextValidation;
@@ -162,12 +157,9 @@ public class CompanyWebService {
 	 */
 	@PostMapping
 	public ResponseEntity<Long> add(@RequestBody @Valid CompanyDTO company) {
-		Company c = MapperCompany.map(company);
-		Logger logger = LoggerFactory.getLogger(CompanyWebService.class);
-		logger.info(c.toString());
 		Long res = 0L;
 		try {
-			res = serviceCompany.create(c);
+			res = serviceCompany.create(company);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
@@ -182,10 +174,9 @@ public class CompanyWebService {
 	 */
 	@PutMapping
 	public ResponseEntity<Boolean> edit(@RequestBody @Valid CompanyDTO company) {
-		Company c = MapperCompany.map(company);
 		Boolean res = false;
 		try {
-			res = serviceCompany.update(c);
+			res = serviceCompany.update(company);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}

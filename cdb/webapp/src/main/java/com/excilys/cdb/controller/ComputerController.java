@@ -135,10 +135,9 @@ public class ComputerController {
 			}
 			return mv;
 		}
-		Computer c = MapperComputer.map(computer);
 		ModelAndView mv = formAdd();
 		try {
-			serviceComputer.create(c);
+			serviceComputer.create(computer);
 			mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_CREATE, null));
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());
@@ -177,9 +176,8 @@ public class ComputerController {
 			return mv;
 		}
 		ModelAndView mv = formEdit(computer.getId());
-		Computer c = MapperComputer.map(computer);
 		try {
-			serviceComputer.update(c);
+			serviceComputer.update(computer);
 			mv.addObject(JspRessources.SUCCESS, MessageHandler.getMessage(ControllerMessage.SUCCESS_UPDATE, null));
 		} catch (ServiceException e) {
 			mv.addObject(JspRessources.ERROR, e.getMessage());

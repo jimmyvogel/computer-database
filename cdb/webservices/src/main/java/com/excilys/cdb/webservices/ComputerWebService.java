@@ -1,12 +1,9 @@
 package com.excilys.cdb.webservices;
 
-import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.cdb.dao.ComputerCrudDao.PageComputerOrder;
 import com.excilys.cdb.dto.ComputerDTO;
-import com.excilys.cdb.mapper.MapperComputer;
-import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.ICompanyService;
 import com.excilys.cdb.service.IComputerService;
 import com.excilys.cdb.service.exceptions.ServiceException;
@@ -154,10 +149,9 @@ public class ComputerWebService {
 	 */
 	@PostMapping
 	public ResponseEntity<Long> add(@RequestBody @Valid ComputerDTO computer) {
-		Computer c = MapperComputer.map(computer);
 		Long res = 0L;
 		try {
-			res = serviceComputer.create(c);
+			res = serviceComputer.create(computer);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
@@ -172,10 +166,9 @@ public class ComputerWebService {
 	 */
 	@PutMapping
 	public ResponseEntity<Boolean> edit(@RequestBody @Valid ComputerDTO computer) {
-		Computer c = MapperComputer.map(computer);
 		Boolean res = false;
 		try {
-			res = serviceComputer.update(c);
+			res = serviceComputer.update(computer);
 		} catch (ServiceException e) {
 			throw new WebServiceException(e);
 		}
